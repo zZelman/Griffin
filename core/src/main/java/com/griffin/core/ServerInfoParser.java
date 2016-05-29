@@ -10,7 +10,7 @@ import org.ini4j.*;
 import com.griffin.core.*;
 
 public class ServerInfoParser {
-    private final String IP = "ip";
+    private final String HOST_NAME = "hostname";
     private final String PORT = "port";
     
     private String fileName;
@@ -24,7 +24,7 @@ public class ServerInfoParser {
     }
     
     public ServerInfo getServerInfo(String name) throws URISyntaxException, IOException, Exception {
-        // TODO: move server_list.ini outside of the jar
+        // TODO: move server_list.ini outside of the jar, prob some gradle config
         // URI uri = ClassLoader.getSystemClassLoader().getResource(this.fileName).toURI();
         InputStream inputStream = ClassLoader.getSystemClassLoader().getResourceAsStream(this.fileName);
 
@@ -32,15 +32,15 @@ public class ServerInfoParser {
         Ini ini = new Ini(inputStream);
         Preferences prefs = new IniPreferences(ini);
         
-        String ip = prefs.node(name).get(IP, null);
-        String port = prefs.node(name).get(PORT, null);
+        String hostName = prefs.node(name).get(HOST_NAME, null);
+        int port = prefs.node(name).getInt(PORT, -1);
         
         if (name == null ||
-            ip == null ||
-            port == null) {
+            hostName == null ||
+            port == -1) {
             throw new Exception("Name or formating of the config file is incorrect. Cannot get [" + name + "] in " + this.fileName);
         }
         
-        return new ServerInfo(name, ip, port);
+        return new ServerInfo(name, hostName, port);
     }
 }

@@ -4,12 +4,12 @@ import com.griffin.core.*;
 
 public class ServerInfo {
     private String name;
-    private String ip;
-    private String port;
+    private String hostName;
+    private int port;
     
-    public ServerInfo(String name, String ip, String port) {
+    public ServerInfo(String name, String hostName, int port) {
         this.name = name;
-        this.ip = ip;
+        this.hostName = hostName;
         this.port = port;
     }
     
@@ -17,15 +17,15 @@ public class ServerInfo {
         return this.name;
     }
     
-    public String getIp() {
-        return this.ip;
+    public String getHostName() {
+        return this.hostName;
     }
     
-    public String getPort() {
+    public int getPort() {
         return this.port;
     }
     
     public String toString() {
-        return this.name + " " + this.ip + " " + this.port;
+        return this.name + " " + this.hostName + " " + this.port;
     }
 }

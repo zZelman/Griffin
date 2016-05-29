@@ -5,3 +5,7 @@ mainClassName = "com.griffin.desktop.cli.Main"
 dependencies {
     compile project(':core')
 }
+
+run {
+    standardInput = System.in
+}

@@ -1,6 +1,6 @@
 apply plugin: 'application'
 
-mainClassName = "com.griffin.cli.Cli"
+mainClassName = "com.griffin.desktop.daemon.Main"
 
 dependencies {
     compile project(':core')

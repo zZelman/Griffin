@@ -1,2 +1,3 @@
-include 'cli'
 include 'core'
+include 'desktop:cli'
+include 'desktop:daemon'

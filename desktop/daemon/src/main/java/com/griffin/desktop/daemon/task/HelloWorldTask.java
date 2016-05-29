@@ -1,6 +1,6 @@
-package com.griffin.core.task.specific;
+package com.griffin.desktop.daemon.task;
 
-import com.griffin.core.task.*;
+import com.griffin.core.*;
 
 public class HelloWorldTask extends Task {
     public HelloWorldTask() {

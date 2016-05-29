@@ -3,7 +3,6 @@ package com.griffin.core;
 import java.util.*;
 
 import com.griffin.core.*;
-import com.griffin.core.task.*;
 
 public class Griffin {
     private final String noExistErrorMsg;
@@ -13,13 +12,13 @@ public class Griffin {
     private Output output;
     private List<Task> tasks;
     
-    public Griffin() {
+    public Griffin(TaskFactory taskFactory) {
         this.noExistErrorMsg = "command does not exist";
         this.startingMsg = "starting message";
         this.endingMsg = "ending message";
         
         this.output = new Output();
-        this.tasks = new TaskFactory().getAll();
+        this.tasks = taskFactory.getAll();
     }
     
     public String doCommand(String command) {

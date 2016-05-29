@@ -1,4 +1,4 @@
-package com.griffin.core.task;
+package com.griffin.core;
 
 public abstract class Task {
     protected final String command;

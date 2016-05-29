@@ -14,4 +14,8 @@ public class Output {
     public String getMessages() {
         return this.messages.toString();
     }
+    
+    public void clear() {
+        this.messages.setLength(0);
+    }
 }

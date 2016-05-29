@@ -21,6 +21,18 @@ public class Griffin {
         this.tasks = taskFactory.getAll();
     }
     
+    public List<Task> getTasks() {
+        return this.tasks;
+    }
+    
+    public void setTasks(List<Task> tasks) {
+        this.tasks = tasks;
+    }
+    
+    public Output getOutput() {
+        return this.output;
+    }
+    
     public String doCommand(String command) {
         // check for command
         boolean exists = this.doesCommandExist(command);
@@ -31,8 +43,7 @@ public class Griffin {
         }
         
         // say the command is about to start
-        String startingTaskMsg = this.getStartingMsg();
-        this.output.addMessage(startingTaskMsg);
+        this.output.addMessage(this.startingMsg);
         
         // execute the task
         String returnMsg = this.doTask(command);
@@ -41,9 +52,8 @@ public class Griffin {
         this.output.addMessage(returnMsg);
         
         // say all tasks have been completed
-        String endingMsg = this.getEndingMsg();
-        this.output.addMessage(endingMsg);
-
+        this.output.addMessage(this.endingMsg);
+        
         return this.output.getMessages();
     }
     
@@ -56,14 +66,6 @@ public class Griffin {
         return false;
     }
     
-    private String getNoExistErrorMsg() {
-        return this.noExistErrorMsg;
-    }
-    
-    private String getStartingMsg() {
-        return this.startingMsg;
-    }
-    
     private String doTask(String command) {
         for (Task t : this.tasks) {
             if (command.contains(t.getCommand())) {
@@ -71,9 +73,5 @@ public class Griffin {
             }
         }
         return null;
-    }
-    
-    private String getEndingMsg() {
-        return this.endingMsg;
     }
 }

@@ -10,6 +10,10 @@ public class Output {
         this.messages.append(this.delimiter);
         this.messages.append(message);
     }
+
+    public void addExecutionMessage(String message) {
+        this.addMessage("    " + message);
+    }
     
     public String getMessages() {
         return this.messages.toString();

@@ -18,7 +18,12 @@ public class Griffin {
         this.endingMsg = "ending message";
         
         this.output = new Output();
-        this.tasks = taskFactory.getAll();
+
+        // common tasks
+        this.tasks = new ConcreteTaskFactory(this).getAll(output);
+
+        // given tasks
+        this.tasks.addAll(taskFactory.getAll(output));
     }
     
     public List<Task> getTasks() {

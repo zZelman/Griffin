@@ -4,4 +4,14 @@ subprojects {
     repositories {
         mavenCentral()
     }
+
+    test {
+        beforeTest {
+            descriptor -> logger.lifecycle("Running test: ${descriptor}")
+        }
+        
+        testLogging {
+            showStandardStreams = true
+        }
+    }
 }

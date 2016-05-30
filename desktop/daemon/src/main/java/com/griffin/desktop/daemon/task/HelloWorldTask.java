@@ -11,7 +11,8 @@ public class HelloWorldTask extends Task {
     }
     
     public String doAction() {
-        this.output.addExecutionMessage("doAction: hello world");
+        this.output.addExecutionMessage("[HelloWorldTask::doAction] client communication");
+        System.out.println("[HelloWorldTask::doAction] server execution");
         return this.success;
     }
 }

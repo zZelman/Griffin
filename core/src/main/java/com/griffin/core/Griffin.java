@@ -18,12 +18,19 @@ public class Griffin {
         this.endingMsg = "ending message";
         
         this.output = new Output();
-
+        
         // common tasks
         this.tasks = new ConcreteTaskFactory(this).getAll(output);
-
+        
         // given tasks
         this.tasks.addAll(taskFactory.getAll(output));
+    }
+    
+    public void debugPrintTasks() {
+        System.out.println("Commands:");
+        for (Task t : this.tasks) {
+            System.out.println("    " + t.getCommand() + "");
+        }
     }
     
     public List<Task> getTasks() {
@@ -58,8 +65,13 @@ public class Griffin {
         
         // say all tasks have been completed
         this.output.addMessage(this.endingMsg);
+
+        // output needs to be cleared after every command
+        //    to comply with thread-safty
+        String output = this.output.getMessages();
+        this.output.clear();
         
-        return this.output.getMessages();
+        return output;
     }
     
     private boolean doesCommandExist(String command) {

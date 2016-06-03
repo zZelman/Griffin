@@ -20,18 +20,26 @@ public class Main {
             e.printStackTrace();
             System.exit(1);
         }
-
+        
         try {
             // connect to the server
             Socket socket = new Socket(info.getHostName(), info.getPort());
-            TextCommunication comm = new TextCommunication(socket);
-
+            Communication comm = new Communication(socket);
+            
             BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
             String userInput = stdIn.readLine();
-            
+
             comm.send(userInput);
-            System.out.println(comm.receive());
+            Object ret = comm.receive();
+            
+            System.out.println(ret);
+            
+            comm.close();
+            socket.close();
         } catch (UnknownHostException e) {
+            e.printStackTrace();
+            System.exit(1);
+        } catch (ClassNotFoundException e) {
             e.printStackTrace();
             System.exit(1);
         } catch (IOException e) {

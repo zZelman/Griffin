@@ -4,14 +4,14 @@ import java.util.*;
 
 import com.griffin.core.*;
 
-public class PrintAllCommandsTask extends Task {
+public class PrintHelpTask extends Task {
     private Griffin griffin;
     
-    public PrintAllCommandsTask(Output output, Griffin griffin) {
+    public PrintHelpTask(Output output, Griffin griffin) {
         super(output,
-              "print commands",
-              "print commands: success",
-              "print commands: failure");
+              "help",
+              "help: success",
+              "help: failure");
 
         this.griffin = griffin;
     }

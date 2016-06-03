@@ -6,11 +6,10 @@ import java.lang.*;
 
 import com.griffin.core.*;
 
-import java.lang.*;
-
 public class Main implements Runnable {
     private final Griffin griffin;
     private final Socket clientSocket;
+    private final String BAD_COMMAND = "first communication must be in String form";
     
     public Main(Griffin griffin, Socket clientSocket) {
         this.griffin = griffin;
@@ -19,19 +18,30 @@ public class Main implements Runnable {
     
     public void run() {
         try {
-            TextCommunication comm = new TextCommunication(this.clientSocket);
+            Communication comm = new Communication(this.clientSocket);
             
-            String input;
+            Object input;
+            String command;
             String taskResult;
             
             while ((input = comm.receive()) != null) {
-                System.out.println("input: [" + input + "]");
-                
-                taskResult = this.griffin.doCommand(input);
-                comm.send(taskResult);
+                if (input instanceof String) {
+                    command = (String) input;
+                    System.out.println("input: [" + command + "]");
+                    
+                    taskResult = this.griffin.doCommand(command);
+                    comm.send(taskResult);
+                } else {
+                    comm.send(Main.BAD_COMMAND);
+                    break;
+                }
             }
-
+            
+            comm.close();
             this.clientSocket.close();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            System.exit(1);
         } catch (IOException e) {
             e.printStackTrace();
             System.exit(1);

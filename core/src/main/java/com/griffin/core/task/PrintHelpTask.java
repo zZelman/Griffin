@@ -10,6 +10,7 @@ public class PrintHelpTask extends Task {
     public PrintHelpTask(Output output, Griffin griffin) {
         super(output,
               "help",
+              "prints all commands",
               "help: success",
               "help: failure");
 
@@ -19,7 +20,7 @@ public class PrintHelpTask extends Task {
     public String doAction() {
         List<Task> tasks = this.griffin.getTasks();
         for (Task t : tasks) {
-            this.output.addExecutionMessage(t.getCommand());
+            this.output.addExecutionMessage(t.getCommand() + ": " + t.getInfo());
         }
 
         return this.success;

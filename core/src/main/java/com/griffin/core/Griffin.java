@@ -5,18 +5,14 @@ import java.util.*;
 import com.griffin.core.*;
 
 public class Griffin {
-    private final String noExistErrorMsg;
-    private final String startingMsg;
-    private final String endingMsg;
+    private final String noExistErrorMsg = "command does not exist";
+    private final String startingMsg = "starting message";
+    private final String endingMsg = "ending message";
     
     private Output output;
     private List<Task> tasks;
     
     public Griffin(TaskFactory taskFactory) {
-        this.noExistErrorMsg = "command does not exist";
-        this.startingMsg = "starting message";
-        this.endingMsg = "ending message";
-        
         this.output = new Output();
         
         // common tasks
@@ -65,7 +61,7 @@ public class Griffin {
         
         // say all tasks have been completed
         this.output.addMessage(this.endingMsg);
-
+        
         // output needs to be cleared after every command
         //    to comply with thread-safty
         String output = this.output.getMessages();

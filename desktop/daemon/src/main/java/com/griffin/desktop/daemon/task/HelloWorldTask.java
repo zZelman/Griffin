@@ -6,6 +6,7 @@ public class HelloWorldTask extends Task {
     public HelloWorldTask(Output output) {
         super(output,
               "hello world",
+              "prints hello world",
               "hello world: success",
               "hello world: failure");
     }

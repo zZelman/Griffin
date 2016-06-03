@@ -9,8 +9,6 @@ public class Communication {
     private ObjectOutputStream out;
     private ObjectInputStream in;
     
-    private final int bufferSize = 2000000;
-    
     public Communication(Socket socket) throws IOException {
         this.out = new ObjectOutputStream(socket.getOutputStream());
         this.in = new ObjectInputStream(socket.getInputStream());

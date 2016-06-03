@@ -32,7 +32,7 @@ public class Main implements Runnable {
                     taskResult = this.griffin.doCommand(command);
                     comm.send(taskResult);
                 } else {
-                    comm.send(Main.BAD_COMMAND);
+                    comm.send(BAD_COMMAND);
                     break;
                 }
             }

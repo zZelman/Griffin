@@ -17,10 +17,6 @@ public class PrintHelpTask extends Task {
         this.griffin = griffin;
     }
     
-    public boolean canUse(String rawInput) {
-        return rawInput.contains(this.getCommand());
-    }
-    
     public String doAction(Communication prevComm) {
         List<Task> tasks = this.griffin.getTasks();
         for (Task t : tasks) {

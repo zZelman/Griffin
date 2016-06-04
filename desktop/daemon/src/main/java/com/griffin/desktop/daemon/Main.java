@@ -68,7 +68,8 @@ public class Main implements Runnable {
         // setup a shared Griffin instance between all threads
         TaskFactory taskFactory = new ConcreteTaskFactory();
         Griffin griffin = new Griffin(taskFactory);
-        griffin.debugPrintTasks();
+        String commandsAvailable = griffin.printTasks();
+        System.out.println(commandsAvailable);
         
         try {
             ServerSocket serverSocket = new ServerSocket(info.getPort());

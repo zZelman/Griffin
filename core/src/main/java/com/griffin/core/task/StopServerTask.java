@@ -24,10 +24,6 @@ public class StopServerTask extends Task {
               "stop server: failure");
     }
     
-    public boolean canUse(String rawInput) {
-        return rawInput.contains(this.getCommand());
-    }
-    
     public String doAction(Communication prevComm) {
         return this.success;
     }

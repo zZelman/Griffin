@@ -4,8 +4,8 @@ import java.io.*;
 
 import com.griffin.core.*;
 
-public class HelloWorldTask extends Task {
-    public HelloWorldTask(Output output) {
+public class ExampleHelloWorldTask extends Task {
+    public ExampleHelloWorldTask(Output output) {
         super(output,
               "hello world",
               "prints hello world",
@@ -13,13 +13,9 @@ public class HelloWorldTask extends Task {
               "hello world: failure");
     }
     
-    public boolean canUse(String rawInput) {
-        return rawInput.contains(this.getCommand());
-    }
-    
     public String doAction(Communication prevComm) {
-        this.output.addExecutionMessage("[HelloWorldTask::doAction] client communication");
-        System.out.println("[HelloWorldTask::doAction] server execution");
+        this.output.addExecutionMessage("[ExampleHelloWorldTask::doAction] client communication");
+        System.out.println("[ExampleHelloWorldTask::doAction] server execution");
         
         try {
             prevComm.send("~~ communication from the actual Task");

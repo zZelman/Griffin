@@ -35,10 +35,18 @@ public abstract class Task {
         This is where the task does it's parsing of the raw (whole) command string
         It allows the task to extract information from the raw (whole) command string if needed
     
+        Override this method to change its behavior (ie parameters exist)
+    
         @arg rawInput the raw (whole) command string
-        @return true if this task's command exists within rawInput, false if not
+        @return null if this task can not use the raw input, !null if the task can
+                NOTE: this method MUST remove the command from the rawInput and return that new string
     */
-    abstract public boolean canUse(String rawInput);
+    public String canUse(String rawInput) {
+        if (rawInput.contains(this.getCommand())) {
+            return rawInput.replaceFirst(this.getCommand(), "");
+        }
+        return null;
+    }
     
     /**
         @arg comm is the direct connection to the caller of this task

@@ -9,7 +9,8 @@ public class ConcreteTaskFactory extends TaskFactory {
     public List<Task> getAll(Output output) {
         List<Task> tasks = new LinkedList<Task>();
 
-        tasks.add(new HelloWorldTask(output));
+        tasks.add(new ExampleParameterizedTask(output));
+        tasks.add(new ExampleHelloWorldTask(output));
 
         return tasks;
     }

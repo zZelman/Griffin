@@ -7,7 +7,8 @@ import com.griffin.core.*;
 public class Griffin {
     private final String noExistErrorMsg = "rawInput does not exist";
     private final String startingMsg = "starting message";
-    private final String startCommandMsg = "starting command: ";
+    private final String startCommandMsg = "running command: ";
+    private final String endCommdMsg = " returned the message: ";
     private final String commandStuffLeftOver = "there was parts of the command that were not used: ";
     private final String endingMsg = "ending message";
     
@@ -79,7 +80,7 @@ public class Griffin {
                     taskOutput = t.doAction(comm);
                     
                     // say the return value of the task
-                    this.output.addMessage(taskOutput);
+                    this.output.addMessage(t.getCommand() + this.endCommdMsg + taskOutput);
                     this.output.addDelimiter();
                 }
             }

@@ -15,6 +15,11 @@ public class ConcreteTaskFactory extends TaskFactory {
     public List<Task> getAll(Output output) {
         List<Task> tasks = new LinkedList<Task>();
 
+        // parameterized
+        // NOTE: it might not be a good idea to have
+        //       parameterized tasks in the common domain
+
+        // not parameterized
         tasks.add(new PrintHelpTask(output, this.griffin));
         tasks.add(new StopServerTask(output));
         

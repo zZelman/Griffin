@@ -22,16 +22,20 @@ public class Main {
         
         try {
             Socket socket = new Socket(info.getHostName(), info.getPort());
-            Communication comm = new Communication(socket);
+            Communication nextComm = new Communication(socket);
+
+            // just to make input field easyer to read
+            System.out.println();
+            System.out.print("[cli] ");
             
             BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
-            String userInput = stdIn.readLine();
+            Serializable userInput = stdIn.readLine();
             
-            comm.send(userInput);
+            nextComm.send(userInput);
             
             Object ret;
             while (true) {
-                ret = comm.receive();
+                ret = nextComm.receive();
                 if (ret instanceof StopCommunication) {
                     break;
                 }
@@ -39,7 +43,7 @@ public class Main {
                 System.out.println(ret);
             }
             
-            comm.close();
+            nextComm.close();
             socket.close();
         } catch (UnknownHostException e) {
             e.printStackTrace();

@@ -13,12 +13,12 @@ public class HelloWorldTask extends Task {
               "hello world: failure");
     }
     
-    public String doAction(Communication comm) {
+    public String doAction(Communication prevComm) {
         this.output.addExecutionMessage("[HelloWorldTask::doAction] client communication");
         System.out.println("[HelloWorldTask::doAction] server execution");
         
         try {
-            comm.send("~~ communication from the actual Task");
+            prevComm.send("~~ communication from the actual Task");
         } catch (IOException e) {
             this.output.addExecutionMessage("IOException trying to direct communication");
             e.printStackTrace();

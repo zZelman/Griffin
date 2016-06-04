@@ -17,10 +17,10 @@ public class PrintHelpTask extends Task {
         this.griffin = griffin;
     }
     
-    public String doAction(Communication comm) {
+    public String doAction(Communication prevComm) {
         List<Task> tasks = this.griffin.getTasks();
         for (Task t : tasks) {
-            this.output.addExecutionMessage(t.getCommand() + ": " + t.getInfo());
+            this.output.addExecutionMessage(t.getCommand() + " - " + t.getInfo());
         }
 
         return this.success;

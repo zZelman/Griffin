@@ -37,5 +37,5 @@ public abstract class Task {
                  Do not use this for command output printing, use this.output
         @see output
     */
-    abstract public String doAction(Communication comm);
+    abstract public String doAction(Communication prevComm);
 }

@@ -14,8 +14,9 @@ public class ConcreteTaskFactory extends TaskFactory {
     
     public List<Task> getAll(Output output) {
         List<Task> tasks = new LinkedList<Task>();
-        
+
         tasks.add(new PrintHelpTask(output, this.griffin));
+        tasks.add(new StopServerTask(output));
         
         return tasks;
     }

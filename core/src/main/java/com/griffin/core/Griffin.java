@@ -25,7 +25,7 @@ public class Griffin {
     public void debugPrintTasks() {
         System.out.println("Commands:");
         for (Task t : this.tasks) {
-            System.out.println("    " + t.getCommand() + "");
+            System.out.println("    " + t.getCommand() + " - " + t.getInfo());
         }
     }
     

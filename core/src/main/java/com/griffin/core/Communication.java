@@ -6,12 +6,14 @@ import java.io.*;
 import com.griffin.core.*;
 
 public class Communication {
+    private Socket socket;
     private ObjectOutputStream out;
     private ObjectInputStream in;
     
     public Communication(Socket socket) throws IOException {
-        this.out = new ObjectOutputStream(socket.getOutputStream());
-        this.in = new ObjectInputStream(socket.getInputStream());
+        this.socket = socket;
+        this.out = new ObjectOutputStream(this.socket.getOutputStream());
+        this.in = new ObjectInputStream(this.socket.getInputStream());
     }
     
     public void send(Serializable s) throws IOException {
@@ -28,7 +30,8 @@ public class Communication {
     }
     
     public void close() throws IOException {
-        this.out.close();
         this.in.close();
+        this.out.close();
+        this.socket.close();
     }
 }

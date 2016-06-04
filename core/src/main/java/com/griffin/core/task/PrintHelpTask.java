@@ -13,8 +13,12 @@ public class PrintHelpTask extends Task {
               "prints all commands",
               "help: success",
               "help: failure");
-
+              
         this.griffin = griffin;
+    }
+    
+    public boolean canUse(String rawInput) {
+        return rawInput.contains(this.getCommand());
     }
     
     public String doAction(Communication prevComm) {
@@ -22,7 +26,7 @@ public class PrintHelpTask extends Task {
         for (Task t : tasks) {
             this.output.addExecutionMessage(t.getCommand() + " - " + t.getInfo());
         }
-
+        
         return this.success;
     }
 }

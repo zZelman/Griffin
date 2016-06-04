@@ -13,6 +13,10 @@ public class HelloWorldTask extends Task {
               "hello world: failure");
     }
     
+    public boolean canUse(String rawInput) {
+        return rawInput.contains(this.getCommand());
+    }
+    
     public String doAction(Communication prevComm) {
         this.output.addExecutionMessage("[HelloWorldTask::doAction] client communication");
         System.out.println("[HelloWorldTask::doAction] server execution");

@@ -32,9 +32,18 @@ public abstract class Task {
     }
     
     /**
+        This is where the task does it's parsing of the raw (whole) command string
+        It allows the task to extract information from the raw (whole) command string if needed
+    
+        @arg rawInput the raw (whole) command string
+        @return true if this task's command exists within rawInput, false if not
+    */
+    abstract public boolean canUse(String rawInput);
+    
+    /**
         @arg comm is the direct connection to the caller of this task
-                 It could be a View, or another Task
-                 Do not use this for command output printing, use this.output
+                  It could be a View, or another Task
+                  Do not use this for command output printing, use this.output
         @see output
     */
     abstract public String doAction(Communication prevComm);

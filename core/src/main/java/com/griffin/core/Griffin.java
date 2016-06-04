@@ -43,45 +43,13 @@ public class Griffin {
     }
     
     public String doCommand(String command, Communication comm) {
-        // check for command
-        boolean exists = this.doesCommandExist(command);
-        if (!exists) {
-            this.output.addMessage(this.noExistErrorMsg);
-            this.output.addMessage(command);
-            return this.output.getMessages();
-        }
-        
-        // say the command is about to start
+        // say command parsing  is about to start
         this.output.addMessage(this.startingMsg);
         this.output.addDelimiter();
         
-        // execute the task
-        this.doTask(command, comm);
-        
-        // say all tasks have been completed
-        this.output.addMessage(this.endingMsg);
-        
-        // output needs to be cleared after every command
-        //    to comply with thread-safty
-        String output = this.output.getMessages();
-        this.output.clear();
-        
-        return output;
-    }
-    
-    private boolean doesCommandExist(String command) {
-        for (Task t : this.tasks) {
-            if (command.contains(t.getCommand())) {
-                return true;
-            }
-        }
-        return false;
-    }
-    
-    private void doTask(String command, Communication comm) {
         String taskOutput;
         for (Task t : this.tasks) {
-            if (command.contains(t.getCommand())) {
+            if (t.canUse(command)) {
                 // say what task you are about to start
                 this.output.addMessage(this.commandStartMsg + t.getCommand());
                 
@@ -89,10 +57,17 @@ public class Griffin {
                 
                 // say the return value of the task
                 this.output.addMessage(taskOutput);
-
-                // make output look good
                 this.output.addDelimiter();
             }
         }
+        
+        // say all tasks have been completed
+        this.output.addMessage(this.endingMsg);
+        
+        // output needs to be cleared after to comply with thread-safty
+        String ret = this.output.getMessages();
+        this.output.clear();
+        
+        return ret;
     }
 }

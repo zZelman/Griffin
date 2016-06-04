@@ -1,5 +1,7 @@
 package com.griffin.desktop.daemon.task;
 
+import java.io.*;
+
 import com.griffin.core.*;
 
 public class HelloWorldTask extends Task {
@@ -11,9 +13,17 @@ public class HelloWorldTask extends Task {
               "hello world: failure");
     }
     
-    public String doAction() {
+    public String doAction(Communication comm) {
         this.output.addExecutionMessage("[HelloWorldTask::doAction] client communication");
         System.out.println("[HelloWorldTask::doAction] server execution");
+        
+        try {
+            comm.send("~~ communication from the actual Task");
+        } catch (IOException e) {
+            this.output.addExecutionMessage("IOException trying to direct communication");
+            e.printStackTrace();
+        }
+        
         return this.success;
     }
 }

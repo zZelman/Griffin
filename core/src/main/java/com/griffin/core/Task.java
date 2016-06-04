@@ -3,6 +3,10 @@ package com.griffin.core;
 import com.griffin.core.*;
 
 public abstract class Task {
+    /**
+        The textual output of this command
+        It is returned to the whoever called this Task (either View or Task)
+    */
     protected Output output;
     
     protected final String command;
@@ -27,5 +31,11 @@ public abstract class Task {
         return this.info;
     }
     
-    abstract public String doAction();
+    /**
+        @arg comm is the direct connection to the caller of this task
+                 It could be a View, or another Task
+                 Do not use this for command output printing, use this.output
+        @see output
+    */
+    abstract public String doAction(Communication comm);
 }

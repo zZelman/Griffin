@@ -7,8 +7,7 @@ public class Output {
     private String delimiter = "\n";
     
     public void addMessage(String message) {
-        this.messages.append(this.delimiter);
-        this.messages.append(message);
+        this.messages.append(message + this.delimiter);
     }
 
     public void addExecutionMessage(String message) {

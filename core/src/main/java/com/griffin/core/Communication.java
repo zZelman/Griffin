@@ -16,7 +16,6 @@ public class Communication {
     
     public void send(Serializable s) throws IOException {
         this.out.writeObject(s);
-        this.out.flush();
     }
     
     public Object receive() throws ClassNotFoundException, IOException {

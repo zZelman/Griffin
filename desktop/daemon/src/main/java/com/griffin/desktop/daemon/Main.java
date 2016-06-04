@@ -24,18 +24,18 @@ public class Main implements Runnable {
             String command;
             String taskResult;
             
-            while ((input = comm.receive()) != null) {
-                if (input instanceof String) {
-                    command = (String) input;
-                    System.out.println("input: [" + command + "]");
-                    
-                    taskResult = this.griffin.doCommand(command);
-                    comm.send(taskResult);
-                } else {
-                    comm.send(BAD_COMMAND);
-                    break;
-                }
+            input = comm.receive();
+            if (input instanceof String) {
+                command = (String) input;
+                System.out.println("input: [" + command + "]");
+                
+                taskResult = this.griffin.doCommand(command, comm);
+                comm.send(taskResult);
+            } else {
+                comm.send(BAD_COMMAND);
             }
+            
+            comm.send(new StopCommunication());
             
             comm.close();
             this.clientSocket.close();
@@ -49,7 +49,6 @@ public class Main implements Runnable {
     }
     
     public static void main(String[] args) {
-        // get the server's info
         ServerInfoParser parser = new ServerInfoParser("server_list.ini");
         ServerInfo info = null;
         try {
@@ -68,10 +67,8 @@ public class Main implements Runnable {
         griffin.debugPrintTasks();
         
         try {
-            // wait for a client
             ServerSocket serverSocket = new ServerSocket(info.getPort());
             
-            // spawn a new thread with the unique socket and the shared griffin
             while (true) {
                 Socket clientSocket = serverSocket.accept();
                 new Thread(new Main(griffin, clientSocket)).start();

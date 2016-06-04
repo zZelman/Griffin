@@ -41,7 +41,7 @@ public class Griffin {
         return this.output;
     }
     
-    public String doCommand(String command) {
+    public String doCommand(String command, Communication comm) {
         // check for command
         boolean exists = this.doesCommandExist(command);
         if (!exists) {
@@ -54,7 +54,7 @@ public class Griffin {
         this.output.addMessage(this.startingMsg);
         
         // execute the task
-        String returnMsg = this.doTask(command);
+        String returnMsg = this.doTask(command, comm);
         
         // say the return value of the task
         this.output.addMessage(returnMsg);
@@ -79,10 +79,10 @@ public class Griffin {
         return false;
     }
     
-    private String doTask(String command) {
+    private String doTask(String command, Communication comm) {
         for (Task t : this.tasks) {
             if (command.contains(t.getCommand())) {
-                return t.doAction();
+                return t.doAction(comm);
             }
         }
         return null;

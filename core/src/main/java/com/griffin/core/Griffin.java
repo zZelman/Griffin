@@ -7,6 +7,7 @@ import com.griffin.core.*;
 public class Griffin {
     private final String noExistErrorMsg = "command does not exist";
     private final String startingMsg = "starting message";
+    private final String commandStartMsg = "starting command: ";
     private final String endingMsg = "ending message";
     
     private Output output;
@@ -52,12 +53,10 @@ public class Griffin {
         
         // say the command is about to start
         this.output.addMessage(this.startingMsg);
+        this.output.addDelimiter();
         
         // execute the task
-        String returnMsg = this.doTask(command, comm);
-        
-        // say the return value of the task
-        this.output.addMessage(returnMsg);
+        this.doTask(command, comm);
         
         // say all tasks have been completed
         this.output.addMessage(this.endingMsg);
@@ -79,12 +78,21 @@ public class Griffin {
         return false;
     }
     
-    private String doTask(String command, Communication comm) {
+    private void doTask(String command, Communication comm) {
+        String taskOutput;
         for (Task t : this.tasks) {
             if (command.contains(t.getCommand())) {
-                return t.doAction(comm);
+                // say what task you are about to start
+                this.output.addMessage(this.commandStartMsg + t.getCommand());
+                
+                taskOutput = t.doAction(comm);
+                
+                // say the return value of the task
+                this.output.addMessage(taskOutput);
+
+                // make output look good
+                this.output.addDelimiter();
             }
         }
-        return null;
     }
 }

@@ -8,4 +8,5 @@ dependencies {
 
 run {
     standardInput = System.in
+    args 'server_list.ini desktop stop server'.split(' ')
 }

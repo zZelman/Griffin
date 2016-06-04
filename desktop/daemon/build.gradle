@@ -5,3 +5,8 @@ mainClassName = "com.griffin.desktop.daemon.Main"
 dependencies {
     compile project(':core')
 }
+
+run {
+    standardInput = System.in
+    args 'server_list.ini desktop'.split(' ')
+}

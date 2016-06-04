@@ -4,14 +4,26 @@ import java.net.*;
 import java.io.*;
 import java.lang.*;
 
+import org.apache.commons.lang3.*;
+
 import com.griffin.core.*;
 
 public class Main {
+    public static void usage() {
+        System.out.println("error in command line paramiters");
+        System.out.println("    usage: [server_info_filename] [target] [command...]");
+        System.exit(1);
+    }
+    
     public static void main(String[] args) {
-        ServerInfoParser parser = new ServerInfoParser("server_list.ini");
+        if (args.length < 2) {
+            Main.usage();
+        }
+        
+        ServerInfoParser parser = new ServerInfoParser(args[0]);
         ServerInfo info = null;
         try {
-            info = parser.getServerInfo("desktop");
+            info = parser.getServerInfo(args[1]);
         } catch (URISyntaxException | IOException e) {
             e.printStackTrace();
             System.exit(1);
@@ -23,13 +35,9 @@ public class Main {
         try {
             Socket socket = new Socket(info.getHostName(), info.getPort());
             Communication nextComm = new Communication(socket);
-
-            // just to make input field easyer to read
-            System.out.println();
-            System.out.print("[cli] ");
             
-            BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
-            Serializable userInput = stdIn.readLine();
+            String[] command = ArrayUtils.subarray(args, 2, args.length);
+            Serializable userInput = StringUtils.join(command, " ");
             
             nextComm.send(userInput);
             

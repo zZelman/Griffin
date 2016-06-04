@@ -11,7 +11,7 @@ public class Main implements Runnable {
     private final Griffin griffin;
     private final Communication prevComm;
     private final Object firstInput;
-
+    
     private final static String STOP_SERVER_COMMAND = "stop server";
     private final static String SERVER_STOPPING = "server has recieved the stop command, and is ending";
     private final String BAD_COMMAND = "first communication must be in String form";
@@ -42,11 +42,21 @@ public class Main implements Runnable {
         }
     }
     
+    public static void usage() {
+        System.out.println("error in command line paramiters");
+        System.out.println("    usage: [server_info_filename] [target]");
+        System.exit(1);
+    }
+    
     public static void main(String[] args) {
-        ServerInfoParser parser = new ServerInfoParser("server_list.ini");
+        if (args.length < 2) {
+            Main.usage();
+        }
+        
+        ServerInfoParser parser = new ServerInfoParser(args[0]);
         ServerInfo info = null;
         try {
-            info = parser.getServerInfo("desktop");
+            info = parser.getServerInfo(args[1]);
         } catch (URISyntaxException | IOException e) {
             e.printStackTrace();
             System.exit(1);
@@ -70,9 +80,9 @@ public class Main implements Runnable {
             while (true) {
                 clientSocket = serverSocket.accept();
                 prevComm = new Communication(clientSocket);
-
+                
                 firstInput = prevComm.receive();
-
+                
                 // always check the first communication for an instance of the stop command
                 if (firstInput instanceof String) {
                     possibleStopCommand = (String) firstInput;
@@ -87,7 +97,7 @@ public class Main implements Runnable {
                 // the thread deals with prevComm closing
                 new Thread(new Main(griffin, prevComm, firstInput)).start();
             }
-
+            
             serverSocket.close();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();

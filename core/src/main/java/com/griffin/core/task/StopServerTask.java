@@ -19,7 +19,7 @@ public class StopServerTask extends Task {
     public StopServerTask(Output output) {
         super(output,
               "stop server",
-              "stops the server's execution",
+              "stops the server's execution (must be the only command)",
               "stop server: success",
               "stop server: failure");
     }

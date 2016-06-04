@@ -8,5 +8,5 @@ dependencies {
 
 run {
     standardInput = System.in
-    args 'server_list.ini desktop help print hello world1 thing'.split(' ')
+    args 'server_list.ini desktop help help'.split(' ')
 }

@@ -31,7 +31,7 @@ public class Griffin {
         for (Task t : this.tasks) {
             sb.append("    " + t.getCommand() + " - " + t.getInfo() + "\n");
         }
-
+        
         return sb.toString();
     }
     
@@ -51,32 +51,40 @@ public class Griffin {
         // say rawInput parsing is about to start
         this.output.addMessage(this.startingMsg);
         this.output.addDelimiter();
-        
+
+        boolean oneCommandExecuted;
         String canUseOutput;
         String taskOutput;
-        for (Task t : this.tasks) {
-            // effectivly remove sections of the rawInput successivly
-            canUseOutput = t.canUse(rawInput);
+        do {
+            oneCommandExecuted = false;
             
-            // a section of rawInput was removed (a task recognized it)
-            if (canUseOutput != null) {
-                // remove the double space caused by removing a substring (if it exists)
-                canUseOutput = canUseOutput.replace("  ", " ").trim();
+            for (Task t : this.tasks) {
+                // effectivly remove sections of the rawInput successivly
+                canUseOutput = t.canUse(rawInput);
                 
-                // update rawInput because something has changed
-                rawInput = canUseOutput;
-                
-                // say what task you are about to start
-                this.output.addMessage(this.startCommandMsg + t.getCommand());
-                
-                taskOutput = t.doAction(comm);
-                
-                // say the return value of the task
-                this.output.addMessage(taskOutput);
-                this.output.addDelimiter();
+                // a section of rawInput was removed (a task recognized it)
+                if (canUseOutput != null) {
+                    // this is what allows the same command to be executed multiple times
+                    oneCommandExecuted = true;
+                    
+                    // remove the double space caused by removing a substring (if it exists)
+                    canUseOutput = canUseOutput.replace("  ", " ").trim();
+                    
+                    // update rawInput because something has changed
+                    rawInput = canUseOutput;
+                    
+                    // say what task you are about to start
+                    this.output.addMessage(this.startCommandMsg + t.getCommand());
+                    
+                    taskOutput = t.doAction(comm);
+                    
+                    // say the return value of the task
+                    this.output.addMessage(taskOutput);
+                    this.output.addDelimiter();
+                }
             }
-        }
-
+        } while (oneCommandExecuted);
+        
         // add to output if there is stuff not used
         if (rawInput != null && !rawInput.isEmpty()) {
             this.output.addMessage(this.commandStuffLeftOver + rawInput);

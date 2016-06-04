@@ -33,9 +33,13 @@ public abstract class Task {
     
     /**
         This is where the task does it's parsing of the raw (whole) command string
+        
         It allows the task to extract information from the raw (whole) command string if needed
     
         Override this method to change its behavior (ie parameters exist)
+
+        It is recommended to use str.replaceFirst when removing the command from rawInput
+        when the task is allowed to run multiple times in rawInput, use str.replace if not
     
         @arg rawInput the raw (whole) command string
         @return null if this task can not use the raw input, !null if the task can

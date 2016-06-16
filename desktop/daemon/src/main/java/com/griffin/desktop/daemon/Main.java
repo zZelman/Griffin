@@ -53,10 +53,10 @@ public class Main implements Runnable {
             Main.usage();
         }
         
-        ServerInfoParser parser = new ServerInfoParser(args[0]);
+        ServerInfoParser infoParser = new ServerInfoParser(args[0]);
         ServerInfo info = null;
         try {
-            info = parser.getServerInfo(args[1]);
+            info = infoParser.getServerInfo(args[1]);
         } catch (URISyntaxException | IOException e) {
             e.printStackTrace();
             System.exit(1);
@@ -66,7 +66,7 @@ public class Main implements Runnable {
         }
         
         // setup a shared Griffin instance between all threads
-        TaskFactory taskFactory = new ConcreteTaskFactory();
+        TaskFactory taskFactory = new ConcreteTaskFactory(infoParser);
         Griffin griffin = new Griffin(taskFactory);
         String commandsAvailable = griffin.printTasks();
         System.out.println(commandsAvailable);

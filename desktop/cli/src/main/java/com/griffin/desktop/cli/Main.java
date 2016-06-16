@@ -20,10 +20,10 @@ public class Main {
             Main.usage();
         }
         
-        ServerInfoParser parser = new ServerInfoParser(args[0]);
+        ServerInfoParser infoParser = new ServerInfoParser(args[0]);
         ServerInfo info = null;
         try {
-            info = parser.getServerInfo(args[1]);
+            info = infoParser.getServerInfo(args[1]);
         } catch (URISyntaxException | IOException e) {
             e.printStackTrace();
             System.exit(1);

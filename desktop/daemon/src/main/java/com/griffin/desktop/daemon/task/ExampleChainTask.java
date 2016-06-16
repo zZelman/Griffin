@@ -7,28 +7,39 @@ import java.io.*;
 import com.griffin.core.*;
 
 public class ExampleChainTask extends Task {
-    private String word1;
-    private String word2;
+    private ServerInfoParser infoParser;
     
-    public ExampleChainTask() {
+    public ExampleChainTask(ServerInfoParser infoParser) {
         super("chain",
               "executes the other command 'hello world'",
               "chain: success",
               "chain: failure");
+              
+        this.infoParser = infoParser;
     }
     
     public Output doAction(Communication prevComm) {
         Output output = new Output();
         
-        String hostname = "localhost";
-        int port = 6000;
-        
         if (new Random().nextFloat() < 0.50f) {
+            output.addExecutionMessage(this.command + ": last node");
             return output.addReturnMessage(this.success);
+        }
+
+        String targetName = "desktop";
+        ServerInfo info = null;
+        try {
+            info = this.infoParser.getServerInfo(targetName);
+        } catch (URISyntaxException | IOException e) {
+            output.addExecutionMessage(e.toString());
+            return output.addReturnMessage(this.failure);
+        } catch (Exception e) {
+            output.addExecutionMessage(e.toString());
+            return output.addReturnMessage(this.failure);
         }
         
         try {
-            Socket socket = new Socket(hostname, port);
+            Socket socket = new Socket(info.getHostName(), info.getPort());
             Communication nextComm = new Communication(socket);
             
             Serializable command = "chain";

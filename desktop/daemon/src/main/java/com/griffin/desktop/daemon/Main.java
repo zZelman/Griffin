@@ -69,6 +69,9 @@ public class Main implements Runnable {
         TaskFactory taskFactory = new ConcreteTaskFactory(infoParser);
         Griffin griffin = new Griffin(taskFactory);
         String commandsAvailable = griffin.printTasks();
+
+        System.out.println(info);
+        System.out.println();
         System.out.println(commandsAvailable);
         
         try {

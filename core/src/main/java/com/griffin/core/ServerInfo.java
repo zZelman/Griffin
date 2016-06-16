@@ -26,6 +26,9 @@ public class ServerInfo {
     }
     
     public String toString() {
-        return this.name + " " + this.hostName + " " + this.port;
+        return "Info:\n" +
+               "    name - " + this.name + "\n" +
+               "    hostName - " + this.hostName + "\n" +
+               "    port - " + this.port;
     }
 }

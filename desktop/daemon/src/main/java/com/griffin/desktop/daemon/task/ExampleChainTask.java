@@ -23,11 +23,15 @@ public class ExampleChainTask extends Task {
         String hostname = "localhost";
         int port = 6000;
         
+        if (new Random().nextFloat() < 0.50f) {
+            return output.addReturnMessage(this.success);
+        }
+        
         try {
             Socket socket = new Socket(hostname, port);
             Communication nextComm = new Communication(socket);
             
-            Serializable command = "hello world";
+            Serializable command = "chain";
             nextComm.send(command);
             
             Object ret;
@@ -36,7 +40,7 @@ public class ExampleChainTask extends Task {
                 if (ret instanceof StopCommunication) {
                     break;
                 }
-
+                
                 // guaranteed to be string
                 // do not use addExecutionMessage b/c the output is Output.getMessages which is already formatted
                 output.addMessage((String) ret);

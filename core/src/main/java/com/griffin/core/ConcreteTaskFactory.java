@@ -12,7 +12,7 @@ public class ConcreteTaskFactory extends TaskFactory {
         this.griffin = griffin;
     }
     
-    public List<Task> getAll(Output output) {
+    public List<Task> getAll() {
         List<Task> tasks = new LinkedList<Task>();
 
         // parameterized
@@ -20,8 +20,8 @@ public class ConcreteTaskFactory extends TaskFactory {
         //       parameterized tasks in the common domain
 
         // not parameterized
-        tasks.add(new PrintHelpTask(output, this.griffin));
-        tasks.add(new StopServerTask(output));
+        tasks.add(new StopServerTask());
+        tasks.add(new PrintHelpTask(this.griffin));
         
         return tasks;
     }

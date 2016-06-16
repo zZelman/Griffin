@@ -15,7 +15,7 @@ public class Output {
     }
     
     public String getMessages() {
-        return this.messages.toString();
+        return this.messages.toString().trim();
     }
     
     public void clear() {
@@ -25,5 +25,14 @@ public class Output {
     public void addDelimiter() {
         // message appends a delimiter to the end of every string
         this.addMessage("");
+    }
+    
+    public void addOutput(Output output) {
+        this.messages.append(output.messages);
+    }
+    
+    public Output addReturnMessage(String message) {
+        this.addExecutionMessage(message);
+        return this;
     }
 }

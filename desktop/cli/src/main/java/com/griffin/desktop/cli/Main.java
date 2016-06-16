@@ -38,7 +38,6 @@ public class Main {
             
             String[] command = ArrayUtils.subarray(args, 2, args.length);
             Serializable userInput = StringUtils.join(command, " ");
-            
             nextComm.send(userInput);
             
             Object ret;
@@ -52,7 +51,6 @@ public class Main {
             }
             
             nextComm.close();
-            socket.close();
         } catch (UnknownHostException e) {
             e.printStackTrace();
             System.exit(1);

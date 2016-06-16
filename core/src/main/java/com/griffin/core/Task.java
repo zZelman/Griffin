@@ -3,20 +3,12 @@ package com.griffin.core;
 import com.griffin.core.*;
 
 public abstract class Task {
-    /**
-        The textual output of this command
-        It is returned to the whoever called this Task (either View or Task)
-    */
-    protected Output output;
-    
     protected final String command;
     protected final String info;
     protected final String success;
     protected final String failure;
     
-    public Task(Output output, String command, String info, String success, String failure) {
-        this.output = output;
-        
+    public Task(String command, String info, String success, String failure) {
         this.command = command;
         this.info = info;
         this.success = success;
@@ -58,5 +50,5 @@ public abstract class Task {
                   Do not use this for command output printing, use this.output
         @see output
     */
-    abstract public String doAction(Communication prevComm);
+    abstract public Output doAction(Communication prevComm);
 }

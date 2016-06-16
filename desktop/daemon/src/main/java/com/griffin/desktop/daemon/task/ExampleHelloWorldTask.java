@@ -5,25 +5,20 @@ import java.io.*;
 import com.griffin.core.*;
 
 public class ExampleHelloWorldTask extends Task {
-    public ExampleHelloWorldTask(Output output) {
-        super(output,
-              "hello world",
-              "prints hello world",
+    public ExampleHelloWorldTask() {
+        super("hello world",
+              "basic example of what things do",
               "hello world: success",
               "hello world: failure");
     }
     
-    public String doAction(Communication prevComm) {
-        this.output.addExecutionMessage("[ExampleHelloWorldTask::doAction] client communication");
-        System.out.println("[ExampleHelloWorldTask::doAction] server execution");
+    public Output doAction(Communication prevComm) {
+        Output output = new Output();
         
-        try {
-            prevComm.send("~~ communication from the actual Task");
-        } catch (IOException e) {
-            this.output.addExecutionMessage("IOException trying to direct communication");
-            e.printStackTrace();
-        }
+        System.out.println("server execution");
         
-        return this.success;
+        output.addExecutionMessage("client communication");
+        
+        return output.addReturnMessage(this.success);
     }
 }

@@ -16,15 +16,19 @@ import com.griffin.core.*;
     implementation of stoping the server
 */
 public class StopServerTask extends Task {
-    public StopServerTask(Output output) {
-        super(output,
-              "stop server",
+    public StopServerTask() {
+        super("stop server",
               "stops the server's execution (must be the only command)",
               "stop server: success",
               "stop server: failure");
     }
     
-    public String doAction(Communication prevComm) {
-        return this.success;
+    public Output doAction(Communication prevComm) {
+        Output output = new Output();
+        
+        output.addExecutionMessage("the server has not stopped");
+        output.addExecutionMessage("\"stop server\" must be the only command");
+        
+        return output.addReturnMessage(this.failure);
     }
 }

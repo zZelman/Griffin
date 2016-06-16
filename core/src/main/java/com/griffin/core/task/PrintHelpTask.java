@@ -7,9 +7,8 @@ import com.griffin.core.*;
 public class PrintHelpTask extends Task {
     private Griffin griffin;
     
-    public PrintHelpTask(Output output, Griffin griffin) {
-        super(output,
-              "help",
+    public PrintHelpTask(Griffin griffin) {
+        super("help",
               "prints all commands",
               "help: success",
               "help: failure");
@@ -17,12 +16,16 @@ public class PrintHelpTask extends Task {
         this.griffin = griffin;
     }
     
-    public String doAction(Communication prevComm) {
-        List<Task> tasks = this.griffin.getTasks();
-        for (Task t : tasks) {
-            this.output.addExecutionMessage(t.getCommand() + " - " + t.getInfo());
-        }
+    public Output doAction(Communication prevComm) {
+        Output output = new Output();
         
-        return this.success;
+        List<Task> tasks = this.griffin.getTasks();
+
+        output.addExecutionMessage("Commands (in order):");
+        for (Task t : tasks) {
+            output.addExecutionMessage("    " + t.getCommand() + " - " + t.getInfo());
+        }
+
+        return output.addReturnMessage(this.success);
     }
 }

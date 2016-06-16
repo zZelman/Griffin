@@ -9,12 +9,11 @@ public class ExampleParameterizedTask extends Task {
     private String word1;
     private String word2;
     
-    public ExampleParameterizedTask(Output output) {
-        super(output,
-              "print %s %s",
-              "print on the server the two strings in the %s position",
-              "print %s %s: success",
-              "print %s %s: failure");
+    public ExampleParameterizedTask() {
+        super("print [str] [str]",
+              "print on the server the two strings in the [str] position",
+              "print [str] [str]: success",
+              "print [str] [str]: failure");
     }
     
     public String canUse(String rawInput) {
@@ -36,9 +35,11 @@ public class ExampleParameterizedTask extends Task {
         return null;
     }
     
-    public String doAction(Communication prevComm) {
+    public Output doAction(Communication prevComm) {
+        Output output = new Output();
+        
         System.out.println("[ExampleParameterizedTask::doAction] word1=" + this.word1 + ", word2=" + this.word2);
         
-        return this.success;
+        return output.addReturnMessage(this.success);
     }
 }

@@ -6,11 +6,9 @@ import com.griffin.core.*;
 
 public class Griffin {
     private final String noExistErrorMsg = "rawInput does not exist";
-    private final String startingMsg = "starting message";
     private final String startCommandMsg = "running command: ";
-    private final String endCommdMsg = " returned the message: ";
+    private final String endCommdMsg = " has ended";
     private final String commandStuffLeftOver = "there was parts of the command that were not used: ";
-    private final String endingMsg = "ending message";
     
     private Output output;
     private List<Task> tasks;
@@ -19,10 +17,10 @@ public class Griffin {
         this.output = new Output();
         
         // common tasks
-        this.tasks = new ConcreteTaskFactory(this).getAll(output);
+        this.tasks = new ConcreteTaskFactory(this).getAll();
         
         // given tasks
-        this.tasks.addAll(taskFactory.getAll(output));
+        this.tasks.addAll(taskFactory.getAll());
     }
     
     public String printTasks() {
@@ -44,23 +42,17 @@ public class Griffin {
         this.tasks = tasks;
     }
     
-    public Output getOutput() {
-        return this.output;
-    }
-    
     public String doCommand(String rawInput, Communication comm) {
-        // say rawInput parsing is about to start
-        this.output.addMessage(this.startingMsg);
-        this.output.addDelimiter();
-
+        Output output = new Output();
+        
         boolean oneCommandExecuted;
         String canUseOutput;
-        String taskOutput;
+        Output taskOutput;
         do {
             oneCommandExecuted = false;
             
             for (Task t : this.tasks) {
-                // effectivly remove sections of the rawInput successivly
+                // effectivly remove parts of the rawInput successivly
                 canUseOutput = t.canUse(rawInput);
                 
                 // a section of rawInput was removed (a task recognized it)
@@ -75,29 +67,24 @@ public class Griffin {
                     rawInput = canUseOutput;
                     
                     // say what task you are about to start
-                    this.output.addMessage(this.startCommandMsg + t.getCommand());
+                    output.addMessage(this.startCommandMsg + "\"" + t.getCommand() + "\"");
                     
                     taskOutput = t.doAction(comm);
                     
                     // say the return value of the task
-                    this.output.addMessage(t.getCommand() + this.endCommdMsg + taskOutput);
-                    this.output.addDelimiter();
+                    output.addOutput(taskOutput);
+                    taskOutput.clear();
+                    
+                    output.addMessage("\"" + t.getCommand() + "\"" + this.endCommdMsg);
                 }
             }
         } while (oneCommandExecuted);
         
         // add to output if there is stuff not used
         if (rawInput != null && !rawInput.isEmpty()) {
-            this.output.addMessage(this.commandStuffLeftOver + rawInput);
+            output.addMessage(this.commandStuffLeftOver + rawInput);
         }
         
-        // say all tasks have been completed
-        this.output.addMessage(this.endingMsg);
-        
-        // output needs to be cleared after to comply with thread-safty
-        String ret = this.output.getMessages();
-        this.output.clear();
-        
-        return ret;
+        return output.getMessages();
     }
 }

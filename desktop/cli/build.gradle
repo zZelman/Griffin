@@ -1,6 +1,11 @@
+apply plugin: 'java'
 apply plugin: 'application'
 
 mainClassName = "com.griffin.desktop.cli.Main"
+
+repositories {
+    mavenCentral()
+}
 
 dependencies {
     compile project(':core')

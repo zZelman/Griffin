@@ -11,7 +11,7 @@ public class ExampleChainTask extends Task {
     
     public ExampleChainTask(ServerInfoParser infoParser) {
         super("chain",
-              "executes the other command 'hello world'",
+              "(example) executes the other command 'hello world'",
               "chain: success",
               "chain: failure");
               

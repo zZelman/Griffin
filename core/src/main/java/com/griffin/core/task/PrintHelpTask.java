@@ -9,7 +9,7 @@ public class PrintHelpTask extends Task {
     
     public PrintHelpTask(Griffin griffin) {
         super("help",
-              "prints all commands",
+              "prints all commands and their descriptions",
               "help: success",
               "help: failure");
               

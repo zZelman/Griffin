@@ -7,7 +7,7 @@ import com.griffin.core.*;
 public class ExamplePrevCommTask extends Task {
     public ExamplePrevCommTask() {
         super("prev comm",
-              "does previous communication",
+              "(example) does previous communication",
               "prev comm: success",
               "prev comm: failure");
     }

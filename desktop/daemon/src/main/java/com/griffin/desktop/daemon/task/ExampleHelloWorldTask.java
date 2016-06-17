@@ -7,7 +7,7 @@ import com.griffin.core.*;
 public class ExampleHelloWorldTask extends Task {
     public ExampleHelloWorldTask() {
         super("hello world",
-              "basic example of what things do",
+              "(example) basic example of what things do",
               "hello world: success",
               "hello world: failure");
     }

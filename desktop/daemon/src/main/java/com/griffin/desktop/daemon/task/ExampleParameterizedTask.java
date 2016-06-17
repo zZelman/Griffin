@@ -11,7 +11,7 @@ public class ExampleParameterizedTask extends Task {
     
     public ExampleParameterizedTask() {
         super("print [str] [str]",
-              "print on the server the two strings in the [str] position",
+              "(example) print on the server the two strings in the [str] position",
               "print [str] [str]: success",
               "print [str] [str]: failure");
     }

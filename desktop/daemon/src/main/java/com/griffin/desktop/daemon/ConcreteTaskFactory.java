@@ -12,19 +12,19 @@ public class ConcreteTaskFactory extends TaskFactory {
         this.infoParser = infoParser;
     }
     
-    public List<Task> getAll() {
-        List<Task> tasks = new LinkedList<Task>();
+    public LoadedTasks getTasks() {
+        LoadedTasks tasks = new LoadedTasks();
         
         // open ended
-        tasks.add(new ExamplePrefixTask(this.infoParser));
+        tasks.addOpenEndedTask(new ExamplePrefixTask(this.infoParser));
         
         // parameterized
-        tasks.add(new ExampleParameterizedTask());
+        tasks.addParameterizedTask(new ExampleParameterizedTask());
         
-        // not parameterized
-        tasks.add(new ExampleHelloWorldTask());
-        tasks.add(new ExamplePrevCommTask());
-        tasks.add(new ExampleChainTask(this.infoParser));
+        // simple
+        tasks.addSimpleTask(new ExampleHelloWorldTask());
+        tasks.addSimpleTask(new ExamplePrevCommTask());
+        tasks.addSimpleTask(new ExampleChainTask(this.infoParser));
         
         return tasks;
     }

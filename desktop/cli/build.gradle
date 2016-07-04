@@ -13,5 +13,5 @@ dependencies {
 
 run {
     standardInput = System.in
-    args 'server_list.ini desktop prefix help'.split(' ')
+    args 'server_list.ini desktop prefix prefix prefix hello world help'.split(' ')
 }

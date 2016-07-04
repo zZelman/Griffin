@@ -19,12 +19,7 @@ public class PrintHelpTask extends Task {
     public Output doAction(Communication prevComm) {
         Output output = new Output();
         
-        List<Task> tasks = this.griffin.getTasks();
-
-        output.addExecutionMessage("Commands (in order):");
-        for (Task t : tasks) {
-            output.addExecutionMessage("    " + t.getCommand() + " - " + t.getInfo());
-        }
+        output.addMessage(this.griffin.getLoadedTasks().toString());
 
         return output.addReturnMessage(this.success);
     }

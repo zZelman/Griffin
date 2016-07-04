@@ -11,38 +11,31 @@ public class Griffin {
     private final String commandStuffLeftOver = "there were parts of the command that were not used: ";
     
     private Output output;
-    private List<Task> tasks;
+    private LoadedTasks loadedTasks;
     
     public Griffin(TaskFactory taskFactory) {
         this.output = new Output();
-        this.tasks = new LinkedList<Task>();
-
+        this.loadedTasks = new LoadedTasks();
+        
         // NOTE: given before common to allow given to have priority over keywords in common (ie help)
         
         // given tasks
-        this.tasks.addAll(taskFactory.getAll());
-
+        this.loadedTasks.addAll(taskFactory.getTasks());
+        
         // common tasks
-        this.tasks.addAll(new ConcreteTaskFactory(this).getAll());
+        this.loadedTasks.addAll(new ConcreteTaskFactory(this).getTasks());
     }
     
     public String printTasks() {
-        StringBuffer sb = new StringBuffer();
-        
-        sb.append("Commands (in order):\n");
-        for (Task t : this.tasks) {
-            sb.append("    " + t.getCommand() + " - " + t.getInfo() + "\n");
-        }
-        
-        return sb.toString();
+        return this.loadedTasks.toString();
     }
     
-    public List<Task> getTasks() {
-        return this.tasks;
+    public LoadedTasks getLoadedTasks() {
+        return this.loadedTasks;
     }
     
-    public void setTasks(List<Task> tasks) {
-        this.tasks = tasks;
+    public void setLoadedTasks(LoadedTasks loadedTasks) {
+        this.loadedTasks = loadedTasks;
     }
     
     public String doCommand(String rawInput, Communication comm) {
@@ -51,10 +44,11 @@ public class Griffin {
         boolean oneCommandExecuted;
         String canUseOutput;
         Output taskOutput;
+        List<Task> tasks = this.loadedTasks.flatten();
         do {
             oneCommandExecuted = false;
             
-            for (Task t : this.tasks) {
+            for (Task t : tasks) {
                 // effectivly remove parts of the rawInput successivly
                 canUseOutput = t.canUse(rawInput);
                 

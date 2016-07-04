@@ -12,16 +12,16 @@ public class ConcreteTaskFactory extends TaskFactory {
         this.griffin = griffin;
     }
     
-    public List<Task> getAll() {
-        List<Task> tasks = new LinkedList<Task>();
+    public LoadedTasks getTasks() {
+        LoadedTasks tasks = new LoadedTasks();
 
         // parameterized
         // NOTE: it might not be a good idea to have
         //       parameterized tasks in the common domain
 
-        // not parameterized
-        tasks.add(new StopServerTask());
-        tasks.add(new PrintHelpTask(this.griffin));
+        // simple
+        tasks.addSimpleTask(new StopServerTask());
+        tasks.addSimpleTask(new PrintHelpTask(this.griffin));
         
         return tasks;
     }

@@ -8,19 +8,22 @@ public class Griffin {
     private final String noExistErrorMsg = "rawInput does not exist";
     private final String startCommandMsg = "running command: ";
     private final String endCommdMsg = " has ended";
-    private final String commandStuffLeftOver = "there was parts of the command that were not used: ";
+    private final String commandStuffLeftOver = "there were parts of the command that were not used: ";
     
     private Output output;
     private List<Task> tasks;
     
     public Griffin(TaskFactory taskFactory) {
         this.output = new Output();
-        
-        // common tasks
-        this.tasks = new ConcreteTaskFactory(this).getAll();
+        this.tasks = new LinkedList<Task>();
+
+        // NOTE: given before common to allow given to have priority over keywords in common (ie help)
         
         // given tasks
         this.tasks.addAll(taskFactory.getAll());
+
+        // common tasks
+        this.tasks.addAll(new ConcreteTaskFactory(this).getAll());
     }
     
     public String printTasks() {
@@ -82,7 +85,7 @@ public class Griffin {
         
         // add to output if there is stuff not used
         if (rawInput != null && !rawInput.isEmpty()) {
-            output.addMessage(this.commandStuffLeftOver + rawInput);
+            output.addMessage(this.commandStuffLeftOver + "\"" + rawInput + "\"");
         }
         
         return output.getMessages();

@@ -3,28 +3,43 @@ package com.griffin.desktop.daemon.task;
 import java.util.*;
 import java.net.*;
 import java.io.*;
+import java.util.regex.*;
 
 import com.griffin.core.*;
 
-public class ExampleChainTask extends Task {
+public class ExamplePrefixTask extends Task {
     private ServerInfoParser infoParser;
     
-    public ExampleChainTask(ServerInfoParser infoParser) {
-        super("chain",
-              "(example) executes the other command 'hello world'",
-              "chain: success",
-              "chain: failure");
+    private String command;
+    
+    public ExamplePrefixTask(ServerInfoParser infoParser) {
+        super("prefix [command...]",
+              "(example) runs the [command...] and mutates the output",
+              "prefix [command...]: success",
+              "prefix [command...]: failure");
               
         this.infoParser = infoParser;
     }
     
+    public String canUse(String rawInput) {
+        String space = "( )";
+        
+        String prefix = "(prefix)";
+        String command = "(.+)";
+        
+        Pattern p = Pattern.compile(prefix + space + command, Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
+        Matcher m = p.matcher(rawInput);
+        
+        if (m.find()) {
+            this.command = m.group(3);
+            
+            return rawInput.replaceFirst(prefix + space + command, "");
+        }
+        return null;
+    }
+    
     public Output doAction(Communication prevComm) {
         Output output = new Output();
-        
-        if (new Random().nextFloat() < 0.50f) {
-            output.addExecutionMessage(this.command + ": last node");
-            return output.addReturnMessage(this.success);
-        }
 
         // only because this is an example task
         String targetName = "desktop";
@@ -43,8 +58,7 @@ public class ExampleChainTask extends Task {
             Socket socket = new Socket(info.getHostName(), info.getPort());
             Communication nextComm = new Communication(socket);
             
-            Serializable command = "chain";
-            nextComm.send(command);
+            nextComm.send(this.command);
             
             Object ret;
             while (true) {

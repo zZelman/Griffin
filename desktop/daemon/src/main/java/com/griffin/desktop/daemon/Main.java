@@ -91,8 +91,9 @@ public class Main implements Runnable {
                 if (firstInput instanceof String) {
                     possibleStopCommand = (String) firstInput;
                     if (possibleStopCommand.equals(Main.STOP_SERVER_COMMAND)) {
-                        System.out.println("possibleStopCommand: [" + possibleStopCommand + "]");
-                        prevComm.send(Main.SERVER_STOPPING);
+                        Output output = new Output();
+                        output.setReturnMessage(Main.SERVER_STOPPING);
+                        prevComm.send(output);
                         prevComm.send(new StopCommunication());
                         break;
                     }

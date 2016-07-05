@@ -65,7 +65,7 @@ public class ExamplePrefixTask extends Task {
             Object ret;
             while (true) {
                 ret = nextComm.receive();
-                if (ret instanceof StopCommunication) {
+                if (ret instanceof StopCommunication || ret == null) {
                     break;
                 }
                 

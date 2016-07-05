@@ -19,8 +19,21 @@ public class PrintHelpTask extends Task {
     public Output doAction(Communication prevComm) {
         Output output = new Output();
         
-        output.addMessage(this.griffin.getLoadedTasks().toString());
-
-        return output.addReturnMessage(this.success);
+        LoadedTasks loadedTasks = this.griffin.getLoadedTasks();
+        
+        output.addExecutionMessage("Commands (in order):");
+        this.helper(output, "Open ended", loadedTasks.getOpenEndedTasks());
+        this.helper(output, "Parameterized", loadedTasks.getParameterizedTasks());
+        this.helper(output, "Simple", loadedTasks.getSimpleTasks());
+        
+        output.setReturnMessage(this.success);
+        return output;
+    }
+    
+    private void helper(Output output, String section, List<Task> tasks) {
+        output.addExecutionMessage("    " + section);
+        for (Task t : tasks) {
+            output.addExecutionMessage("        " + t.getCommand() + " - " + t.getInfo());
+        }
     }
 }

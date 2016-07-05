@@ -40,7 +40,7 @@ public class ExamplePrefixTask extends Task {
     
     public Output doAction(Communication prevComm) {
         Output output = new Output();
-
+        
         // only because this is an example task
         String targetName = "desktop";
         ServerInfo info = null;
@@ -48,10 +48,12 @@ public class ExamplePrefixTask extends Task {
             info = this.infoParser.getServerInfo(targetName);
         } catch (URISyntaxException | IOException e) {
             output.addExecutionMessage(e.toString());
-            return output.addReturnMessage(this.failure);
+            output.setReturnMessage(this.failure);
+            return output;
         } catch (Exception e) {
             output.addExecutionMessage(e.toString());
-            return output.addReturnMessage(this.failure);
+            output.setReturnMessage(this.failure);
+            return output;
         }
         
         try {
@@ -67,23 +69,26 @@ public class ExamplePrefixTask extends Task {
                     break;
                 }
                 
-                // guaranteed to be string
-                // do not use addExecutionMessage b/c the output is Output.getMessages which is already formatted
-                output.addMessage((String) ret);
+                // guaranteed to be Output
+                output.addOutput((Output) ret);
             }
             
             nextComm.close();
         } catch (UnknownHostException e) {
             output.addExecutionMessage(e.toString());
-            return output.addReturnMessage(this.failure);
+            output.setReturnMessage(this.failure);
+            return output;
         } catch (ClassNotFoundException e) {
             output.addExecutionMessage(e.toString());
-            return output.addReturnMessage(this.failure);
+            output.setReturnMessage(this.failure);
+            return output;
         } catch (IOException e) {
             output.addExecutionMessage(e.toString());
-            return output.addReturnMessage(this.failure);
+            output.setReturnMessage(this.failure);
+            return output;
         }
-        
-        return output.addReturnMessage(this.success);
+
+        output.setReturnMessage(this.success);
+        return output;
     }
 }

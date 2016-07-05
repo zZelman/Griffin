@@ -20,10 +20,12 @@ public class ExamplePrevCommTask extends Task {
         try {
             prevComm.send("~~ communication from the actual Task");
         } catch (IOException e) {
-            output.addExecutionMessage("IOException trying to direct communication");
-            e.printStackTrace();
+            output.addExecutionMessage(e.toString());
+            output.setReturnMessage(this.failure);
+            return output;
         }
-        
-        return output.addReturnMessage(this.success);
+
+        output.setReturnMessage(this.success);
+        return output;
     }
 }

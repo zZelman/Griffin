@@ -5,6 +5,9 @@ import java.util.*;
 import com.griffin.core.*;
 
 public class LoadedTasks {
+    private final String newLine = "\n";
+    private final String indent = "    ";
+    
     private List<Task> openEndedTasks;
     private List<Task> parameterizedTasks;
     private List<Task> simpleTasks;
@@ -59,7 +62,6 @@ public class LoadedTasks {
         StringBuffer sb = new StringBuffer();
         
         sb.append("Commands (in order):\n");
-        
         this.toStringHelper(sb, "Open ended", this.openEndedTasks);
         this.toStringHelper(sb, "Parameterized", this.parameterizedTasks);
         this.toStringHelper(sb, "Simple", this.simpleTasks);
@@ -68,9 +70,9 @@ public class LoadedTasks {
     }
     
     private void toStringHelper(StringBuffer sb, String section, List<Task> tasks) {
-        sb.append("    " + section + "\n");
+        sb.append(this.indent + section + this.newLine);
         for (Task t : tasks) {
-            sb.append("        " + t.getCommand() + " - " + t.getInfo() + "\n");
+            sb.append(this.indent + this.indent + t.getCommand() + " - " + t.getInfo() + this.newLine);
         }
     }
 }

@@ -19,6 +19,7 @@ public class ExampleHelloWorldTask extends Task {
         
         output.addExecutionMessage("client communication");
         
-        return output.addReturnMessage(this.success);
+        output.setReturnMessage(this.success);
+        return output;
     }
 }

@@ -39,7 +39,8 @@ public class ExampleParameterizedTask extends Task {
         Output output = new Output();
         
         System.out.println("[ExampleParameterizedTask::doAction] word1=" + this.word1 + ", word2=" + this.word2);
-        
-        return output.addReturnMessage(this.success);
+
+        output.setReturnMessage(this.success);
+        return output;
     }
 }

@@ -29,6 +29,8 @@ public class StopServerTask extends Task {
         output.addExecutionMessage("the server has not stopped");
         output.addExecutionMessage("\"stop server\" must be the only command");
         
-        return output.addReturnMessage(this.failure);
+        output.setReturnMessage(this.failure);
+        
+        return output;
     }
 }

@@ -3,6 +3,7 @@ package com.griffin.core;
 import java.util.*;
 
 import com.griffin.core.*;
+import com.griffin.core.task.*;
 
 public class Griffin {
     private final String noExistErrorMsg = "rawInput does not exist";
@@ -38,7 +39,7 @@ public class Griffin {
         this.loadedTasks = loadedTasks;
     }
     
-    public String doCommand(String rawInput, Communication comm) {
+    public Output doCommand(String rawInput, Communication comm) {
         Output output = new Output();
         
         boolean oneCommandExecuted;
@@ -63,25 +64,25 @@ public class Griffin {
                     // update rawInput because something has changed
                     rawInput = canUseOutput;
                     
-                    // say what task you are about to start
-                    output.addMessage(this.startCommandMsg + "\"" + t.getCommand() + "\"");
-                    
+                    // do the task
                     taskOutput = t.doAction(comm);
                     
-                    // say the return value of the task
-                    output.addOutput(taskOutput);
-                    taskOutput.clear();
+                    // update the task's output with what it was
+                    taskOutput.setStartMessage(this.startCommandMsg + "\"" + t.getCommand() + "\"");
+                    taskOutput.setEndMessage("\"" + t.getCommand() + "\"" + this.endCommdMsg);
                     
-                    output.addMessage("\"" + t.getCommand() + "\"" + this.endCommdMsg);
+                    // save the output of the task
+                    output.addOutput(taskOutput);
                 }
             }
         } while (oneCommandExecuted);
         
+        
         // add to output if there is stuff not used
         if (rawInput != null && !rawInput.isEmpty()) {
-            output.addMessage(this.commandStuffLeftOver + "\"" + rawInput + "\"");
+            output.addOtherMessage(this.commandStuffLeftOver + "\"" + rawInput + "\"");
         }
         
-        return output.getMessages();
+        return output;
     }
 }

@@ -11,7 +11,7 @@ public class ExampleChainTask extends Task {
     
     public ExampleChainTask(ServerInfoParser infoParser) {
         super("chain",
-              "(example) executes the other command 'hello world'",
+              "(example) executes the other command 'chain' 70/30 yes/no",
               "chain: success",
               "chain: failure");
               
@@ -21,9 +21,10 @@ public class ExampleChainTask extends Task {
     public Output doAction(Communication prevComm) {
         Output output = new Output();
         
-        if (new Random().nextFloat() < 0.50f) {
+        if (new Random().nextFloat() < 0.30f) {
             output.addExecutionMessage(this.command + ": last node");
-            return output.addReturnMessage(this.success);
+            output.setReturnMessage(this.success);
+            return output;
         }
 
         // only because this is an example task
@@ -33,10 +34,12 @@ public class ExampleChainTask extends Task {
             info = this.infoParser.getServerInfo(targetName);
         } catch (URISyntaxException | IOException e) {
             output.addExecutionMessage(e.toString());
-            return output.addReturnMessage(this.failure);
+            output.setReturnMessage(this.failure);
+            return output;
         } catch (Exception e) {
             output.addExecutionMessage(e.toString());
-            return output.addReturnMessage(this.failure);
+            output.setReturnMessage(this.failure);
+            return output;
         }
         
         try {
@@ -53,23 +56,26 @@ public class ExampleChainTask extends Task {
                     break;
                 }
                 
-                // guaranteed to be string
-                // do not use addExecutionMessage b/c the output is Output.getMessages which is already formatted
-                output.addMessage((String) ret);
+                // guaranteed to be Output
+                output.addOutput((Output) ret);
             }
             
             nextComm.close();
         } catch (UnknownHostException e) {
             output.addExecutionMessage(e.toString());
-            return output.addReturnMessage(this.failure);
+            output.setReturnMessage(this.failure);
+            return output;
         } catch (ClassNotFoundException e) {
             output.addExecutionMessage(e.toString());
-            return output.addReturnMessage(this.failure);
+            output.setReturnMessage(this.failure);
+            return output;
         } catch (IOException e) {
             output.addExecutionMessage(e.toString());
-            return output.addReturnMessage(this.failure);
+            output.setReturnMessage(this.failure);
+            return output;
         }
-        
-        return output.addReturnMessage(this.success);
+
+        output.setReturnMessage(this.success);
+        return output;
     }
 }

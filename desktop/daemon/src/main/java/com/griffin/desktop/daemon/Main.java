@@ -28,8 +28,8 @@ public class Main implements Runnable {
                 String command = (String) this.firstInput;
                 System.out.println("input: [" + command + "]");
                 
-                String taskResult = this.griffin.doCommand(command, prevComm);
-                prevComm.send(taskResult);
+                Output taskOutput = this.griffin.doCommand(command, prevComm);
+                prevComm.send(taskOutput);
             } else {
                 prevComm.send(BAD_COMMAND);
             }

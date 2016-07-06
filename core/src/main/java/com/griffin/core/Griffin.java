@@ -66,6 +66,9 @@ public class Griffin {
                     
                     // do the task
                     taskOutput = t.doAction(comm);
+
+                    // tell the task to remove any state that it created during execution
+                    t.clear();
                     
                     // update the task's output with what it was
                     taskOutput.setStartMessage(this.startCommandMsg + "\"" + t.getCommand() + "\"");

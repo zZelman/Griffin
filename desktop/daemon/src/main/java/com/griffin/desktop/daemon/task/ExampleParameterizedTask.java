@@ -29,7 +29,7 @@ public class ExampleParameterizedTask extends Task {
         if (m.find()) {
             this.word1 = m.group(3);
             this.word2 = m.group(5);
-
+            
             return rawInput.replaceFirst(print + space + word1 + space + word2, "");
         }
         return null;
@@ -39,8 +39,13 @@ public class ExampleParameterizedTask extends Task {
         Output output = new Output();
         
         System.out.println("[ExampleParameterizedTask::doAction] word1=" + this.word1 + ", word2=" + this.word2);
-
+        
         output.setReturnMessage(this.success);
         return output;
+    }
+    
+    public void clear() {
+        this.word1 = "";
+        this.word2 = "";
     }
 }

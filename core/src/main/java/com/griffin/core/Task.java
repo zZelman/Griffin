@@ -25,11 +25,11 @@ public abstract class Task {
     
     /**
         This is where the task does it's parsing of the raw (whole) command string
-        
+    
         It allows the task to extract information from the raw (whole) command string if needed
     
         Override this method to change its behavior (ie parameters exist)
-
+    
         It is recommended to use str.replaceFirst when removing the command from rawInput
         when the task is allowed to run multiple times in rawInput, use str.replace if not
     
@@ -51,4 +51,11 @@ public abstract class Task {
         @see output
     */
     abstract public Output doAction(Communication prevComm);
+    
+    /**
+        Remove any state that doAction or canUse had created to grantee thread safety across multiple runs
+    
+        Not abstract because not all tasks create state, it is ment to be overriden by those who do
+    */
+    public void clear() {}
 }

@@ -13,5 +13,5 @@ dependencies {
 
 run {
     standardInput = System.in
-    args 'server_list.ini desktop prefix stop server'.split(' ')
+    args 'server_list.ini desktop print word1 word2 print word3 word4'.split(' ')
 }

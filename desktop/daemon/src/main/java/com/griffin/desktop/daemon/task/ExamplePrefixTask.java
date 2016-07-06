@@ -87,7 +87,7 @@ public class ExamplePrefixTask extends Task {
             output.setReturnMessage(this.failure);
             return output;
         }
-
+        
         output.setReturnMessage(this.success);
         return output;
     }

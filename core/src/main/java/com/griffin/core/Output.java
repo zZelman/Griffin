@@ -6,7 +6,7 @@ import java.io.*;
 
 public class Output implements Serializable {
     private final String newLine = "\n";
-    private final String indent = "    ";
+    private final String indent = "|   ";
     
     private String startMessage;
     private List<String> executionMessages = new LinkedList<String>();

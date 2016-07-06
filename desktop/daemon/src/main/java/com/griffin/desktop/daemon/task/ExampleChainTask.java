@@ -21,12 +21,12 @@ public class ExampleChainTask extends Task {
     public Output doAction(Communication prevComm) {
         Output output = new Output();
         
-        if (new Random().nextFloat() < 0.30f) {
-            output.addExecutionMessage(this.command + ": last node");
-            output.setReturnMessage(this.success);
-            return output;
-        }
-
+        // if (new Random().nextFloat() < 0.30f) {
+        //     output.addExecutionMessage(this.command + ": last node");
+        //     output.setReturnMessage(this.success);
+        //     return output;
+        // }
+        
         // only because this is an example task
         String targetName = "desktop";
         ServerInfo info = null;
@@ -46,7 +46,7 @@ public class ExampleChainTask extends Task {
             Socket socket = new Socket(info.getHostName(), info.getPort());
             Communication nextComm = new Communication(socket);
             
-            Serializable command = "chain";
+            Serializable command = "help";
             nextComm.send(command);
             
             Object ret;
@@ -74,7 +74,7 @@ public class ExampleChainTask extends Task {
             output.setReturnMessage(this.failure);
             return output;
         }
-
+        
         output.setReturnMessage(this.success);
         return output;
     }

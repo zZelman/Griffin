@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_height="wrap_content"
+    android:layout_width="fill_parent">
+  <Button
+      android:id="@+id/btnStart"
+      android:layout_height="wrap_content"
+      android:layout_width="wrap_content"
+      android:text="Start Service"/>
+  <Button
+      android:id="@+id/btnStop"
+      android:layout_alignParentRight="true"
+      android:layout_height="wrap_content"
+      android:layout_width="wrap_content"
+      android:text="Stop Service"/>
+  <Button
+      android:id="@+id/btnBind"
+      android:layout_height="wrap_content"
+      android:layout_width="wrap_content"
+      android:text="Bind to Service"/>
+  <Button
+      android:id="@+id/btnUnbind"
+      android:layout_alignParentRight="true"
+      android:layout_height="wrap_content"
+      android:layout_width="wrap_content"
+      android:text="Unbind from Service"/>
+  <TextView
+      android:id="@+id/textStatus"
+      android:layout_width="fill_parent"
+      android:layout_height="wrap_content"
+      android:text="Status Goes Here"
+      android:textSize="24sp"/>
+  <TextView
+      android:id="@+id/textIntValue"
+      android:layout_width="fill_parent"
+      android:layout_height="wrap_content"
+      android:text="Integer Value Goes Here"
+      android:textSize="24sp"/>
+  <TextView
+      android:id="@+id/textStrValue"
+      android:layout_width="fill_parent"
+      android:layout_height="wrap_content"
+      android:text="String Value Goes Here"
+      android:textSize="24sp"/>
+  <Button
+      android:id="@+id/btnUpby1"
+      android:layout_height="wrap_content"
+      android:layout_width="wrap_content"
+      android:text="Increment by 1"/>
+  <Button
+      android:id="@+id/btnUpby10"
+      android:layout_alignParentRight="true"
+      android:layout_height="wrap_content"
+      android:layout_width="wrap_content"
+      android:text="Increment by 10"/>
+</LinearLayout>

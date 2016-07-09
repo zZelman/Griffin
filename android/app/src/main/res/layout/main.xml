@@ -1,57 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_width="fill_parent">
-  <Button
-      android:id="@+id/btnStart"
-      android:layout_height="wrap_content"
-      android:layout_width="wrap_content"
-      android:text="Start Service"/>
-  <Button
-      android:id="@+id/btnStop"
-      android:layout_alignParentRight="true"
-      android:layout_height="wrap_content"
-      android:layout_width="wrap_content"
-      android:text="Stop Service"/>
-  <Button
-      android:id="@+id/btnBind"
-      android:layout_height="wrap_content"
-      android:layout_width="wrap_content"
-      android:text="Bind to Service"/>
-  <Button
-      android:id="@+id/btnUnbind"
-      android:layout_alignParentRight="true"
-      android:layout_height="wrap_content"
-      android:layout_width="wrap_content"
-      android:text="Unbind from Service"/>
-  <TextView
-      android:id="@+id/textStatus"
-      android:layout_width="fill_parent"
-      android:layout_height="wrap_content"
-      android:text="Status Goes Here"
-      android:textSize="24sp"/>
-  <TextView
-      android:id="@+id/textIntValue"
-      android:layout_width="fill_parent"
-      android:layout_height="wrap_content"
-      android:text="Integer Value Goes Here"
-      android:textSize="24sp"/>
-  <TextView
-      android:id="@+id/textStrValue"
-      android:layout_width="fill_parent"
-      android:layout_height="wrap_content"
-      android:text="String Value Goes Here"
-      android:textSize="24sp"/>
-  <Button
-      android:id="@+id/btnUpby1"
-      android:layout_height="wrap_content"
-      android:layout_width="wrap_content"
-      android:text="Increment by 1"/>
-  <Button
-      android:id="@+id/btnUpby10"
-      android:layout_alignParentRight="true"
-      android:layout_height="wrap_content"
-      android:layout_width="wrap_content"
-      android:text="Increment by 10"/>
+    android:orientation="vertical">
+  <TableRow
+      android:layout_height="match_parent"
+      android:layout_width="match_parent">
+    <Button
+        android:gravity="center"
+        android:id="@+id/startService"
+        android:layout_height="match_parent"
+        android:layout_weight=".3"
+        android:layout_width="match_parent"
+        android:text="Start"/>
+    <TextView
+        android:gravity="center"
+        android:id="@+id/isServiceRunning"
+        android:layout_height="match_parent"
+        android:layout_weight=".3"
+        android:layout_width="match_parent"
+        android:background="@drawable/rectangle"/>
+    <Button
+        android:gravity="center"
+        android:id="@+id/stopService"
+        android:layout_height="match_parent"
+        android:layout_weight=".3"
+        android:layout_width="match_parent"
+        android:text="Stop"/>
+  </TableRow>
+  <TableRow
+      android:layout_height="match_parent"
+      android:layout_width="match_parent">
+    <EditText
+        android:inputType="text"
+        android:id="@+id/commandText"
+        android:layout_height="match_parent"
+        android:layout_weight=".3"
+        android:layout_width="match_parent"
+        android:hint="command"/>
+    <Button
+        android:gravity="center"
+        android:id="@+id/sendCommand"
+        android:layout_height="match_parent"
+        android:layout_weight=".6"
+        android:layout_width="match_parent"
+        android:text="Send"/>
+  </TableRow>
+  <View
+      android:layout_width="match_parent"
+      android:layout_height="2dp"
+      android:background="#ffffff"/>
+  <ScrollView
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:scrollbars="vertical">
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+      <TextView
+          android:id="@+id/commandOutput"
+          android:layout_height="wrap_content"
+          android:layout_width="match_parent"/>
+    </HorizontalScrollView>
+  </ScrollView>
 </LinearLayout>

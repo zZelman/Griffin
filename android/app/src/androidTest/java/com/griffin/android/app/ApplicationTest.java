@@ -1,13 +1,24 @@
 package com.griffin.android.app;
 
-import android.app.Application;
-import android.test.ApplicationTestCase;
+import org.junit.*;
+import static org.junit.Assert.*;
+import static org.hamcrest.Matchers.*;
 
-/**
- * <a href="http://d.android.com/tools/testing/testing_android.html">Testing Fundamentals</a>
- */
-public class ApplicationTest extends ApplicationTestCase<Application> {
-    public ApplicationTest() {
-        super(Application.class);
+import android.util.*;
+
+public class ApplicationTest {
+    @Before
+    public void startUp() {
+    }
+
+    @After
+    public void tearDown() {
+    }
+
+    @Test
+    public void test() {
+        Log.d("App", "hello from test");
+        assertThat(true, is(false));
     }
 }
+

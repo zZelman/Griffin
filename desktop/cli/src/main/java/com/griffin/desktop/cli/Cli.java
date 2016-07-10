@@ -8,7 +8,7 @@ import org.apache.commons.lang3.*;
 
 import com.griffin.core.*;
 
-public class Main {
+public class Cli {
     public static void usage() {
         System.out.println("error in command line paramiters");
         System.out.println("    usage: [server_info_filename] [target] [command...]");
@@ -17,7 +17,7 @@ public class Main {
     
     public static void main(String[] args) {
         if (args.length < 2) {
-            Main.usage();
+            Cli.usage();
         }
         
         ServerInfo info = null;

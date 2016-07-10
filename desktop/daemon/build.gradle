@@ -1,7 +1,7 @@
 apply plugin: 'java'
 apply plugin: 'application'
 
-mainClassName = "com.griffin.desktop.daemon.Main"
+mainClassName = "com.griffin.desktop.daemon.Daemon"
 
 repositories {
     mavenCentral()

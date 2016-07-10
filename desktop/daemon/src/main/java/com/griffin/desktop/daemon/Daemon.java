@@ -7,7 +7,7 @@ import java.util.concurrent.atomic.*;
 
 import com.griffin.core.*;
 
-public class Main implements Runnable {
+public class Daemon implements Runnable {
     private final Griffin griffin;
     private final Communication prevComm;
     private final Object firstInput;
@@ -16,7 +16,7 @@ public class Main implements Runnable {
     private final static String SERVER_STOPPING = "server has recieved the stop command, and is ending";
     private final String BAD_COMMAND = "first communication must be in String form";
     
-    public Main(Griffin griffin, Communication prevComm, Object firstInput) {
+    public Daemon(Griffin griffin, Communication prevComm, Object firstInput) {
         this.griffin = griffin;
         this.prevComm = prevComm;
         this.firstInput = firstInput;
@@ -50,7 +50,7 @@ public class Main implements Runnable {
     
     public static void main(String[] args) {
         if (args.length < 2) {
-            Main.usage();
+            Daemon.usage();
         }
 
         ServerInfoParser infoParser = null;
@@ -95,9 +95,9 @@ public class Main implements Runnable {
                 // always check the first communication for an instance of the stop command
                 if (firstInput instanceof String) {
                     possibleStopCommand = (String) firstInput;
-                    if (possibleStopCommand.equals(Main.STOP_SERVER_COMMAND)) {
+                    if (possibleStopCommand.equals(Daemon.STOP_SERVER_COMMAND)) {
                         Output output = new Output();
-                        output.setReturnMessage(Main.SERVER_STOPPING);
+                        output.setReturnMessage(Daemon.SERVER_STOPPING);
                         prevComm.send(output);
                         prevComm.send(new StopCommunication());
                         break;
@@ -105,7 +105,7 @@ public class Main implements Runnable {
                 }
                 
                 // the thread deals with prevComm closing
-                new Thread(new Main(griffin, prevComm, firstInput)).start();
+                new Thread(new Daemon(griffin, prevComm, firstInput)).start();
             }
             
             serverSocket.close();
@@ -117,6 +117,6 @@ public class Main implements Runnable {
             System.exit(1);
         }
         
-        System.out.println(Main.SERVER_STOPPING);
+        System.out.println(Daemon.SERVER_STOPPING);
     }
 }

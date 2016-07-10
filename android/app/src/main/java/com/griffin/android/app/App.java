@@ -36,7 +36,6 @@ public class App extends Activity implements OnClickListener {
     
     public static final String TAG = "App";
     
-    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
@@ -60,7 +59,6 @@ public class App extends Activity implements OnClickListener {
         this.vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
     }
     
-    @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.startService:
@@ -108,7 +106,7 @@ public class App extends Activity implements OnClickListener {
             
             return;
         }
-
+        
         // this comment is for when the file is in the home directory (not yet, still in dev)
         // String baseDir = Environment.getExternalStorageDirectory().getAbsolutePath();
         // baseDir + File.separator + "server_list.ini",
@@ -135,8 +133,7 @@ public class App extends Activity implements OnClickListener {
             return;
         }
         
-        Log.d(App.TAG, "getHostName() = " + info.getHostName());
-        Log.d(App.TAG, "getPort()     = " + info.getPort());
+        new Thread(new NetworkThread(info)).start();
         
         // hide keyboard
         InputMethodManager inputMethodManager = (InputMethodManager) this.getSystemService(Activity.INPUT_METHOD_SERVICE);
@@ -154,4 +151,56 @@ public class App extends Activity implements OnClickListener {
         return activeNetwork != null &&
                activeNetwork.isConnectedOrConnecting();
     }
+    
+    class NetworkThread implements Runnable {
+        private final ServerInfo info;
+        
+        public NetworkThread(ServerInfo info) {
+            this.info = info;
+        }
+        
+        public void run() {
+            // this comment is for when the file is in the home directory (not yet, still in dev)
+            // String baseDir = Environment.getExternalStorageDirectory().getAbsolutePath();
+            // baseDir + File.separator + "server_list.ini",
+            
+            String[] args = {
+                "server_list", // accessed through R, a change here means nothing
+                "desktop",
+                "help"
+            };
+            
+            try {
+                Socket socket = new Socket(this.info.getHostName(), this.info.getPort());
+                Communication nextComm = new Communication(socket);
+                
+                String[] command = ArrayUtils.subarray(args, 2, args.length);
+                Serializable userInput = StringUtils.join(command, " ");
+                nextComm.send(userInput);
+                
+                Object ret;
+                while (true) {
+                    ret = nextComm.receive();
+                    if (ret instanceof StopCommunication || ret == null) {
+                        break;
+                    }
+                    
+                    Log.d(App.TAG, ret.toString());
+                }
+                
+                nextComm.close();
+            } catch (UnknownHostException e) {
+                Log.d(App.TAG, e.toString());
+                return;
+            } catch (ClassNotFoundException e) {
+                Log.d(App.TAG, e.toString());
+                return;
+            } catch (IOException e) {
+                Log.d(App.TAG, e.toString());
+                return;
+            }
+        }
+    }
 }
+
+

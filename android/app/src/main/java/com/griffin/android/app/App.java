@@ -1,14 +1,14 @@
 package com.griffin.android.app;
 
 import android.app.*;
+import android.content.*;
+import android.net.*;
 import android.os.*;
-import android.widget.*;
+import android.util.*;
 import android.view.*;
 import android.view.View.*;
 import android.view.inputmethod.*;
-import android.content.*;
-import android.util.*;
-import android.net.*;
+import android.widget.*;
 
 import java.net.*;
 import java.io.*;
@@ -19,15 +19,19 @@ import org.apache.commons.lang3.*;
 
 import com.griffin.core.*;
 
+import com.griffin.android.app.*;
+
 import java.lang.reflect.*;
 
 public class App extends Activity implements OnClickListener {
     private Button startService;
-    private TextView isServiceRunning;
+    private TextView isServiceRunningText;
     private Button stopService;
     private EditText commandText;
     private Button sendCommand;
     private TextView commandOutput;
+    
+    private boolean isServiceRunning;
     
     private Vibrator vibrator;
     private final int VIBRATE_LENGTH = 50; // ms
@@ -44,8 +48,9 @@ public class App extends Activity implements OnClickListener {
         this.startService = (Button) findViewById(R.id.startService);
         this.startService.setOnClickListener(this);
         
-        this.isServiceRunning = (TextView) findViewById(R.id.isServiceRunning);
-        this.isServiceRunning.setText(this.SERVICE_STOPPED);
+        this.isServiceRunningText = (TextView) findViewById(R.id.isServiceRunningText);
+        this.isServiceRunningText.setText(this.SERVICE_STOPPED);
+        this.isServiceRunning = false;
         
         this.stopService = (Button) findViewById(R.id.stopService);
         this.stopService.setOnClickListener(this);
@@ -77,26 +82,38 @@ public class App extends Activity implements OnClickListener {
     private void startService() {
         this.vibrate();
         
-        this.isServiceRunning.setText(this.SERVICE_STARTED);
+        if (this.isServiceRunning == false) {
+            startService(new Intent(getBaseContext(), AppService.class));
+            this.isServiceRunningText.setText(this.SERVICE_STARTED);
+            this.isServiceRunning = true;
+        } else {
+            Toast.makeText(this, "service already running", Toast.LENGTH_SHORT).show();
+        }
     }
     
     private void stopService() {
         this.vibrate();
         
-        this.isServiceRunning.setText(this.SERVICE_STOPPED);
+        if (this.isServiceRunning == true) {
+            stopService(new Intent(getBaseContext(), AppService.class));
+            this.isServiceRunningText.setText(this.SERVICE_STOPPED);
+            this.isServiceRunning = false;
+        } else {
+            Toast.makeText(this, "service not running", Toast.LENGTH_SHORT).show();
+        }
     }
     
     private void sendCommand() {
         this.vibrate();
         
         if (!this.checkNetworkConnection()) {
-            this.showTost("no network connection");
+            Toast.makeText(this, "no network connection", Toast.LENGTH_SHORT).show();
             return;
         }
         
         String state = Environment.getExternalStorageState();
         if (state.equals(Environment.MEDIA_MOUNTED) == false) {
-            this.showTost("cannot access server info file");
+            Toast.makeText(this, "cannot access server info file", Toast.LENGTH_SHORT).show();
             return;
         }
         
@@ -108,7 +125,7 @@ public class App extends Activity implements OnClickListener {
         String[] userInput = this.commandText.getText().toString().split(" ", 2);
         
         if (userInput.length != 2) {
-            this.showTost("please enter a command");
+            Toast.makeText(this, "please enter a command", Toast.LENGTH_SHORT).show();
             return;
         }
         
@@ -124,13 +141,13 @@ public class App extends Activity implements OnClickListener {
             ServerInfoParser infoParser = new ServerInfoParser(inputStream);
             info = infoParser.getServerInfo(target);
         } catch (FileNotFoundException e) {
-            this.showTost("server info file not found");
+            Toast.makeText(this, "server info file not found", Toast.LENGTH_SHORT).show();
             return;
         } catch (URISyntaxException | IOException e) {
-            this.showTost("io error");
+            Toast.makeText(this, "io error", Toast.LENGTH_SHORT).show();
             return;
         } catch (Exception e) {
-            this.showTost(e.getMessage());
+            Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
             return;
         }
         
@@ -151,12 +168,6 @@ public class App extends Activity implements OnClickListener {
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
         return activeNetwork != null &&
                activeNetwork.isConnectedOrConnecting();
-    }
-    
-    private void showTost(CharSequence text) {
-        Context context = this.getApplicationContext();
-        Toast toast = Toast.makeText(context, text, Toast.LENGTH_SHORT);
-        toast.show();
     }
     
     class Networking extends AsyncTask<Void, Void, Void> {

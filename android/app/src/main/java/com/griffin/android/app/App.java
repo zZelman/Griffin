@@ -8,6 +8,7 @@ import android.view.View.*;
 import android.view.inputmethod.*;
 import android.content.*;
 import android.util.*;
+import android.net.*;
 
 import java.net.*;
 import java.io.*;
@@ -30,7 +31,7 @@ public class App extends Activity implements OnClickListener {
     
     private final String SERVICE_STOPPED = "STOPPED";
     private final String SERVICE_STARTED = "STARTED";
-
+    
     public static final String TAG = "App";
     
     @Override
@@ -87,52 +88,13 @@ public class App extends Activity implements OnClickListener {
     private void sendCommand() {
         this.vibrate();
         
-        String[] args = {
-            "server_info.ini",
-            "desktop",
-            "help"
-        };
-        
-        ServerInfoParser infoParser = new ServerInfoParser(args[0]);
-        ServerInfo info = null;
-        try {
-            info = infoParser.getServerInfo(args[1]);
-        } catch (URISyntaxException | IOException e) {
-             Log.d(App.TAG, e.toString());
-            System.exit(1);
-        } catch (Exception e) {
-            Log.d(App.TAG, e.toString());
-            System.exit(1);
-        }
-        
-        try {
-            Socket socket = new Socket(info.getHostName(), info.getPort());
-            Communication nextComm = new Communication(socket);
+        if (!this.checkNetworkConnection()) {
+            Context context = getApplicationContext();
+            CharSequence text = "no network connection";
+            Toast toast = Toast.makeText(context, text, Toast.LENGTH_SHORT);
+            toast.show();
             
-            String[] command = ArrayUtils.subarray(args, 2, args.length);
-            Serializable userInput = StringUtils.join(command, " ");
-            nextComm.send(userInput);
-            
-            Object ret;
-            while (true) {
-                ret = nextComm.receive();
-                if (ret instanceof StopCommunication || ret == null) {
-                    break;
-                }
-                
-                Log.d(App.TAG, ret.toString());
-            }
-            
-            nextComm.close();
-        } catch (UnknownHostException e) {
-            Log.d(App.TAG, e.toString());
-            System.exit(1);
-        } catch (ClassNotFoundException e) {
-            Log.d(App.TAG, e.toString());
-            System.exit(1);
-        } catch (IOException e) {
-            Log.d(App.TAG, e.toString());
-            System.exit(1);
+            return;
         }
         
         // hide keyboard
@@ -142,5 +104,13 @@ public class App extends Activity implements OnClickListener {
     
     private void vibrate() {
         this.vibrator.vibrate(this.VIBRATE_LENGTH);
+    }
+    
+    private boolean checkNetworkConnection() {
+        ConnectivityManager cm = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        return activeNetwork != null &&
+               activeNetwork.isConnectedOrConnecting();
     }
 }

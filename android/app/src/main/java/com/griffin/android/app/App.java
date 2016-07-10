@@ -91,7 +91,7 @@ public class App extends Activity implements OnClickListener {
         this.vibrate();
         
         if (!this.checkNetworkConnection()) {
-            Context context = getApplicationContext();
+            Context context = this.getApplicationContext();
             CharSequence text = "no network connection";
             Toast toast = Toast.makeText(context, text, Toast.LENGTH_SHORT);
             toast.show();
@@ -101,24 +101,28 @@ public class App extends Activity implements OnClickListener {
         
         String state = Environment.getExternalStorageState();
         if (state.equals(Environment.MEDIA_MOUNTED) == false) {
-            Context context = getApplicationContext();
+            Context context = this.getApplicationContext();
             CharSequence text = "cannot access server info file";
             Toast toast = Toast.makeText(context, text, Toast.LENGTH_SHORT);
             toast.show();
             
             return;
         }
+
+        // this comment is for when the file is in the home directory (not yet, still in dev)
+        // String baseDir = Environment.getExternalStorageDirectory().getAbsolutePath();
+        // baseDir + File.separator + "server_list.ini",
         
-        String baseDir = Environment.getExternalStorageDirectory().getAbsolutePath();
         String[] args = {
-            baseDir + File.separator + "server_list.ini",
+            "server_list", // accessed through R, a change here means nothing
             "desktop",
             "help"
         };
         
         ServerInfo info = null;
         try {
-            ServerInfoParser infoParser = new ServerInfoParser(args[0]);
+            InputStream inputStream = this.getResources().openRawResource(R.raw.server_list);
+            ServerInfoParser infoParser = new ServerInfoParser(inputStream);
             info = infoParser.getServerInfo(args[1]);
         } catch (FileNotFoundException e) {
             Log.d(App.TAG, e.toString());
@@ -144,7 +148,7 @@ public class App extends Activity implements OnClickListener {
     }
     
     private boolean checkNetworkConnection() {
-        ConnectivityManager cm = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        ConnectivityManager cm = (ConnectivityManager) this.getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
         
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
         return activeNetwork != null &&

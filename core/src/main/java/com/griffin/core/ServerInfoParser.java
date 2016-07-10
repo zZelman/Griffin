@@ -13,32 +13,33 @@ public class ServerInfoParser {
     private final String HOST_NAME = "hostname";
     private final String PORT = "port";
     
-    private String fileName;
+    private IniPreferences iniPrefs;
     
-    public ServerInfoParser(String fileName) {
-        this.fileName = fileName;
+    public ServerInfoParser(String fileName) throws FileNotFoundException, IOException {
+        this.init(new FileInputStream(fileName));
     }
     
-    public String getFileName() {
-        return this.fileName;
+    public ServerInfoParser(InputStream inputStream) throws IOException {
+        this.init(inputStream);
     }
     
-    public ServerInfo getServerInfo(String name) throws URISyntaxException, IOException, Exception {
+    private void init(InputStream inputStream) throws IOException {
+        Ini ini = new Ini(inputStream);
+        this.iniPrefs = new IniPreferences(ini);
+    }
+    
+    public ServerInfo getServerInfo(String name) throws Exception {
         // TODO: move server_list.ini outside of the jar, prob some gradle config
         // URI uri = ClassLoader.getSystemClassLoader().getResource(this.fileName).toURI();
-        InputStream inputStream = ClassLoader.getSystemClassLoader().getResourceAsStream(this.fileName);
-
-        // File file = new File(uri);
-        Ini ini = new Ini(inputStream);
-        Preferences prefs = new IniPreferences(ini);
+        // InputStream inputStream = ClassLoader.getSystemClassLoader().getResourceAsStream(this.fileName);
         
-        String hostName = prefs.node(name).get(HOST_NAME, null);
-        int port = prefs.node(name).getInt(PORT, -1);
+        String hostName = this.iniPrefs.node(name).get(HOST_NAME, null);
+        int port = this.iniPrefs.node(name).getInt(PORT, -1);
         
         if (name == null ||
             hostName == null ||
             port == -1) {
-            throw new Exception("Name or formating of the config file is incorrect. Cannot get [" + name + "] in " + this.fileName);
+            throw new Exception("Name or formating of the config file is incorrect. Cannot get [" + name + "]");
         }
         
         return new ServerInfo(name, hostName, port);

@@ -18,6 +18,8 @@ import org.apache.commons.lang3.*;
 
 import com.griffin.core.*;
 
+import java.lang.reflect.*;
+
 public class App extends Activity implements OnClickListener {
     private Button startService;
     private TextView isServiceRunning;
@@ -96,6 +98,41 @@ public class App extends Activity implements OnClickListener {
             
             return;
         }
+        
+        String state = Environment.getExternalStorageState();
+        if (state.equals(Environment.MEDIA_MOUNTED) == false) {
+            Context context = getApplicationContext();
+            CharSequence text = "cannot access server info file";
+            Toast toast = Toast.makeText(context, text, Toast.LENGTH_SHORT);
+            toast.show();
+            
+            return;
+        }
+        
+        String baseDir = Environment.getExternalStorageDirectory().getAbsolutePath();
+        String[] args = {
+            baseDir + File.separator + "server_list.ini",
+            "desktop",
+            "help"
+        };
+        
+        ServerInfo info = null;
+        try {
+            ServerInfoParser infoParser = new ServerInfoParser(args[0]);
+            info = infoParser.getServerInfo(args[1]);
+        } catch (FileNotFoundException e) {
+            Log.d(App.TAG, e.toString());
+            return;
+        } catch (URISyntaxException | IOException e) {
+            Log.d(App.TAG, e.toString());
+            return;
+        } catch (Exception e) {
+            Log.d(App.TAG, e.toString());
+            return;
+        }
+        
+        Log.d(App.TAG, "getHostName() = " + info.getHostName());
+        Log.d(App.TAG, "getPort()     = " + info.getPort());
         
         // hide keyboard
         InputMethodManager inputMethodManager = (InputMethodManager) this.getSystemService(Activity.INPUT_METHOD_SERVICE);

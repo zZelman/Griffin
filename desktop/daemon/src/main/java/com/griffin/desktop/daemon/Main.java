@@ -52,11 +52,16 @@ public class Main implements Runnable {
         if (args.length < 2) {
             Main.usage();
         }
-        
-        ServerInfoParser infoParser = new ServerInfoParser(args[0]);
+
+        ServerInfoParser infoParser = null;
         ServerInfo info = null;
         try {
+            InputStream inputStream = ClassLoader.getSystemClassLoader().getResourceAsStream(args[0]);
+            infoParser = new ServerInfoParser(inputStream);
             info = infoParser.getServerInfo(args[1]);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            System.exit(1);
         } catch (URISyntaxException | IOException e) {
             e.printStackTrace();
             System.exit(1);
@@ -69,7 +74,7 @@ public class Main implements Runnable {
         TaskFactory taskFactory = new ConcreteTaskFactory(infoParser);
         Griffin griffin = new Griffin(taskFactory);
         String commandsAvailable = griffin.printTasks();
-
+        
         System.out.println(info);
         System.out.println();
         System.out.println(commandsAvailable);

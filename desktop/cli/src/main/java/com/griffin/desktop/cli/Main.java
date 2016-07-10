@@ -20,10 +20,14 @@ public class Main {
             Main.usage();
         }
         
-        ServerInfoParser infoParser = new ServerInfoParser(args[0]);
         ServerInfo info = null;
         try {
+            InputStream inputStream = ClassLoader.getSystemClassLoader().getResourceAsStream(args[0]);
+            ServerInfoParser infoParser = new ServerInfoParser(inputStream);
             info = infoParser.getServerInfo(args[1]);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            System.exit(1);
         } catch (URISyntaxException | IOException e) {
             e.printStackTrace();
             System.exit(1);

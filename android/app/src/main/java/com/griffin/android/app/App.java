@@ -114,7 +114,7 @@ public class App extends Activity implements OnClickListener {
         
         String target = userInput[0];
         String command = userInput[1];
-
+        
         // String target = "desktop";
         // String command = "prev comm";
         
@@ -168,21 +168,18 @@ public class App extends Activity implements OnClickListener {
         public Networking(ServerInfo info, String command) {
             this.info = info;
             this.command = command;
+            
+            this.outputs = new LinkedList<String>();
         }
         
         @Override
         protected void onPreExecute() {
-            this.outputs = new LinkedList<String>();
-            
             TextView commandOutput = (TextView) findViewById(R.id.commandOutput);
             commandOutput.setText("working...");
         }
         
         @Override
         protected Void doInBackground(Void... params) {
-            TextView commandOutput = (TextView) findViewById(R.id.commandOutput);
-            commandOutput.setText("");
-            
             try {
                 Socket socket = new Socket(info.getHostName(), info.getPort());
                 Communication nextComm = new Communication(socket);
@@ -212,11 +209,18 @@ public class App extends Activity implements OnClickListener {
         }
         
         @Override
-        protected void onProgressUpdate(Void... values) {}
+        protected void onProgressUpdate(Void... params) {
+            this.showWhatHave();
+        }
         
         @Override
-        protected void onPostExecute(Void params) {
+        protected void onPostExecute(Void param) {
+            this.showWhatHave();
+        }
+        
+        private void showWhatHave() {
             TextView commandOutput = (TextView) findViewById(R.id.commandOutput);
+            commandOutput.setText("");
             for (String s : this.outputs) {
                 commandOutput.append(s);
             }

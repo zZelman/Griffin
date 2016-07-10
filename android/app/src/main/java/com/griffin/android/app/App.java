@@ -13,6 +13,7 @@ import android.net.*;
 import java.net.*;
 import java.io.*;
 import java.lang.*;
+import java.util.*;
 
 import org.apache.commons.lang3.*;
 
@@ -89,51 +90,51 @@ public class App extends Activity implements OnClickListener {
         this.vibrate();
         
         if (!this.checkNetworkConnection()) {
-            Context context = this.getApplicationContext();
-            CharSequence text = "no network connection";
-            Toast toast = Toast.makeText(context, text, Toast.LENGTH_SHORT);
-            toast.show();
-            
+            this.showTost("no network connection");
             return;
         }
         
         String state = Environment.getExternalStorageState();
         if (state.equals(Environment.MEDIA_MOUNTED) == false) {
-            Context context = this.getApplicationContext();
-            CharSequence text = "cannot access server info file";
-            Toast toast = Toast.makeText(context, text, Toast.LENGTH_SHORT);
-            toast.show();
-            
+            this.showTost("cannot access server info file");
             return;
         }
         
-        // this comment is for when the file is in the home directory (not yet, still in dev)
+        //// this comment is for when the file is in the home directory (not yet, still in dev)
         // String baseDir = Environment.getExternalStorageDirectory().getAbsolutePath();
         // baseDir + File.separator + "server_list.ini",
         
-        String[] args = {
-            "server_list", // accessed through R, a change here means nothing
-            "desktop",
-            "help"
-        };
+        // source: http://stackoverflow.com/a/9378468/961312
+        String[] userInput = this.commandText.getText().toString().split(" ", 2);
+        
+        if (userInput.length != 2) {
+            this.showTost("please enter a command");
+            return;
+        }
+        
+        String target = userInput[0];
+        String command = userInput[1];
+
+        // String target = "desktop";
+        // String command = "prev comm";
         
         ServerInfo info = null;
         try {
             InputStream inputStream = this.getResources().openRawResource(R.raw.server_list);
             ServerInfoParser infoParser = new ServerInfoParser(inputStream);
-            info = infoParser.getServerInfo(args[1]);
+            info = infoParser.getServerInfo(target);
         } catch (FileNotFoundException e) {
-            Log.d(App.TAG, e.toString());
+            this.showTost("server info file not found");
             return;
         } catch (URISyntaxException | IOException e) {
-            Log.d(App.TAG, e.toString());
+            this.showTost("io error");
             return;
         } catch (Exception e) {
-            Log.d(App.TAG, e.toString());
+            this.showTost(e.getMessage());
             return;
         }
         
-        new Thread(new NetworkThread(info)).start();
+        new Networking(info, command).execute();
         
         // hide keyboard
         InputMethodManager inputMethodManager = (InputMethodManager) this.getSystemService(Activity.INPUT_METHOD_SERVICE);
@@ -152,31 +153,41 @@ public class App extends Activity implements OnClickListener {
                activeNetwork.isConnectedOrConnecting();
     }
     
-    class NetworkThread implements Runnable {
+    private void showTost(CharSequence text) {
+        Context context = this.getApplicationContext();
+        Toast toast = Toast.makeText(context, text, Toast.LENGTH_SHORT);
+        toast.show();
+    }
+    
+    class Networking extends AsyncTask<Void, Void, Void> {
         private final ServerInfo info;
+        private final String command;
         
-        public NetworkThread(ServerInfo info) {
+        private List<String> outputs;
+        
+        public Networking(ServerInfo info, String command) {
             this.info = info;
+            this.command = command;
         }
         
-        public void run() {
-            // this comment is for when the file is in the home directory (not yet, still in dev)
-            // String baseDir = Environment.getExternalStorageDirectory().getAbsolutePath();
-            // baseDir + File.separator + "server_list.ini",
+        @Override
+        protected void onPreExecute() {
+            this.outputs = new LinkedList<String>();
             
-            String[] args = {
-                "server_list", // accessed through R, a change here means nothing
-                "desktop",
-                "help"
-            };
+            TextView commandOutput = (TextView) findViewById(R.id.commandOutput);
+            commandOutput.setText("working...");
+        }
+        
+        @Override
+        protected Void doInBackground(Void... params) {
+            TextView commandOutput = (TextView) findViewById(R.id.commandOutput);
+            commandOutput.setText("");
             
             try {
-                Socket socket = new Socket(this.info.getHostName(), this.info.getPort());
+                Socket socket = new Socket(info.getHostName(), info.getPort());
                 Communication nextComm = new Communication(socket);
                 
-                String[] command = ArrayUtils.subarray(args, 2, args.length);
-                Serializable userInput = StringUtils.join(command, " ");
-                nextComm.send(userInput);
+                nextComm.send(command);
                 
                 Object ret;
                 while (true) {
@@ -185,19 +196,29 @@ public class App extends Activity implements OnClickListener {
                         break;
                     }
                     
-                    Log.d(App.TAG, ret.toString());
+                    outputs.add(ret.toString() + "\n");
                 }
                 
                 nextComm.close();
             } catch (UnknownHostException e) {
-                Log.d(App.TAG, e.toString());
-                return;
+                outputs.add(e.toString() + "\n");
             } catch (ClassNotFoundException e) {
-                Log.d(App.TAG, e.toString());
-                return;
+                outputs.add(e.toString() + "\n");
             } catch (IOException e) {
-                Log.d(App.TAG, e.toString());
-                return;
+                outputs.add(e.toString() + "\n");
+            }
+            
+            return null;
+        }
+        
+        @Override
+        protected void onProgressUpdate(Void... values) {}
+        
+        @Override
+        protected void onPostExecute(Void params) {
+            TextView commandOutput = (TextView) findViewById(R.id.commandOutput);
+            for (String s : this.outputs) {
+                commandOutput.append(s);
             }
         }
     }

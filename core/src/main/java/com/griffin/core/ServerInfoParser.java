@@ -39,7 +39,7 @@ public class ServerInfoParser {
         if (name == null ||
             hostName == null ||
             port == -1) {
-            throw new Exception("Name or formating of the config file is incorrect. Cannot get [" + name + "]");
+            throw new Exception("name or formating of the info file is incorrect");
         }
         
         return new ServerInfo(name, hostName, port);

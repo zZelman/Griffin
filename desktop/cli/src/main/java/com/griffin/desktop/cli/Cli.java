@@ -3,6 +3,7 @@ package com.griffin.desktop.cli;
 import java.net.*;
 import java.io.*;
 import java.lang.*;
+import java.util.*;
 
 import org.apache.commons.lang3.*;
 
@@ -36,13 +37,14 @@ public class Cli {
             System.exit(1);
         }
         
+        String[] commandTokens = ArrayUtils.subarray(args, 2, args.length);
+        Serializable command = StringUtils.join(commandTokens, " ");
+        
         try {
             Socket socket = new Socket(info.getHostName(), info.getPort());
             Communication nextComm = new Communication(socket);
             
-            String[] command = ArrayUtils.subarray(args, 2, args.length);
-            Serializable userInput = StringUtils.join(command, " ");
-            nextComm.send(userInput);
+            nextComm.send(command);
             
             Object ret;
             while (true) {

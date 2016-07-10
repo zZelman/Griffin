@@ -31,7 +31,7 @@ public class App extends Activity implements OnClickListener {
     private final String SERVICE_STOPPED = "STOPPED";
     private final String SERVICE_STARTED = "STARTED";
 
-    private final String TAG = "App";
+    public static final String TAG = "App";
     
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -98,10 +98,10 @@ public class App extends Activity implements OnClickListener {
         try {
             info = infoParser.getServerInfo(args[1]);
         } catch (URISyntaxException | IOException e) {
-             Log.d(this.TAG, e.toString());
+             Log.d(App.TAG, e.toString());
             System.exit(1);
         } catch (Exception e) {
-            Log.d(this.TAG, e.toString());
+            Log.d(App.TAG, e.toString());
             System.exit(1);
         }
         
@@ -120,18 +120,18 @@ public class App extends Activity implements OnClickListener {
                     break;
                 }
                 
-                Log.d(this.TAG, ret.toString());
+                Log.d(App.TAG, ret.toString());
             }
             
             nextComm.close();
         } catch (UnknownHostException e) {
-            Log.d(this.TAG, e.toString());
+            Log.d(App.TAG, e.toString());
             System.exit(1);
         } catch (ClassNotFoundException e) {
-            Log.d(this.TAG, e.toString());
+            Log.d(App.TAG, e.toString());
             System.exit(1);
         } catch (IOException e) {
-            Log.d(this.TAG, e.toString());
+            Log.d(App.TAG, e.toString());
             System.exit(1);
         }
         

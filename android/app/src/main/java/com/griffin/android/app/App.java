@@ -1,6 +1,7 @@
 package com.griffin.android.app;
 
 import android.app.*;
+import android.app.ActivityManager.*;
 import android.content.*;
 import android.net.*;
 import android.os.*;
@@ -49,8 +50,12 @@ public class App extends Activity implements OnClickListener {
         this.startService.setOnClickListener(this);
         
         this.isServiceRunningText = (TextView) findViewById(R.id.isServiceRunningText);
-        this.isServiceRunningText.setText(this.SERVICE_STOPPED);
-        this.isServiceRunning = false;
+        this.isServiceRunning = this.isServiceRunning(AppService.class);
+        if (this.isServiceRunning) {
+            this.isServiceRunningText.setText(this.SERVICE_STARTED);
+        } else {
+            this.isServiceRunningText.setText(this.SERVICE_STOPPED);
+        }
         
         this.stopService = (Button) findViewById(R.id.stopService);
         this.stopService.setOnClickListener(this);
@@ -156,6 +161,16 @@ public class App extends Activity implements OnClickListener {
         // hide keyboard
         InputMethodManager inputMethodManager = (InputMethodManager) this.getSystemService(Activity.INPUT_METHOD_SERVICE);
         inputMethodManager.hideSoftInputFromWindow(this.getCurrentFocus().getWindowToken(), 0);
+    }
+    
+    private boolean isServiceRunning(Class<?> serviceClass) {
+        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        for (RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
     }
     
     private void vibrate() {

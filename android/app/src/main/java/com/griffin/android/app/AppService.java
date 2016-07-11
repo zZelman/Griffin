@@ -16,7 +16,7 @@ public class AppService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Toast.makeText(this, "service started", Toast.LENGTH_SHORT).show();
-        return START_REDELIVER_INTENT;
+        return START_STICKY;
     }
     
     @Override

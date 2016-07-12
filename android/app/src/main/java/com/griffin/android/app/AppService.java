@@ -20,7 +20,7 @@ public class AppService extends Service implements ServerCallBack {
     private final String TARGET = "android";
     
     public static boolean isRunning() {
-        return AppService.isRunning;
+        return this.isRunning;
     }
     
     @Override
@@ -38,22 +38,48 @@ public class AppService extends Service implements ServerCallBack {
     public void onDestroy() {
         this.stop();
     }
-
+    
     @Override
-    public void dealWith(Exception e) {
-        final String message = e.getMessage().toLowerCase();
-        
-        Handler h = new Handler(AppService.this.getMainLooper());
-        h.post(new Runnable() {
-            @Override
-            public void run() {
-                Toast.makeText(AppService.this, message, Toast.LENGTH_SHORT).show();
-            }
-        });
+    public void startedServerSocket(ServerSocket serverSocket) {
+        this.serverSocket = serverSocket;
     }
     
     @Override
-    public void dealWith(final String s) {
+    public void serverInfo(ServerInfo info) {
+        this.showToast(info.toString());
+    }
+    
+    @Override
+    public void taskList(String s) {
+        this.showToast(s);
+    }
+    
+    @Override
+    public void startedConnection() {
+        this.showToast("connection");
+    }
+    
+    @Override
+    public void commandRecieved(String s) {
+        this.showToast("input: [" + s + "]");
+    }
+    
+    @Override
+    public void serverEnding(String s) {
+        this.showToast(s);
+    }
+    
+    @Override
+    public void dealWith(ClassNotFoundException e) {
+        this.showToast(e.getMessage().toLowerCase());
+    }
+    
+    @Override
+    public void dealWith(IOException e) {
+        this.showToast(e.getMessage().toLowerCase());
+    }
+    
+    private void showToast(final String s) {
         Handler h = new Handler(AppService.this.getMainLooper());
         h.post(new Runnable() {
             @Override
@@ -74,7 +100,7 @@ public class AppService extends Service implements ServerCallBack {
         try {
             InputStream inputStream = this.getResources().openRawResource(R.raw.server_list);
             ServerInfoParser infoParser = new ServerInfoParser(inputStream);
-
+            
             TaskFactory taskFactory = new ConcreteTaskFactory();
             
             Server server = new Server(infoParser.getServerInfo(TARGET), taskFactory, this);
@@ -123,7 +149,9 @@ public class AppService extends Service implements ServerCallBack {
         
         try {
             this.serverSocket.close();
-        } catch (IOException e) {}
+        } catch (IOException e) {
+            this.dealWith(e);
+        }
         
         stopForeground(true);
         stopSelf();

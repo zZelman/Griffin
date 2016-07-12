@@ -22,6 +22,8 @@ public class Server implements Runnable {
         
         this.griffin = new Griffin(taskFactory);
         this.serverSocket = new ServerSocket(info.getPort());
+
+        this.callBack.startedServerSocket(this.serverSocket);
     }
     
     public ServerSocket getServerSocket() {
@@ -30,8 +32,8 @@ public class Server implements Runnable {
     
     @Override
     public void run() {
-        this.callBack.dealWith(this.info.toString());
-        this.callBack.dealWith(this.griffin.printTasks());
+        this.callBack.serverInfo(this.info);
+        this.callBack.taskList(this.griffin.printTasks());
         
         try {
             Socket clientSocket;
@@ -40,7 +42,7 @@ public class Server implements Runnable {
             String possibleStopCommand;
             while (!Thread.currentThread().isInterrupted()) {
                 clientSocket = serverSocket.accept();
-                this.callBack.dealWith("connection");
+                this.callBack.startedConnection();
                 
                 prevComm = new Communication(clientSocket);
                 firstInput = prevComm.receive();
@@ -69,7 +71,7 @@ public class Server implements Runnable {
             this.callBack.dealWith(e);
         }
         
-        this.callBack.dealWith(SERVER_STOPPING);
+        this.callBack.serverEnding(SERVER_STOPPING);
     }
     
     class CommunicationThread implements Runnable {
@@ -90,7 +92,7 @@ public class Server implements Runnable {
             try {
                 if (this.firstInput instanceof String) {
                     String command = (String) this.firstInput;
-                    this.callBack.dealWith("input: [" + command + "]");
+                    this.callBack.commandRecieved(command);
                     
                     Output taskOutput = this.griffin.doCommand(command, prevComm);
                     this.prevComm.send(taskOutput);

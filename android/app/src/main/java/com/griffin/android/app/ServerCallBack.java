@@ -1,6 +1,19 @@
 package com.griffin.android.app;
 
+import java.io.*;
+import java.lang.*;
+import java.net.*;
+
+import com.griffin.core.*;
+
 interface ServerCallBack {
-    public void dealWith(Exception e);
-    public void dealWith(final String s);
+    public void startedServerSocket(ServerSocket serverSocket);
+    public void serverInfo(ServerInfo info);
+    public void taskList(String s);
+    public void startedConnection();
+    public void commandRecieved(String s);
+    public void serverEnding(String s);
+    public void dealWith(ClassNotFoundException e);
+    public void dealWith(IOException e);
+    
 }

@@ -6,12 +6,20 @@ import android.os.*;
 import android.widget.*;
 import android.support.v4.app.*;
 
+import java.io.*;
+import java.net.*;
+
 import com.griffin.android.app.*;
+
+import com.griffin.core.*;
 
 public class AppService extends Service {
     public static final int ID = 1234;
     
     private static boolean isRunning = false;
+    
+    private Thread serverThread;
+    private ServerSocket serverSocket;
     
     public static boolean isRunning() {
         return AppService.isRunning;
@@ -39,8 +47,10 @@ public class AppService extends Service {
         }
         
         AppService.isRunning = true;
-        
         Toast.makeText(this, "service started", Toast.LENGTH_SHORT).show();
+        
+        this.serverThread = new Thread(new ServerThread());
+        this.serverThread.start();
         
         Intent intent = new Intent(this, App.class);
         PendingIntent returnToApp =
@@ -66,10 +76,63 @@ public class AppService extends Service {
         }
         
         AppService.isRunning = false;
-        
         Toast.makeText(this, "service stopped", Toast.LENGTH_SHORT).show();
+        
+        try {
+            this.serverSocket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         
         stopForeground(true);
         stopSelf();
+    }
+    
+    class ServerThread implements Runnable {
+        public void run() {
+            try {
+                serverSocket = new ServerSocket(6000);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            
+            Socket clientSocket;
+            Communication prevComm;
+            while (!Thread.currentThread().isInterrupted()) {
+                try {
+                    clientSocket = serverSocket.accept();
+                    
+                    Handler h = new Handler(AppService.this.getMainLooper());
+                    h.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(AppService.this, "connection", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                    
+                    prevComm = new Communication(clientSocket);
+                    new Thread(new CommunicationThread(prevComm)).start();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+    
+    class CommunicationThread implements Runnable {
+        private Communication prevComm;
+        
+        public CommunicationThread(Communication prevComm) {
+            this.prevComm = prevComm;
+        }
+        
+        public void run() {
+            try {
+                prevComm.send("FROM ANDROID");
+                prevComm.send(new StopCommunication());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

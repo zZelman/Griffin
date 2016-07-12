@@ -32,8 +32,6 @@ public class App extends Activity implements OnClickListener {
     private Button sendCommand;
     private TextView commandOutput;
     
-    private boolean isServiceRunning;
-    
     private Vibrator vibrator;
     private final int VIBRATE_LENGTH = 50; // ms
     
@@ -50,11 +48,10 @@ public class App extends Activity implements OnClickListener {
         this.startService.setOnClickListener(this);
         
         this.isServiceRunningText = (TextView) findViewById(R.id.isServiceRunningText);
-        this.isServiceRunning = this.isServiceRunning(AppService.class);
-        if (this.isServiceRunning) {
-            this.isServiceRunningText.setText(this.SERVICE_STARTED);
+        if (AppService.isRunning()) {
+            this.isServiceRunningText.setText(SERVICE_STARTED);
         } else {
-            this.isServiceRunningText.setText(this.SERVICE_STOPPED);
+            this.isServiceRunningText.setText(SERVICE_STOPPED);
         }
         
         this.stopService = (Button) findViewById(R.id.stopService);
@@ -87,10 +84,9 @@ public class App extends Activity implements OnClickListener {
     private void startService() {
         this.vibrate();
         
-        if (this.isServiceRunning == false) {
+        if (AppService.isRunning() == false) {
             startService(new Intent(getBaseContext(), AppService.class));
             this.isServiceRunningText.setText(this.SERVICE_STARTED);
-            this.isServiceRunning = true;
         } else {
             Toast.makeText(this, "service already running", Toast.LENGTH_SHORT).show();
         }
@@ -99,10 +95,9 @@ public class App extends Activity implements OnClickListener {
     private void stopService() {
         this.vibrate();
         
-        if (this.isServiceRunning == true) {
+        if (AppService.isRunning() == true) {
             stopService(new Intent(getBaseContext(), AppService.class));
             this.isServiceRunningText.setText(this.SERVICE_STOPPED);
-            this.isServiceRunning = false;
         } else {
             Toast.makeText(this, "service not running", Toast.LENGTH_SHORT).show();
         }
@@ -174,11 +169,11 @@ public class App extends Activity implements OnClickListener {
     }
     
     private void vibrate() {
-        this.vibrator.vibrate(this.VIBRATE_LENGTH);
+        this.vibrator.vibrate(VIBRATE_LENGTH);
     }
     
     private boolean checkNetworkConnection() {
-        ConnectivityManager cm = (ConnectivityManager) this.getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        ConnectivityManager cm = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
         
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
         return activeNetwork != null &&

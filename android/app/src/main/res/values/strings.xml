@@ -1,3 +1,5 @@
 <resources>
   <string name="app_name">Griffin</string>
+  <string name="notification_title">@string/app_name</string>
+  <string name="notification_text">the server is running</string>
 </resources>

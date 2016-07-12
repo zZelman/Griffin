@@ -20,7 +20,7 @@ public class AppService extends Service implements ServerCallBack {
     private final String TARGET = "android";
     
     public static boolean isRunning() {
-        return this.isRunning;
+        return AppService.isRunning;
     }
     
     @Override

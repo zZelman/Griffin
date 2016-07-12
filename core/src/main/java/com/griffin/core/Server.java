@@ -1,10 +1,9 @@
-package com.griffin.android.app;
+package com.griffin.core;
 
 import java.net.*;
 import java.io.*;
 
 import com.griffin.core.*;
-import com.griffin.android.*;
 
 public class Server implements Runnable {
     private ServerInfo info;

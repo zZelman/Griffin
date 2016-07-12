@@ -1,4 +1,4 @@
-package com.griffin.android.app;
+package com.griffin.core;
 
 import java.io.*;
 import java.lang.*;
@@ -6,7 +6,7 @@ import java.net.*;
 
 import com.griffin.core.*;
 
-interface ServerCallBack {
+public interface ServerCallBack {
     public void startedServerSocket(ServerSocket serverSocket);
     public void serverInfo(ServerInfo info);
     public void taskList(String s);

@@ -74,8 +74,12 @@ public class AppService extends Service implements ServerCallBack {
         try {
             InputStream inputStream = this.getResources().openRawResource(R.raw.server_list);
             ServerInfoParser infoParser = new ServerInfoParser(inputStream);
-            Server server = new Server(infoParser.getServerInfo(TARGET), this);
+
+            TaskFactory taskFactory = new ConcreteTaskFactory();
+            
+            Server server = new Server(infoParser.getServerInfo(TARGET), taskFactory, this);
             this.serverSocket = server.getServerSocket();
+            
             new Thread(server).start();
         } catch (FileNotFoundException e) {
             Toast.makeText(this, "server info file not found", Toast.LENGTH_SHORT).show();

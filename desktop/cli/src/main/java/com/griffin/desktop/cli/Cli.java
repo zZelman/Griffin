@@ -53,7 +53,7 @@ public class Cli {
                     break;
                 }
                 
-                System.out.println(ret);
+                System.out.println(ret.toString());
             }
             
             nextComm.close();

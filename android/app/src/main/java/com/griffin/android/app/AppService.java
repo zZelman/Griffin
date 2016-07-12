@@ -13,30 +13,14 @@ import com.griffin.android.app.*;
 
 import com.griffin.core.*;
 
-public class AppService extends Service {
+public class AppService extends Service implements ServerCallBack {
     public static final int ID = 1234;
-    
     private static boolean isRunning = false;
-    
-    private ServerInfoParser infoParser;
     private ServerSocket serverSocket;
+    private final String TARGET = "android";
     
     public static boolean isRunning() {
         return AppService.isRunning;
-    }
-    
-    @Override
-    public void onCreate() {
-        try {
-            InputStream inputStream = this.getResources().openRawResource(R.raw.server_list);
-            this.infoParser = new ServerInfoParser(inputStream);
-        } catch (FileNotFoundException e) {
-            Toast.makeText(this, "server info file not found", Toast.LENGTH_SHORT).show();
-            return;
-        } catch (IOException e) {
-            Toast.makeText(this, "io error", Toast.LENGTH_SHORT).show();
-            return;
-        }
     }
     
     @Override
@@ -54,6 +38,30 @@ public class AppService extends Service {
     public void onDestroy() {
         this.stop();
     }
+
+    @Override
+    public void dealWith(Exception e) {
+        final String message = e.getMessage().toLowerCase();
+        
+        Handler h = new Handler(AppService.this.getMainLooper());
+        h.post(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(AppService.this, message, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+    
+    @Override
+    public void dealWith(final String s) {
+        Handler h = new Handler(AppService.this.getMainLooper());
+        h.post(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(AppService.this, s, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
     
     private void start() {
         if (AppService.isRunning == true) {
@@ -63,7 +71,25 @@ public class AppService extends Service {
         AppService.isRunning = true;
         Toast.makeText(this, "service started", Toast.LENGTH_SHORT).show();
         
-        new Thread(new ServerThread(this.infoParser)).start();
+        try {
+            InputStream inputStream = this.getResources().openRawResource(R.raw.server_list);
+            ServerInfoParser infoParser = new ServerInfoParser(inputStream);
+            Server server = new Server(infoParser.getServerInfo(TARGET), this);
+            this.serverSocket = server.getServerSocket();
+            new Thread(server).start();
+        } catch (FileNotFoundException e) {
+            Toast.makeText(this, "server info file not found", Toast.LENGTH_SHORT).show();
+            AppService.isRunning = false;
+            return;
+        } catch (IOException e) {
+            Toast.makeText(this, "io error", Toast.LENGTH_SHORT).show();
+            AppService.isRunning = false;
+            return;
+        } catch (Exception e) {
+            Toast.makeText(this, e.getMessage().toLowerCase(), Toast.LENGTH_SHORT).show();
+            AppService.isRunning = false;
+            return;
+        }
         
         Intent intent = new Intent(this, App.class);
         PendingIntent returnToApp =
@@ -97,74 +123,5 @@ public class AppService extends Service {
         
         stopForeground(true);
         stopSelf();
-    }
-    
-    class ServerThread implements Runnable {
-        private final ServerInfoParser infoParser;
-        private final String TARGET = "android";
-        
-        public ServerThread(ServerInfoParser infoParser) {
-            this.infoParser = infoParser;
-        }
-        
-        public void run() {
-            ServerInfo info = null;
-            try {
-                info = this.infoParser.getServerInfo(TARGET);
-            } catch (Exception e) {
-                final String message = e.getMessage();
-                
-                Handler h = new Handler(AppService.this.getMainLooper());
-                h.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(AppService.this, message, Toast.LENGTH_SHORT).show();
-                    }
-                });
-                return;
-            }
-            
-            try {
-                serverSocket = new ServerSocket(info.getPort());
-                
-                Socket clientSocket;
-                Communication prevComm;
-                while (!Thread.currentThread().isInterrupted()) {
-                    clientSocket = serverSocket.accept();
-                    
-                    Handler h = new Handler(AppService.this.getMainLooper());
-                    h.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(AppService.this, "connection", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                    
-                    prevComm = new Communication(clientSocket);
-                    new Thread(new CommunicationThread(prevComm)).start();
-                }
-
-                serverSocket.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-    
-    class CommunicationThread implements Runnable {
-        private Communication prevComm;
-        
-        public CommunicationThread(Communication prevComm) {
-            this.prevComm = prevComm;
-        }
-        
-        public void run() {
-            try {
-                prevComm.send("FROM ANDROID");
-                prevComm.send(new StopCommunication());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
     }
 }

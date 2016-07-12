@@ -18,11 +18,25 @@ public class AppService extends Service {
     
     private static boolean isRunning = false;
     
-    private Thread serverThread;
+    private ServerInfoParser infoParser;
     private ServerSocket serverSocket;
     
     public static boolean isRunning() {
         return AppService.isRunning;
+    }
+    
+    @Override
+    public void onCreate() {
+        try {
+            InputStream inputStream = this.getResources().openRawResource(R.raw.server_list);
+            this.infoParser = new ServerInfoParser(inputStream);
+        } catch (FileNotFoundException e) {
+            Toast.makeText(this, "server info file not found", Toast.LENGTH_SHORT).show();
+            return;
+        } catch (IOException e) {
+            Toast.makeText(this, "io error", Toast.LENGTH_SHORT).show();
+            return;
+        }
     }
     
     @Override
@@ -49,8 +63,7 @@ public class AppService extends Service {
         AppService.isRunning = true;
         Toast.makeText(this, "service started", Toast.LENGTH_SHORT).show();
         
-        this.serverThread = new Thread(new ServerThread());
-        this.serverThread.start();
+        new Thread(new ServerThread(this.infoParser)).start();
         
         Intent intent = new Intent(this, App.class);
         PendingIntent returnToApp =
@@ -80,26 +93,43 @@ public class AppService extends Service {
         
         try {
             this.serverSocket.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        } catch (IOException e) {}
         
         stopForeground(true);
         stopSelf();
     }
     
     class ServerThread implements Runnable {
+        private final ServerInfoParser infoParser;
+        private final String TARGET = "android";
+        
+        public ServerThread(ServerInfoParser infoParser) {
+            this.infoParser = infoParser;
+        }
+        
         public void run() {
+            ServerInfo info = null;
             try {
-                serverSocket = new ServerSocket(6000);
-            } catch (IOException e) {
-                e.printStackTrace();
+                info = this.infoParser.getServerInfo(TARGET);
+            } catch (Exception e) {
+                final String message = e.getMessage();
+                
+                Handler h = new Handler(AppService.this.getMainLooper());
+                h.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(AppService.this, message, Toast.LENGTH_SHORT).show();
+                    }
+                });
+                return;
             }
             
-            Socket clientSocket;
-            Communication prevComm;
-            while (!Thread.currentThread().isInterrupted()) {
-                try {
+            try {
+                serverSocket = new ServerSocket(info.getPort());
+                
+                Socket clientSocket;
+                Communication prevComm;
+                while (!Thread.currentThread().isInterrupted()) {
                     clientSocket = serverSocket.accept();
                     
                     Handler h = new Handler(AppService.this.getMainLooper());
@@ -112,9 +142,11 @@ public class AppService extends Service {
                     
                     prevComm = new Communication(clientSocket);
                     new Thread(new CommunicationThread(prevComm)).start();
-                } catch (IOException e) {
-                    e.printStackTrace();
                 }
+
+                serverSocket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
     }

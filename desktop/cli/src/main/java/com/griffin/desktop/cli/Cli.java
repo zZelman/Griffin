@@ -29,7 +29,7 @@ public class Cli {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
             System.exit(1);
-        } catch (URISyntaxException | IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
             System.exit(1);
         } catch (Exception e) {

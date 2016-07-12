@@ -62,7 +62,7 @@ public class Daemon implements Runnable {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
             System.exit(1);
-        } catch (URISyntaxException | IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
             System.exit(1);
         } catch (Exception e) {
@@ -86,7 +86,7 @@ public class Daemon implements Runnable {
             Communication prevComm;
             Object firstInput;
             String possibleStopCommand;
-            while (true) {
+            while (true) { // TODO: change to "!Thread.currentThread().isInterrupted()" and test
                 clientSocket = serverSocket.accept();
                 prevComm = new Communication(clientSocket);
                 
@@ -103,8 +103,9 @@ public class Daemon implements Runnable {
                         break;
                     }
                 }
-                
+
                 // the thread deals with prevComm closing
+                // the thread deals with checking firstInput
                 new Thread(new Daemon(griffin, prevComm, firstInput)).start();
             }
             

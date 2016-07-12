@@ -46,7 +46,7 @@ public class ExamplePrefixTask extends Task {
         ServerInfo info = null;
         try {
             info = this.infoParser.getServerInfo(targetName);
-        } catch (URISyntaxException | IOException e) {
+        } catch (IOException e) {
             output.addExecutionMessage(e.toString());
             output.setReturnMessage(this.failure);
             return output;

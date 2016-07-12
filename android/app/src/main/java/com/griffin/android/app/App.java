@@ -39,7 +39,8 @@ public class App extends Activity implements OnClickListener {
     private final String SERVICE_STARTED = "STARTED";
     
     public static final String TAG = "App";
-    
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
@@ -66,7 +67,8 @@ public class App extends Activity implements OnClickListener {
         
         this.vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
     }
-    
+
+    @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.startService:
@@ -143,7 +145,7 @@ public class App extends Activity implements OnClickListener {
         } catch (FileNotFoundException e) {
             Toast.makeText(this, "server info file not found", Toast.LENGTH_SHORT).show();
             return;
-        } catch (URISyntaxException | IOException e) {
+        } catch (IOException e) {
             Toast.makeText(this, "io error", Toast.LENGTH_SHORT).show();
             return;
         } catch (Exception e) {
@@ -154,16 +156,6 @@ public class App extends Activity implements OnClickListener {
         new Networking(info, command).execute();
         
         this.hideKeyboard();
-    }
-    
-    private boolean isServiceRunning(Class<?> serviceClass) {
-        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-        for (RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
-            if (serviceClass.getName().equals(service.service.getClassName())) {
-                return true;
-            }
-        }
-        return false;
     }
     
     private void vibrate() {

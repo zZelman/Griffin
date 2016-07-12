@@ -34,29 +34,42 @@ public class AppService extends Service {
     }
     
     private void start() {
-        if (AppService.isRunning == false) {
-            AppService.isRunning = true;
-            
-            Toast.makeText(this, "service started", Toast.LENGTH_SHORT).show();
-            
-            Notification notification = new NotificationCompat.Builder(this)
-            .setSmallIcon(R.drawable.ic_notification)
-            .setContentTitle(getString(R.string.notification_title))
-            .setContentText(getString(R.string.notification_text))
-            .build();
-            
-            startForeground(AppService.ID, notification);
+        if (AppService.isRunning == true) {
+            return;
         }
+        
+        AppService.isRunning = true;
+        
+        Toast.makeText(this, "service started", Toast.LENGTH_SHORT).show();
+        
+        Intent intent = new Intent(this, App.class);
+        PendingIntent returnToApp =
+            PendingIntent.getActivity(
+                this,
+                0,
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT
+            );
+            
+        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
+        .setSmallIcon(R.drawable.ic_notification)
+        .setContentTitle(getString(R.string.notification_title))
+        .setContentText(getString(R.string.notification_text))
+        .setContentIntent(returnToApp);
+        
+        startForeground(AppService.ID, notificationBuilder.build());
     }
     
     private void stop() {
-        if (AppService.isRunning == true) {
-            AppService.isRunning = false;
-            
-            Toast.makeText(this, "service stopped", Toast.LENGTH_SHORT).show();
-            
-            stopForeground(true);
-            stopSelf();
+        if (AppService.isRunning == false) {
+            return;
         }
+        
+        AppService.isRunning = false;
+        
+        Toast.makeText(this, "service stopped", Toast.LENGTH_SHORT).show();
+        
+        stopForeground(true);
+        stopSelf();
     }
 }

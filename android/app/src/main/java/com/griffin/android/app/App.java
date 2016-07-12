@@ -153,9 +153,7 @@ public class App extends Activity implements OnClickListener {
         
         new Networking(info, command).execute();
         
-        // hide keyboard
-        InputMethodManager inputMethodManager = (InputMethodManager) this.getSystemService(Activity.INPUT_METHOD_SERVICE);
-        inputMethodManager.hideSoftInputFromWindow(this.getCurrentFocus().getWindowToken(), 0);
+        this.hideKeyboard();
     }
     
     private boolean isServiceRunning(Class<?> serviceClass) {
@@ -170,6 +168,11 @@ public class App extends Activity implements OnClickListener {
     
     private void vibrate() {
         this.vibrator.vibrate(VIBRATE_LENGTH);
+    }
+    
+    private void hideKeyboard() {
+        InputMethodManager inputMethodManager = (InputMethodManager) this.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(this.getCurrentFocus().getWindowToken(), 0);
     }
     
     private boolean checkNetworkConnection() {

@@ -13,11 +13,10 @@ import com.griffin.android.app.*;
 
 import com.griffin.core.*;
 
-public class AppService extends Service implements ServerCallBack {
+public class AppService extends Service implements ServerCallBack, Startable {
     public static final int ID = 1234;
     private static boolean isRunning = false;
     private ServerSocket serverSocket;
-    private final String TARGET = "android";
     
     public static boolean isRunning() {
         return AppService.isRunning;
@@ -67,6 +66,16 @@ public class AppService extends Service implements ServerCallBack {
     @Override
     public void serverEnding(String s) {
         this.showToast(s);
+
+        // this must be here, otherwise the command will be
+        // ran on a bad thread & cause a crash
+        Handler h = new Handler(AppService.this.getMainLooper());
+        h.post(new Runnable() {
+            @Override
+            public void run() {
+                AppService.this.stop();
+            }
+        });
     }
     
     @Override
@@ -79,19 +88,10 @@ public class AppService extends Service implements ServerCallBack {
         this.showToast(e.getMessage().toLowerCase());
     }
     
-    private void showToast(final String s) {
-        Handler h = new Handler(AppService.this.getMainLooper());
-        h.post(new Runnable() {
-            @Override
-            public void run() {
-                Toast.makeText(AppService.this, s, Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-    
-    private void start() {
+    @Override
+    public boolean start() {
         if (AppService.isRunning == true) {
-            return;
+            return false;
         }
         
         AppService.isRunning = true;
@@ -102,23 +102,21 @@ public class AppService extends Service implements ServerCallBack {
             ServerInfoParser infoParser = new ServerInfoParser(inputStream);
             
             TaskFactory taskFactory = new ConcreteTaskFactory();
-            
-            Server server = new Server(infoParser.getServerInfo(TARGET), taskFactory, this);
-            this.serverSocket = server.getServerSocket();
+            Server server = new Server(this, infoParser.getServerInfo(getString(R.string.target)), taskFactory);
             
             new Thread(server).start();
         } catch (FileNotFoundException e) {
-            Toast.makeText(this, "server info file not found", Toast.LENGTH_SHORT).show();
             AppService.isRunning = false;
-            return;
+            this.showToast("server info file not found");
+            return false;
         } catch (IOException e) {
-            Toast.makeText(this, "io error", Toast.LENGTH_SHORT).show();
             AppService.isRunning = false;
-            return;
+            this.showToast("io error");
+            return false;
         } catch (Exception e) {
-            Toast.makeText(this, e.getMessage().toLowerCase(), Toast.LENGTH_SHORT).show();
             AppService.isRunning = false;
-            return;
+            this.showToast(e.getMessage().toLowerCase());
+            return false;
         }
         
         Intent intent = new Intent(this, App.class);
@@ -137,11 +135,14 @@ public class AppService extends Service implements ServerCallBack {
         .setContentIntent(returnToApp);
         
         startForeground(AppService.ID, notificationBuilder.build());
+
+        return true;
     }
     
-    private void stop() {
+    @Override
+    public boolean stop() {
         if (AppService.isRunning == false) {
-            return;
+            return false;
         }
         
         AppService.isRunning = false;
@@ -155,5 +156,17 @@ public class AppService extends Service implements ServerCallBack {
         
         stopForeground(true);
         stopSelf();
+
+        return true;
+    }
+    
+    private void showToast(final String s) {
+        Handler h = new Handler(AppService.this.getMainLooper());
+        h.post(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(AppService.this, s, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

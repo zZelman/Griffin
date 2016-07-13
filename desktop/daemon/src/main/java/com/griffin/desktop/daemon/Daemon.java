@@ -2,44 +2,125 @@ package com.griffin.desktop.daemon;
 
 import java.net.*;
 import java.io.*;
-import java.lang.*;
-import java.util.concurrent.atomic.*;
 
 import com.griffin.core.*;
 
-public class Daemon implements Runnable {
-    private final Griffin griffin;
-    private final Communication prevComm;
-    private final Object firstInput;
+public class Daemon implements ServerCallBack, Startable {
+    private String fileName;
+    private String target;
     
-    private final static String STOP_SERVER_COMMAND = "stop server";
-    private final static String SERVER_STOPPING = "server has recieved the stop command, and is ending";
-    private final String BAD_COMMAND = "first communication must be in String form";
+    private static boolean isRunning = false;
     
-    public Daemon(Griffin griffin, Communication prevComm, Object firstInput) {
-        this.griffin = griffin;
-        this.prevComm = prevComm;
-        this.firstInput = firstInput;
+    private ServerSocket serverSocket;
+    private Thread serverThread;
+    
+    public Daemon(String fileName, String target) {
+        this.fileName = fileName;
+        this.target = target;
+    }
+
+    public Thread getThread() {
+        return this.serverThread;
     }
     
-    public void run() {
-        try {
-            if (this.firstInput instanceof String) {
-                String command = (String) this.firstInput;
-                System.out.println("input: [" + command + "]");
-                
-                Output taskOutput = this.griffin.doCommand(command, prevComm);
-                prevComm.send(taskOutput);
-            } else {
-                prevComm.send(BAD_COMMAND);
-            }
-            
-            prevComm.send(new StopCommunication());
-            prevComm.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.exit(1);
+    @Override
+    public void startedServerSocket(ServerSocket serverSocket) {
+        this.serverSocket = serverSocket;
+    }
+    
+    @Override
+    public void serverInfo(ServerInfo info) {
+        this.println(info.toString());
+    }
+    
+    @Override
+    public void taskList(String s) {
+        this.println(s);
+    }
+    
+    @Override
+    public void startedConnection() {
+        this.println("connection");
+    }
+    
+    @Override
+    public void commandRecieved(String s) {
+        this.println("input: [" + s + "]");
+    }
+    
+    @Override
+    public void serverEnding(String s) {
+        this.println(s);
+    }
+    
+    @Override
+    public void dealWith(ClassNotFoundException e) {
+        this.println(e.getMessage().toLowerCase());
+    }
+    
+    @Override
+    public void dealWith(IOException e) {
+        this.println(e.getMessage().toLowerCase());
+    }
+    
+    @Override
+    public boolean start() {
+        if (Daemon.isRunning == true) {
+            this.println("daemon is already running");
+            return false;
         }
+        
+        Daemon.isRunning = true;
+        this.println("daemon started");
+        
+        try {
+            InputStream inputStream = ClassLoader.getSystemClassLoader().getResourceAsStream(this.fileName);
+            ServerInfoParser infoParser = new ServerInfoParser(inputStream);
+            
+            TaskFactory taskFactory = new ConcreteTaskFactory(infoParser);
+            Server server = new Server(this, infoParser.getServerInfo(this.target), taskFactory);
+            
+            this.serverThread = new Thread(server);
+            this.serverThread.start();
+        } catch (FileNotFoundException e) {
+            Daemon.isRunning = false;
+            this.println(e);
+            return false;
+        } catch (IOException e) {
+            Daemon.isRunning = false;
+            this.println(e);
+            return false;
+        } catch (Exception e) {
+            Daemon.isRunning = false;
+            this.println(e);
+            return false;
+        }
+
+        return true;
+    }
+    
+    @Override
+    public boolean stop() {
+        if (Daemon.isRunning == false) {
+            this.println("daemon is not running");
+            return false;
+        }
+        
+        try {
+            this.serverSocket.close();
+        } catch (IOException e) {
+            this.dealWith(e);
+        }
+
+        return true;
+    }
+    
+    private void println(String s) {
+        System.out.println(s);
+    }
+    
+    private void println(Exception e) {
+        e.printStackTrace();
     }
     
     public static void usage() {
@@ -52,72 +133,15 @@ public class Daemon implements Runnable {
         if (args.length < 2) {
             Daemon.usage();
         }
-
-        ServerInfoParser infoParser = null;
-        ServerInfo info = null;
-        try {
-            InputStream inputStream = ClassLoader.getSystemClassLoader().getResourceAsStream(args[0]);
-            infoParser = new ServerInfoParser(inputStream);
-            info = infoParser.getServerInfo(args[1]);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            System.exit(1);
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.exit(1);
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.exit(1);
-        }
         
-        // setup a shared Griffin instance between all threads
-        TaskFactory taskFactory = new ConcreteTaskFactory(infoParser);
-        Griffin griffin = new Griffin(taskFactory);
-        String commandsAvailable = griffin.printTasks();
+        Daemon d = new Daemon(args[0], args[1]);
         
-        System.out.println(info);
-        System.out.println();
-        System.out.println(commandsAvailable);
-        
-        try {
-            ServerSocket serverSocket = new ServerSocket(info.getPort());
-            
-            Socket clientSocket;
-            Communication prevComm;
-            Object firstInput;
-            String possibleStopCommand;
-            while (true) { // TODO: change to "!Thread.currentThread().isInterrupted()" and test
-                clientSocket = serverSocket.accept();
-                prevComm = new Communication(clientSocket);
-                
-                firstInput = prevComm.receive();
-                
-                // always check the first communication for an instance of the stop command
-                if (firstInput instanceof String) {
-                    possibleStopCommand = (String) firstInput;
-                    if (possibleStopCommand.equals(Daemon.STOP_SERVER_COMMAND)) {
-                        Output output = new Output();
-                        output.setReturnMessage(Daemon.SERVER_STOPPING);
-                        prevComm.send(output);
-                        prevComm.send(new StopCommunication());
-                        break;
-                    }
-                }
-
-                // the thread deals with prevComm closing
-                // the thread deals with checking firstInput
-                new Thread(new Daemon(griffin, prevComm, firstInput)).start();
+        if (d.start()) {
+            try {
+                d.getThread().join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
-            
-            serverSocket.close();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-            System.exit(1);
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.exit(1);
         }
-        
-        System.out.println(Daemon.SERVER_STOPPING);
     }
 }

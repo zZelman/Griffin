@@ -15,5 +15,4 @@ public interface ServerCallBack {
     public void serverEnding(String s);
     public void dealWith(ClassNotFoundException e);
     public void dealWith(IOException e);
-    
 }

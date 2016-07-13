@@ -6,8 +6,8 @@ import java.io.*;
 import com.griffin.core.*;
 
 public class Server implements Runnable {
-    private ServerInfo info;
     private ServerCallBack callBack;
+    private ServerInfo info;
     private ServerSocket serverSocket;
     private Griffin griffin;
     
@@ -15,18 +15,14 @@ public class Server implements Runnable {
     private final String SERVER_STOPPING = "server has recieved the stop command, and is ending";
     private final String BAD_COMMAND = "first communication must be in String form";
     
-    public Server(ServerInfo info, TaskFactory taskFactory, ServerCallBack callBack) throws IOException {
-        this.info = info;
+    public Server(ServerCallBack callBack, ServerInfo info, TaskFactory taskFactory) throws IOException {
         this.callBack = callBack;
+        this.info = info;
         
         this.griffin = new Griffin(taskFactory);
         this.serverSocket = new ServerSocket(info.getPort());
 
         this.callBack.startedServerSocket(this.serverSocket);
-    }
-    
-    public ServerSocket getServerSocket() {
-        return this.serverSocket;
     }
     
     @Override

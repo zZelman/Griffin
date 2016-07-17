@@ -8,9 +8,9 @@ import java.util.*;
 import com.griffin.core.*;
 
 public class Client implements Startable {
-    private ClientCallBack callBack;
-    private ServerInfo info;
-    private Serializable command;
+    private final ClientCallBack callBack;
+    private final ServerInfo info;
+    private final Serializable command;
     
     public Client(ClientCallBack callBack, ServerInfo info, Serializable command) {
         this.callBack = callBack;

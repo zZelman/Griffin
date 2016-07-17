@@ -39,7 +39,7 @@ public class App extends Activity implements OnClickListener {
     private final String SERVICE_STARTED = "STARTED";
     
     public static final String TAG = "App";
-
+    
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,7 +67,7 @@ public class App extends Activity implements OnClickListener {
         
         this.vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
     }
-
+    
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -175,15 +175,17 @@ public class App extends Activity implements OnClickListener {
                activeNetwork.isConnectedOrConnecting();
     }
     
-    class Networking extends AsyncTask<Void, Void, Void> {
+    class Networking extends AsyncTask<Void, Void, Void> implements ClientCallBack {
         private final ServerInfo info;
-        private final String command;
+        private final Serializable command;
+        private Client client;
         
         private List<String> outputs;
         
-        public Networking(ServerInfo info, String command) {
+        public Networking(ServerInfo info, Serializable command) {
             this.info = info;
             this.command = command;
+            this.client = new Client(this, this.info, this.command);
             
             this.outputs = new LinkedList<String>();
         }
@@ -196,31 +198,7 @@ public class App extends Activity implements OnClickListener {
         
         @Override
         protected Void doInBackground(Void... params) {
-            try {
-                Socket socket = new Socket(info.getHostName(), info.getPort());
-                Communication nextComm = new Communication(socket);
-                
-                nextComm.send(command);
-                
-                Object ret;
-                while (true) {
-                    ret = nextComm.receive();
-                    if (ret instanceof StopCommunication || ret == null) {
-                        break;
-                    }
-                    
-                    outputs.add(ret.toString() + "\n");
-                }
-                
-                nextComm.close();
-            } catch (UnknownHostException e) {
-                outputs.add(e.toString() + "\n");
-            } catch (ClassNotFoundException e) {
-                outputs.add(e.toString() + "\n");
-            } catch (IOException e) {
-                outputs.add(e.toString() + "\n");
-            }
-            
+            client.start();
             return null;
         }
         
@@ -234,6 +212,26 @@ public class App extends Activity implements OnClickListener {
             this.showWhatHave();
         }
         
+        @Override
+        public void recieved(Object o) {
+            outputs.add(o.toString() + "\n");
+        }
+        
+        @Override
+        public void dealWith(UnknownHostException e) {
+            outputs.add(e.toString() + "\n");
+        }
+        
+        @Override
+        public void dealWith(ClassNotFoundException e) {
+            outputs.add(e.toString() + "\n");
+        }
+        
+        @Override
+        public void dealWith(IOException e) {
+            outputs.add(e.toString() + "\n");
+        }
+        
         private void showWhatHave() {
             TextView commandOutput = (TextView) findViewById(R.id.commandOutput);
             commandOutput.setText("");
@@ -243,5 +241,3 @@ public class App extends Activity implements OnClickListener {
         }
     }
 }
-
-

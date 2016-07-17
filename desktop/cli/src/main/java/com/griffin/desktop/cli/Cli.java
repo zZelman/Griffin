@@ -42,12 +42,12 @@ public class Cli implements ClientCallBack, Startable {
     
     @Override
     public boolean start() {
-        return client.start();
+        return this.client.start();
     }
     
     @Override
     public boolean stop() {
-        return client.stop();
+        return this.client.stop();
     }
     
     public static void usage() {

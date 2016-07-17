@@ -6,10 +6,10 @@ import java.io.*;
 import com.griffin.core.*;
 
 public class Server implements Runnable {
-    private ServerCallBack callBack;
-    private ServerInfo info;
-    private ServerSocket serverSocket;
-    private Griffin griffin;
+    private final ServerCallBack callBack;
+    private final ServerInfo info;
+    private final ServerSocket serverSocket;
+    private final Griffin griffin;
     
     private final String STOP_SERVER_COMMAND = "stop server";
     private final String SERVER_STOPPING = "server has recieved the stop command, and is ending";

@@ -22,9 +22,17 @@ public class PrintHelpTask extends Task {
         LoadedTasks loadedTasks = this.griffin.getLoadedTasks();
         
         output.addExecutionMessage("Commands (in order):");
-        this.helper(output, "Open ended", loadedTasks.getOpenEndedTasks());
-        this.helper(output, "Parameterized", loadedTasks.getParameterizedTasks());
-        this.helper(output, "Simple", loadedTasks.getSimpleTasks());
+        if (!loadedTasks.getOpenEndedTasks().isEmpty()) {
+            this.helper(output, "Open ended", loadedTasks.getOpenEndedTasks());
+        }
+        
+        if (!loadedTasks.getParameterizedTasks().isEmpty()) {
+            this.helper(output, "Parameterized", loadedTasks.getParameterizedTasks());
+        }
+        
+        if (!loadedTasks.getSimpleTasks().isEmpty()) {
+            this.helper(output, "Simple", loadedTasks.getSimpleTasks());
+        }
         
         output.setReturnMessage(this.success);
         return output;

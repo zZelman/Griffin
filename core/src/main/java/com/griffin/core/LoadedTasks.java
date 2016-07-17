@@ -62,9 +62,18 @@ public class LoadedTasks {
         StringBuffer sb = new StringBuffer();
         
         sb.append("Commands (in order):\n");
-        this.toStringHelper(sb, "Open ended", this.openEndedTasks);
-        this.toStringHelper(sb, "Parameterized", this.parameterizedTasks);
-        this.toStringHelper(sb, "Simple", this.simpleTasks);
+        
+        if (!this.openEndedTasks.isEmpty()) {
+            this.toStringHelper(sb, "Open ended", this.openEndedTasks);
+        }
+        
+        if (!this.parameterizedTasks.isEmpty()) {
+            this.toStringHelper(sb, "Parameterized", this.parameterizedTasks);
+        }
+        
+        if (!this.simpleTasks.isEmpty()) {
+            this.toStringHelper(sb, "Simple", this.simpleTasks);
+        }
         
         return sb.toString();
     }

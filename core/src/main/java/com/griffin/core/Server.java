@@ -21,7 +21,7 @@ public class Server implements Runnable {
         
         this.griffin = new Griffin(taskFactory);
         this.serverSocket = new ServerSocket(info.getPort());
-
+        
         this.callBack.startedServerSocket(this.serverSocket);
     }
     
@@ -36,7 +36,7 @@ public class Server implements Runnable {
             Object firstInput;
             String possibleStopCommand;
             while (!Thread.currentThread().isInterrupted()) {
-                clientSocket = serverSocket.accept();
+                clientSocket = this.serverSocket.accept();
                 this.callBack.startedConnection();
                 
                 prevComm = new Communication(clientSocket);
@@ -58,12 +58,16 @@ public class Server implements Runnable {
                 // the thread deals with checking firstInput
                 new Thread(new CommunicationThread(this.callBack, this.griffin, prevComm, firstInput)).start();
             }
-            
-            serverSocket.close();
         } catch (ClassNotFoundException e) {
             this.callBack.dealWith(e);
         } catch (IOException e) {
             this.callBack.dealWith(e);
+        } finally {
+            try {
+                this.serverSocket.close();
+            } catch (IOException e) {
+                this.callBack.dealWith(e);
+            }
         }
         
         this.callBack.serverEnding(SERVER_STOPPING);
@@ -96,9 +100,14 @@ public class Server implements Runnable {
                 }
                 
                 this.prevComm.send(new StopCommunication());
-                this.prevComm.close();
             } catch (IOException e) {
                 this.callBack.dealWith(e);
+            } finally {
+                try {
+                    this.prevComm.close();
+                } catch (IOException e) {
+                    this.callBack.dealWith(e);
+                }
             }
         }
     }

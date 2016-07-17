@@ -9,7 +9,47 @@ import org.apache.commons.lang3.*;
 
 import com.griffin.core.*;
 
-public class Cli {
+public class Cli implements ClientCallBack, Startable {
+    private ServerInfo info;
+    private Serializable command;
+    private Client client;
+    
+    public Cli(ServerInfo info, Serializable command) {
+        this.info = info;
+        this.command = command;
+        this.client = new Client(this, this.info, this.command);
+    }
+    
+    @Override
+    public void recieved(Object o) {
+        System.out.println(o.toString());
+    }
+    
+    @Override
+    public void dealWith(UnknownHostException e) {
+        e.printStackTrace();
+    }
+    
+    @Override
+    public void dealWith(ClassNotFoundException e) {
+        e.printStackTrace();
+    }
+    
+    @Override
+    public void dealWith(IOException e) {
+        e.printStackTrace();
+    }
+    
+    @Override
+    public boolean start() {
+        return client.start();
+    }
+    
+    @Override
+    public boolean stop() {
+        return client.stop();
+    }
+    
     public static void usage() {
         System.out.println("error in command line paramiters");
         System.out.println("    usage: [server_info_filename] [target] [command...]");
@@ -17,7 +57,7 @@ public class Cli {
     }
     
     public static void main(String[] args) {
-        if (args.length < 2) {
+        if (args.length < 3) {
             Cli.usage();
         }
         
@@ -40,34 +80,8 @@ public class Cli {
         String[] commandTokens = ArrayUtils.subarray(args, 2, args.length);
         Serializable command = StringUtils.join(commandTokens, " ");
         
-        System.out.println(command);
-        
-        try {
-            Socket socket = new Socket(info.getHostName(), info.getPort());
-            Communication nextComm = new Communication(socket);
-            
-            nextComm.send(command);
-            
-            Object ret;
-            while (true) {
-                ret = nextComm.receive();
-                if (ret instanceof StopCommunication || ret == null) {
-                    break;
-                }
-                
-                System.out.println(ret.toString());
-            }
-            
-            nextComm.close();
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-            System.exit(1);
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-            System.exit(1);
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.exit(1);
-        }
+        Cli cli = new Cli(info, command);
+        cli.start();
+        cli.stop();
     }
 }

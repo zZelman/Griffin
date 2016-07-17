@@ -44,16 +44,9 @@ public class Cli {
         
         try {
             Socket socket = new Socket(info.getHostName(), info.getPort());
-            
-            System.out.println(info);
-            
             Communication nextComm = new Communication(socket);
             
-            System.out.println("before send");
-            
             nextComm.send(command);
-            
-            System.out.println("sent");
             
             Object ret;
             while (true) {

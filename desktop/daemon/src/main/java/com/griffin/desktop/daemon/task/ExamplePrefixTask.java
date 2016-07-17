@@ -46,10 +46,6 @@ public class ExamplePrefixTask extends Task {
         ServerInfo info = null;
         try {
             info = this.infoParser.getServerInfo(targetName);
-        } catch (IOException e) {
-            output.addExecutionMessage(e.toString());
-            output.setReturnMessage(this.failure);
-            return output;
         } catch (ServerInfoException e) {
             output.addExecutionMessage(e.toString());
             output.setReturnMessage(this.failure);

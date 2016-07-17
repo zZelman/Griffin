@@ -13,5 +13,5 @@ dependencies {
 
 run {
     standardInput = System.in
-    args 'server_list.ini android stop server'.split(' ')
+    args 'server_list.ini android help'.split(' ')
 }

@@ -28,7 +28,7 @@ public class ServerInfoParser {
         this.iniPrefs = new IniPreferences(ini);
     }
     
-    public ServerInfo getServerInfo(String name) throws Exception {
+    public ServerInfo getServerInfo(String name) throws ServerInfoException {
         // TODO: move server_list.ini outside of the jar, prob some gradle config
         // URI uri = ClassLoader.getSystemClassLoader().getResource(this.fileName).toURI();
         // InputStream inputStream = ClassLoader.getSystemClassLoader().getResourceAsStream(this.fileName);
@@ -39,7 +39,7 @@ public class ServerInfoParser {
         if (name == null ||
             hostName == null ||
             port == -1) {
-            throw new Exception("name or formating of the info file is incorrect");
+            throw new ServerInfoException("name or formating of the info file is incorrect");
         }
         
         return new ServerInfo(name, hostName, port);

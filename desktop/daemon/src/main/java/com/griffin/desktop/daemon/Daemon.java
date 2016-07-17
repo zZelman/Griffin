@@ -90,7 +90,7 @@ public class Daemon implements ServerCallBack, Startable {
             Daemon.isRunning = false;
             this.println(e);
             return false;
-        } catch (Exception e) {
+        } catch (ServerInfoException e) {
             Daemon.isRunning = false;
             this.println(e);
             return false;

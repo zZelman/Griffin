@@ -32,7 +32,7 @@ public class Cli {
         } catch (IOException e) {
             e.printStackTrace();
             System.exit(1);
-        } catch (Exception e) {
+        } catch (ServerInfoException e) {
             e.printStackTrace();
             System.exit(1);
         }
@@ -40,11 +40,20 @@ public class Cli {
         String[] commandTokens = ArrayUtils.subarray(args, 2, args.length);
         Serializable command = StringUtils.join(commandTokens, " ");
         
+        System.out.println(command);
+        
         try {
             Socket socket = new Socket(info.getHostName(), info.getPort());
+            
+            System.out.println(info);
+            
             Communication nextComm = new Communication(socket);
             
+            System.out.println("before send");
+            
             nextComm.send(command);
+            
+            System.out.println("sent");
             
             Object ret;
             while (true) {

@@ -148,7 +148,7 @@ public class App extends Activity implements OnClickListener {
         } catch (IOException e) {
             Toast.makeText(this, "io error", Toast.LENGTH_SHORT).show();
             return;
-        } catch (Exception e) {
+        } catch (ServerInfoException e) {
             Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
             return;
         }

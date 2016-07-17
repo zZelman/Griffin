@@ -36,7 +36,7 @@ public class ExampleChainTask extends Task {
             output.addExecutionMessage(e.toString());
             output.setReturnMessage(this.failure);
             return output;
-        } catch (Exception e) {
+        } catch (ServerInfoException e) {
             output.addExecutionMessage(e.toString());
             output.setReturnMessage(this.failure);
             return output;

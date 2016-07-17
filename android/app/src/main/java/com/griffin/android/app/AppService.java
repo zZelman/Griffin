@@ -113,7 +113,7 @@ public class AppService extends Service implements ServerCallBack, Startable {
             AppService.isRunning = false;
             this.showToast("io error");
             return false;
-        } catch (Exception e) {
+        } catch (ServerInfoException e) {
             AppService.isRunning = false;
             this.showToast(e.getMessage().toLowerCase());
             return false;

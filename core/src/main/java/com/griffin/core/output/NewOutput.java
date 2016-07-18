@@ -26,6 +26,10 @@ public class NewOutput implements Iterator<NewOutput> {
     }
     
     public void setSubtaskOutput(NewOutput o) throws SubtaskOutputException {
+        if (this.end == null) {
+            this.end = this.findEnd();
+        }
+        
         if (this.end.subtask != null) {
             throw new SubtaskOutputException("subtask already set, loss of data will occor!");
         }

@@ -41,19 +41,14 @@ public class TestOutput {
         StringOutput so3 = new StringOutput("3");
         StringOutput so4 = new StringOutput("4");
         
-        so0.addOutput(so1);
-
-        // "subtask"
-        so2.addOutput(so3);
-        
         try {
-            // adds to end of the datastructure, which is so1 atm,
-            // and then prints it before that node
-            so0.setSubtaskOutput(so2);
+            so0.setSubtaskOutput(so1);
+            so1.setSubtaskOutput(so2);
+            so2.setSubtaskOutput(so3);
+            so3.setSubtaskOutput(so4);
         } catch (SubtaskOutputException e) {
             e.printStackTrace();
         }
-        so0.addOutput(so4);
         
         this.println(0, so0);
     }
@@ -63,14 +58,19 @@ public class TestOutput {
         for (int i = 0; i < indentLevel; ++i) {
             indentStr += "|   ";
         }
-        
+
+        // deal with given
+        System.out.println(indentStr + curr);
+        if (curr.hasSubtaskOutput()) {
+            this.println(++indentLevel, curr.getSubtaskOutput());
+        }
+
         while (curr.hasNext()) {
+            curr = curr.next();
+            System.out.println(indentStr + curr);
             if (curr.hasSubtaskOutput()) {
                 this.println(++indentLevel, curr.getSubtaskOutput());
             }
-            System.out.println(indentStr + curr);
-            curr = curr.next();
         }
-        System.out.println(indentStr + curr);
     }
 }

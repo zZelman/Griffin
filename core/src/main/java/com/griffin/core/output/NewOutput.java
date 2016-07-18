@@ -8,9 +8,6 @@ public class NewOutput implements Iterator<NewOutput> {
     private NewOutput subtask = null;
     private NewOutput next = null;
     private NewOutput end = null;
-    private boolean doNextFirst = true;
-
-    private NewOutput iterCurr = null;
     
     public void addOutput(NewOutput o) {
         if (this.next == null) {
@@ -36,12 +33,12 @@ public class NewOutput implements Iterator<NewOutput> {
         this.end.subtask = o;
     }
     
-    public void setOrdering(boolean doNextFirst) {
-        this.doNextFirst = doNextFirst;
+    public boolean hasSubtaskOutput() {
+        return this.subtask != null;
     }
     
-    public boolean getOrdering() {
-        return this.doNextFirst;
+    public NewOutput getSubtaskOutput() {
+        return this.subtask;
     }
     
     @Override

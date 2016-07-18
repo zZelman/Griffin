@@ -10,4 +10,19 @@ repositories {
 dependencies {
     compile 'org.apache.commons:commons-lang3:3.0'
     compile 'org.ini4j:ini4j:0.5.4'
+
+    testCompile 'junit:junit:4.12'
+}
+
+test {
+    beforeTest {
+        descriptor -> logger.lifecycle("Running test: ${descriptor}")
+    }
+
+    testLogging {
+        showStandardStreams = true
+    }
+
+    minHeapSize = "128m"
+    maxHeapSize = "512m"
 }

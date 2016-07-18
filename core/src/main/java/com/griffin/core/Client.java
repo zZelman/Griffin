@@ -46,8 +46,7 @@ public class Client implements Startable {
         } finally {
             try {
                 nextComm.close();
-            }
-            catch (IOException e) {
+            } catch (IOException e) {
                 this.callBack.dealWith(e);
             }
         }

@@ -17,7 +17,7 @@ public class TestOutput {
     }
     
     @Test
-    public void testStringOutput() {
+    public void testPrepend() {
         StringOutput so1 = new StringOutput("1");
         StringOutput so2 = new StringOutput("2");
         StringOutput so3 = new StringOutput("3");
@@ -34,7 +34,7 @@ public class TestOutput {
     }
     
     @Test
-    public void testSubtaskOutput() {
+    public void testSubtask() {
         StringOutput so0 = new StringOutput("0");
         StringOutput so1 = new StringOutput("1");
         StringOutput so2 = new StringOutput("2");
@@ -53,18 +53,38 @@ public class TestOutput {
         this.println(0, so0);
     }
     
+    @Test
+    public void testPostpend() {
+        StringOutput so0 = new StringOutput("0");
+        StringOutput so1 = new StringOutput("1");
+        StringOutput so2 = new StringOutput("2");
+        StringOutput so3 = new StringOutput("3");
+        StringOutput so4 = new StringOutput("4");
+        StringOutput so5 = new StringOutput("5");
+        
+        so0.addOutput(so1);
+        
+        so2.addOutput(so3);
+        so2.addOutput(so4);
+
+        so0.addOutput(so2);
+        so0.addOutput(so5);
+        
+        this.println(0, so0);
+    }
+    
     private void println(int indentLevel, NewOutput curr) {
         String indentStr = "";
         for (int i = 0; i < indentLevel; ++i) {
             indentStr += "|   ";
         }
-
+        
         // deal with given
         System.out.println(indentStr + curr);
         if (curr.hasSubtaskOutput()) {
             this.println(++indentLevel, curr.getSubtaskOutput());
         }
-
+        
         while (curr.hasNext()) {
             curr = curr.next();
             System.out.println(indentStr + curr);

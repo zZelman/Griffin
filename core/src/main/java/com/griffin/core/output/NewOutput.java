@@ -5,8 +5,8 @@ import java.util.*;
 import com.griffin.core.output.*;
 
 public class NewOutput implements Iterator<NewOutput> {
-    private NewOutput subtask = null;
     private NewOutput next = null;
+    private NewOutput subtask = null;
     private NewOutput end = null;
     
     public void addOutput(NewOutput o) {
@@ -22,6 +22,10 @@ public class NewOutput implements Iterator<NewOutput> {
         } else {
             this.end.next = o;
             this.end = o;
+            
+            if (this.end.next != null) {
+                this.end = this.findEnd();
+            }
         }
     }
     

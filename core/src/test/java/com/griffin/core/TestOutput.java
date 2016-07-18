@@ -17,6 +17,22 @@ public class TestOutput {
     }
     
     @Test
+    public void testNormal() {
+        StringOutput so0 = new StringOutput("0");
+        StringOutput so1 = new StringOutput("1");
+        StringOutput so2 = new StringOutput("2");
+        StringOutput so3 = new StringOutput("3");
+        StringOutput so4 = new StringOutput("4");
+        
+        so0.addOutput(so1);
+        so0.addOutput(so2);
+        so0.addOutput(so3);
+        so0.addOutput(so4);
+        
+        this.println(0, so0);
+    }
+    
+    @Test
     public void testPrepend() {
         StringOutput so1 = new StringOutput("1");
         StringOutput so2 = new StringOutput("2");
@@ -29,6 +45,26 @@ public class TestOutput {
         
         StringOutput so0 = new StringOutput("0");
         so0.addOutput(so1);
+        
+        this.println(0, so0);
+    }
+    
+    @Test
+    public void testPostpend() {
+        StringOutput so0 = new StringOutput("0");
+        StringOutput so1 = new StringOutput("1");
+        StringOutput so2 = new StringOutput("2");
+        StringOutput so3 = new StringOutput("3");
+        StringOutput so4 = new StringOutput("4");
+        StringOutput so5 = new StringOutput("5");
+        
+        so0.addOutput(so1);
+        
+        so2.addOutput(so3);
+        so2.addOutput(so4);
+        
+        so0.addOutput(so2);
+        so0.addOutput(so5);
         
         this.println(0, so0);
     }
@@ -49,26 +85,6 @@ public class TestOutput {
         } catch (SubtaskOutputException e) {
             e.printStackTrace();
         }
-        
-        this.println(0, so0);
-    }
-    
-    @Test
-    public void testPostpend() {
-        StringOutput so0 = new StringOutput("0");
-        StringOutput so1 = new StringOutput("1");
-        StringOutput so2 = new StringOutput("2");
-        StringOutput so3 = new StringOutput("3");
-        StringOutput so4 = new StringOutput("4");
-        StringOutput so5 = new StringOutput("5");
-        
-        so0.addOutput(so1);
-        
-        so2.addOutput(so3);
-        so2.addOutput(so4);
-
-        so0.addOutput(so2);
-        so0.addOutput(so5);
         
         this.println(0, so0);
     }

@@ -16,7 +16,7 @@ public class TestOutput {
     public void tearDown() {
     }
     
-    @Test
+    // @Test
     public void testClassName() {
         Output so = new StringOutput("string");
         Output urio = new UnusedRawInputOutput("unused");
@@ -25,7 +25,7 @@ public class TestOutput {
         System.out.println(urio);
     }
     
-    @Test
+    // @Test
     public void testNormal() {
         StringOutput so0 = new StringOutput("0");
         StringOutput so1 = new StringOutput("1");
@@ -41,7 +41,7 @@ public class TestOutput {
         this.println(0, so0);
     }
     
-    @Test
+    // @Test
     public void testPrepend() {
         StringOutput so1 = new StringOutput("1");
         StringOutput so2 = new StringOutput("2");
@@ -58,7 +58,7 @@ public class TestOutput {
         this.println(0, so0);
     }
     
-    @Test
+    // @Test
     public void testPostpend() {
         StringOutput so0 = new StringOutput("0");
         StringOutput so1 = new StringOutput("1");
@@ -78,7 +78,7 @@ public class TestOutput {
         this.println(0, so0);
     }
     
-    @Test
+    // @Test
     public void testSubtask() {
         StringOutput so0 = new StringOutput("0");
         StringOutput so1 = new StringOutput("1");
@@ -91,6 +91,28 @@ public class TestOutput {
             so1.setSubtaskOutput(so2);
             so2.setSubtaskOutput(so3);
             so3.setSubtaskOutput(so4);
+        } catch (SubtaskOutputException e) {
+            e.printStackTrace();
+        }
+        
+        this.println(0, so0);
+    }
+    
+    @Test
+    public void testSubtaskPlusTask() {
+        StringOutput so0 = new StringOutput("0");
+        StringOutput so1 = new StringOutput("1");
+        StringOutput so2 = new StringOutput("2");
+        StringOutput so3 = new StringOutput("3");
+        StringOutput so4 = new StringOutput("4");
+        
+        try {
+            // subtask
+            so1.addOutput(so2);
+            so1.addOutput(so3);
+
+            so0.setSubtaskOutput(so1);
+            so0.addOutput(so4);
         } catch (SubtaskOutputException e) {
             e.printStackTrace();
         }
@@ -114,7 +136,7 @@ public class TestOutput {
             curr = curr.next();
             System.out.println(indentStr + curr);
             if (curr.hasSubtaskOutput()) {
-                this.println(++indentLevel, curr.getSubtaskOutput());
+                this.println(indentLevel + 1, curr.getSubtaskOutput());
             }
         }
     }

@@ -8,6 +8,7 @@ import java.util.*;
 import org.apache.commons.lang3.*;
 
 import com.griffin.core.*;
+import com.griffin.core.output.*;
 
 public class Cli implements ClientCallBack, Startable {
     private ServerInfo info;
@@ -22,7 +23,11 @@ public class Cli implements ClientCallBack, Startable {
     
     @Override
     public void recieved(Object o) {
-        System.out.println(o.toString());
+        if (o instanceof Output) {
+            this.printOutput((Output) o);
+        } else {
+            this.println(o.toString()); // a catch-all for unexpected output (like "prev comm"'s string)
+        }
     }
     
     @Override
@@ -48,6 +53,51 @@ public class Cli implements ClientCallBack, Startable {
     @Override
     public boolean stop() {
         return this.client.stop();
+    }
+    
+    private void printOutput(Output o) {
+        this.printOutput(0, o);
+    }
+    
+    private void printOutput(int indentLevel, Output curr) {
+        // deal with given
+        this.doPrint(indentLevel, curr);
+        if (curr.hasSubtaskOutput()) {
+            this.printOutput(++indentLevel, curr.getSubtaskOutput());
+        }
+        
+        while (curr.hasNext()) {
+            curr = curr.next();
+            this.doPrint(indentLevel, curr);
+            if (curr.hasSubtaskOutput()) {
+                this.printOutput(indentLevel + 1, curr.getSubtaskOutput());
+            }
+        }
+    }
+    
+    private void doPrint(int indentLevel, Output o) {
+        String indentStr = "";
+        for (int i = 0; i < indentLevel; ++i) {
+            indentStr += "|   ";
+        }
+        
+        if (o instanceof StringOutput) {
+            StringOutput so = (StringOutput) o;
+            
+            this.println(indentStr + so); // this shows the data aswell as the object type
+            // this.println(indentStr + so.getString()); // just shows the data
+        }
+        // else {
+        //     this.println(o); // this is a catch-all that will display with type the recieved
+        // }
+    }
+    
+    private void println(Object o) {
+        this.println(o.toString());
+    }
+    
+    private void println(String s) {
+        System.out.println(s);
     }
     
     public static void usage() {

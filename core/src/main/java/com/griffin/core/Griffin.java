@@ -79,9 +79,8 @@ public class Griffin {
             }
         } while (oneCommandExecuted);
         
-        
         // add to output if there is stuff not used
-        if (rawInput != null || !rawInput.isEmpty()) {
+        if (!"".equals(rawInput)) {
             output.addOutput(new UnusedRawInputOutput(rawInput));
         }
         

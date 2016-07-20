@@ -1,15 +1,16 @@
 package com.griffin.core.output;
 
 import java.util.*;
+import java.io.*;
 
 import com.griffin.core.output.*;
 
-public class NewOutput implements Iterator<NewOutput> {
-    private NewOutput next = null;
-    private NewOutput subtask = null;
-    private NewOutput end = null;
+public class Output implements Iterator<Output>, Serializable {
+    private Output next = null;
+    private Output subtask = null;
+    private Output end = null;
     
-    public void addOutput(NewOutput o) {
+    public void addOutput(Output o) {
         if (this.next == null) {
             this.next = o;
             this.end = o;
@@ -20,16 +21,16 @@ public class NewOutput implements Iterator<NewOutput> {
             this.end = this.findEnd();
             this.end.next = o;
         } else {
-            this.end.next = o;
-            this.end = o;
-            
             if (this.end.next != null) {
                 this.end = this.findEnd();
             }
+            
+            this.end.next = o;
+            this.end = o;
         }
     }
     
-    public void setSubtaskOutput(NewOutput o) throws SubtaskOutputException {
+    public void setSubtaskOutput(Output o) throws SubtaskOutputException {
         if (this.end == null) {
             this.end = this.findEnd();
         }
@@ -45,7 +46,7 @@ public class NewOutput implements Iterator<NewOutput> {
         return this.subtask != null;
     }
     
-    public NewOutput getSubtaskOutput() {
+    public Output getSubtaskOutput() {
         return this.subtask;
     }
     
@@ -55,7 +56,7 @@ public class NewOutput implements Iterator<NewOutput> {
     }
     
     @Override
-    public NewOutput next() {
+    public Output next() {
         return this.next;
     }
     
@@ -64,8 +65,8 @@ public class NewOutput implements Iterator<NewOutput> {
         throw new UnsupportedOperationException();
     }
     
-    private NewOutput findEnd() {
-        NewOutput curr = this;
+    private Output findEnd() {
+        Output curr = this;
         while (curr.next != null) {
             curr = curr.next;
         }

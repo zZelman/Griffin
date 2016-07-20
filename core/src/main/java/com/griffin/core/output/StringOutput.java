@@ -1,18 +1,18 @@
 package com.griffin.core.output;
 
-public class StringOutput extends NewOutput {
-    protected String data;
+public class StringOutput extends Output {
+    private String data;
     
     public StringOutput(String data) {
         this.data = data;
     }
     
-    public String getData() {
+    public String getString() {
         return this.data;
     }
     
     public String toString() {
-        return "StringOutput::data=[" + data + "]";
+        return this.getClass().getSimpleName() + "::data=[" + this.getString() + "]";
     }
 
     public boolean equals(StringOutput other) {

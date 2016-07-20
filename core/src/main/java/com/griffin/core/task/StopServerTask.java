@@ -3,6 +3,7 @@ package com.griffin.core.task;
 import java.util.*;
 
 import com.griffin.core.*;
+import com.griffin.core.output.*;
 
 /**
     This is a dummy class (does not have any execution) because in order
@@ -24,13 +25,12 @@ public class StopServerTask extends Task {
     }
     
     public Output doAction(Communication prevComm) {
-        Output output = new Output();
+        Output output = new StartingOutput(this.command);
         
-        output.addExecutionMessage("the server has not stopped");
-        output.addExecutionMessage("\"stop server\" must be the only command");
+        output.addOutput(new StringOutput("the server has not stopped"));
+        output.addOutput(new StringOutput("\"" + this.command + "\" must be the only command"));
         
-        output.setReturnMessage(this.failure);
-        
+        output.addOutput(new FailureOutput(this.failure));
         return output;
     }
 }

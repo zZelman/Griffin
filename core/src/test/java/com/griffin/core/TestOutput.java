@@ -17,6 +17,15 @@ public class TestOutput {
     }
     
     @Test
+    public void testClassName() {
+        Output so = new StringOutput("string");
+        Output urio = new UnusedRawInputOutput("unused");
+        
+        System.out.println(so);
+        System.out.println(urio);
+    }
+    
+    @Test
     public void testNormal() {
         StringOutput so0 = new StringOutput("0");
         StringOutput so1 = new StringOutput("1");
@@ -89,7 +98,7 @@ public class TestOutput {
         this.println(0, so0);
     }
     
-    private void println(int indentLevel, NewOutput curr) {
+    private void println(int indentLevel, Output curr) {
         String indentStr = "";
         for (int i = 0; i < indentLevel; ++i) {
             indentStr += "|   ";

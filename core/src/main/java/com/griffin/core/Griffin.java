@@ -4,6 +4,7 @@ import java.util.*;
 
 import com.griffin.core.*;
 import com.griffin.core.task.*;
+import com.griffin.core.output.*;
 
 public class Griffin {
     private final String noExistErrorMsg = "rawInput does not exist";
@@ -21,7 +22,9 @@ public class Griffin {
         // NOTE: given before common to allow given to have priority over keywords in common (ie help)
         
         // given tasks
-        this.loadedTasks.addAll(taskFactory.getTasks());
+        if (taskFactory != null) {
+            this.loadedTasks.addAll(taskFactory.getTasks());
+        }
         
         // common tasks
         this.loadedTasks.addAll(new ConcreteTaskFactory(this).getTasks());
@@ -39,8 +42,8 @@ public class Griffin {
         this.loadedTasks = loadedTasks;
     }
     
-    public Output doCommand(String rawInput, Communication comm) {
-        Output output = new Output();
+    public LinkedList<Output> doCommand(String rawInput, Communication comm) {
+        LinkedList<Output> outputs = new LinkedList<Output>();
         
         boolean oneCommandExecuted;
         String canUseOutput;
@@ -66,26 +69,22 @@ public class Griffin {
                     
                     // do the task
                     taskOutput = t.doAction(comm);
-
+                    
                     // tell the task to remove any state that it created during execution
                     t.clear();
                     
-                    // update the task's output with what it was
-                    taskOutput.setStartMessage(this.startCommandMsg + "\"" + t.getCommand() + "\"");
-                    taskOutput.setEndMessage("\"" + t.getCommand() + "\"" + this.endCommdMsg);
-                    
                     // save the output of the task
-                    output.addOutput(taskOutput);
+                    outputs.add(taskOutput);
                 }
             }
         } while (oneCommandExecuted);
         
         
         // add to output if there is stuff not used
-        if (rawInput != null && !rawInput.isEmpty()) {
-            output.addOtherMessage(this.commandStuffLeftOver + "\"" + rawInput + "\"");
+        if (rawInput != null || !rawInput.isEmpty()) {
+            outputs.add(new UnusedRawInputOutput(rawInput));
         }
         
-        return output;
+        return outputs;
     }
 }

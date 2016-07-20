@@ -2,8 +2,10 @@ package com.griffin.core;
 
 import java.net.*;
 import java.io.*;
+import java.util.*;
 
 import com.griffin.core.*;
+import com.griffin.core.output.*;
 
 public class Server implements Runnable {
     private final ServerCallBack callBack;
@@ -46,9 +48,7 @@ public class Server implements Runnable {
                 if (firstInput instanceof String) {
                     possibleStopCommand = (String) firstInput;
                     if (possibleStopCommand.equals(STOP_SERVER_COMMAND)) {
-                        Output output = new Output();
-                        output.setReturnMessage(SERVER_STOPPING);
-                        prevComm.send(output);
+                        prevComm.send(new StringOutput(SERVER_STOPPING));
                         prevComm.send(new StopCommunication());
                         break;
                     }
@@ -93,10 +93,10 @@ public class Server implements Runnable {
                     String command = (String) this.firstInput;
                     this.callBack.commandRecieved(command);
                     
-                    Output taskOutput = this.griffin.doCommand(command, prevComm);
-                    this.prevComm.send(taskOutput);
+                    LinkedList<Output> outputs = this.griffin.doCommand(command, prevComm);
+                    this.prevComm.send(outputs);
                 } else {
-                    this.prevComm.send(BAD_COMMAND);
+                    this.prevComm.send(new ErrorOutput(BAD_COMMAND));
                 }
                 
                 this.prevComm.send(new StopCommunication());

@@ -3,6 +3,7 @@ package com.griffin.core.task;
 import java.util.*;
 
 import com.griffin.core.*;
+import com.griffin.core.output.*;
 
 public class PrintHelpTask extends Task {
     private Griffin griffin;
@@ -17,11 +18,11 @@ public class PrintHelpTask extends Task {
     }
     
     public Output doAction(Communication prevComm) {
-        Output output = new Output();
+        Output output = new StartingOutput(this.command);
         
         LoadedTasks loadedTasks = this.griffin.getLoadedTasks();
         
-        output.addExecutionMessage("Commands (in order):");
+        output.addOutput(new StringOutput("Commands (in order):"));
         if (!loadedTasks.getOpenEndedTasks().isEmpty()) {
             this.helper(output, "Open ended", loadedTasks.getOpenEndedTasks());
         }
@@ -34,14 +35,14 @@ public class PrintHelpTask extends Task {
             this.helper(output, "Simple", loadedTasks.getSimpleTasks());
         }
         
-        output.setReturnMessage(this.success);
+        output.addOutput(new SuccessOutput(this.success));
         return output;
     }
     
     private void helper(Output output, String section, List<Task> tasks) {
-        output.addExecutionMessage("    " + section);
+        output.addOutput(new StringOutput("    " + section));
         for (Task t : tasks) {
-            output.addExecutionMessage("        " + t.getCommand() + " - " + t.getInfo());
+            output.addOutput(new StringOutput("        " + t.getCommand() + " - " + t.getInfo()));
         }
     }
 }

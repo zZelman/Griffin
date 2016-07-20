@@ -3,6 +3,7 @@ package com.griffin.desktop.daemon.task;
 import java.io.*;
 
 import com.griffin.core.*;
+import com.griffin.core.output.*;
 
 public class ExampleHelloWorldTask extends Task {
     public ExampleHelloWorldTask() {
@@ -13,13 +14,13 @@ public class ExampleHelloWorldTask extends Task {
     }
     
     public Output doAction(Communication prevComm) {
-        Output output = new Output();
-        
+        Output output = new StartingOutput(this.command);
+
         System.out.println("server execution");
         
-        output.addExecutionMessage("client communication");
+        output.addOutput(new StringOutput("client communication"));
         
-        output.setReturnMessage(this.success);
+        output.addOutput(new SuccessOutput(this.success));
         return output;
     }
 }

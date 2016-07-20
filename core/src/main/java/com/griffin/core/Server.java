@@ -93,8 +93,8 @@ public class Server implements Runnable {
                     String command = (String) this.firstInput;
                     this.callBack.commandRecieved(command);
                     
-                    LinkedList<Output> outputs = this.griffin.doCommand(command, prevComm);
-                    this.prevComm.send(outputs);
+                    Output output = this.griffin.doCommand(command, prevComm);
+                    this.prevComm.send(output);
                 } else {
                     this.prevComm.send(new ErrorOutput(BAD_COMMAND));
                 }

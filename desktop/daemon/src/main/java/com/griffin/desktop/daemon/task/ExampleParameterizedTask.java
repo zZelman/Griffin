@@ -4,6 +4,7 @@ import java.io.*;
 import java.util.regex.*;
 
 import com.griffin.core.*;
+import com.griffin.core.output.*;
 
 public class ExampleParameterizedTask extends Task {
     private String word1;
@@ -36,11 +37,12 @@ public class ExampleParameterizedTask extends Task {
     }
     
     public Output doAction(Communication prevComm) {
-        Output output = new Output();
+        // TODO: acutally have word1 and word2 in the StartingOutput
+        Output output = new StartingOutput(this.command);
         
         System.out.println("[ExampleParameterizedTask::doAction] word1=" + this.word1 + ", word2=" + this.word2);
         
-        output.setReturnMessage(this.success);
+        output.addOutput(new SuccessOutput(this.success));
         return output;
     }
     

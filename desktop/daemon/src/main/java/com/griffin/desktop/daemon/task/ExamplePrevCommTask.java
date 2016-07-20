@@ -3,6 +3,7 @@ package com.griffin.desktop.daemon.task;
 import java.io.*;
 
 import com.griffin.core.*;
+import com.griffin.core.output.*;
 
 public class ExamplePrevCommTask extends Task {
     public ExamplePrevCommTask() {
@@ -13,19 +14,19 @@ public class ExamplePrevCommTask extends Task {
     }
     
     public Output doAction(Communication prevComm) {
-        Output output = new Output();
+        Output output = new StartingOutput(this.command);
         
-        output.addExecutionMessage("[ExamplePrevCommTask::doAction] client communication");
+        output.addOutput(new StringOutput("[ExamplePrevCommTask::doAction] client communication"));
         
         try {
             prevComm.send("~~ communication from the actual Task");
         } catch (IOException e) {
-            output.addExecutionMessage(e.toString());
-            output.setReturnMessage(this.failure);
+            output.addOutput(new StringOutput(e.toString()));
+            output.addOutput(new FailureOutput(this.failure));
             return output;
         }
-
-        output.setReturnMessage(this.success);
+        
+        output.addOutput(new SuccessOutput(this.success));
         return output;
     }
 }

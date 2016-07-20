@@ -5,6 +5,7 @@ import java.net.*;
 import java.io.*;
 
 import com.griffin.core.*;
+import com.griffin.core.output.*;
 
 public class ExampleChainTask extends Task {
     private ServerInfoParser infoParser;
@@ -19,7 +20,7 @@ public class ExampleChainTask extends Task {
     }
     
     public Output doAction(Communication prevComm) {
-        Output output = new Output();
+        Output output = new StartingOutput(this.command);
         
         // if (new Random().nextFloat() < 0.30f) {
         //     output.addExecutionMessage(this.command + ": last node");
@@ -33,12 +34,14 @@ public class ExampleChainTask extends Task {
         try {
             info = this.infoParser.getServerInfo(targetName);
         } catch (ServerInfoException e) {
-            output.addExecutionMessage(e.toString());
-            output.setReturnMessage(this.failure);
+            output.addOutput(new StringOutput(e.toString()));
+            output.addOutput(new FailureOutput(this.failure));
             return output;
         }
         
         try {
+            // TODO: implement ClientCallBack instead of a custom Client
+            
             Socket socket = new Socket(info.getHostName(), info.getPort());
             Communication nextComm = new Communication(socket);
             
@@ -53,25 +56,29 @@ public class ExampleChainTask extends Task {
                 }
                 
                 // guaranteed to be Output
-                output.addOutput((Output) ret);
+                output.setSubtaskOutput((Output) ret);
             }
             
             nextComm.close();
         } catch (UnknownHostException e) {
-            output.addExecutionMessage(e.toString());
-            output.setReturnMessage(this.failure);
+            output.addOutput(new StringOutput(e.toString()));
+            output.addOutput(new FailureOutput(this.failure));
             return output;
         } catch (ClassNotFoundException e) {
-            output.addExecutionMessage(e.toString());
-            output.setReturnMessage(this.failure);
+            output.addOutput(new StringOutput(e.toString()));
+            output.addOutput(new FailureOutput(this.failure));
             return output;
         } catch (IOException e) {
-            output.addExecutionMessage(e.toString());
-            output.setReturnMessage(this.failure);
+            output.addOutput(new StringOutput(e.toString()));
+            output.addOutput(new FailureOutput(this.failure));
+            return output;
+        } catch (SubtaskOutputException e) {
+            output.addOutput(new StringOutput(e.toString()));
+            output.addOutput(new FailureOutput(this.failure));
             return output;
         }
         
-        output.setReturnMessage(this.success);
+        output.addOutput(new SuccessOutput(this.success));
         return output;
     }
 }

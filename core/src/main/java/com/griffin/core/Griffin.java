@@ -42,8 +42,8 @@ public class Griffin {
         this.loadedTasks = loadedTasks;
     }
     
-    public LinkedList<Output> doCommand(String rawInput, Communication comm) {
-        LinkedList<Output> outputs = new LinkedList<Output>();
+    public Output doCommand(String rawInput, Communication comm) {
+        Output output = new Output();
         
         boolean oneCommandExecuted;
         String canUseOutput;
@@ -74,7 +74,7 @@ public class Griffin {
                     t.clear();
                     
                     // save the output of the task
-                    outputs.add(taskOutput);
+                    output.addOutput(taskOutput);
                 }
             }
         } while (oneCommandExecuted);
@@ -82,9 +82,9 @@ public class Griffin {
         
         // add to output if there is stuff not used
         if (rawInput != null || !rawInput.isEmpty()) {
-            outputs.add(new UnusedRawInputOutput(rawInput));
+            output.addOutput(new UnusedRawInputOutput(rawInput));
         }
         
-        return outputs;
+        return output;
     }
 }

@@ -22,7 +22,7 @@ public class PrintHelpTask extends Task {
         
         LoadedTasks loadedTasks = this.griffin.getLoadedTasks();
         
-        output.addOutput(new StringOutput("Commands (in order):"));
+        output.addOutput(new FormatedStringOutput("Commands (in order):"));
         if (!loadedTasks.getOpenEndedTasks().isEmpty()) {
             this.helper(output, "Open ended", loadedTasks.getOpenEndedTasks());
         }
@@ -40,9 +40,9 @@ public class PrintHelpTask extends Task {
     }
     
     private void helper(Output output, String section, List<Task> tasks) {
-        output.addOutput(new StringOutput("    " + section));
+        output.addOutput(new FormatedStringOutput("    " + section));
         for (Task t : tasks) {
-            output.addOutput(new StringOutput("        " + t.getCommand() + " - " + t.getInfo()));
+            output.addOutput(new FormatedStringOutput("        " + t.getCommand() + " - " + t.getInfo()));
         }
     }
 }

@@ -19,6 +19,7 @@ import java.util.*;
 import org.apache.commons.lang3.*;
 
 import com.griffin.core.*;
+import com.griffin.core.output.*;
 
 import com.griffin.android.app.*;
 
@@ -214,29 +215,74 @@ public class App extends Activity implements OnClickListener {
         
         @Override
         public void recieved(Object o) {
-            outputs.add(o.toString() + "\n");
+            if (o instanceof Output) {
+                this.addOutput((Output) o);
+            } else {
+                this.add(o.toString()); // a catch-all for unexpected output (like "prev comm"'s string)
+            }
         }
         
         @Override
         public void dealWith(UnknownHostException e) {
-            outputs.add(e.toString() + "\n");
+            outputs.add(e.toString());
         }
         
         @Override
         public void dealWith(ClassNotFoundException e) {
-            outputs.add(e.toString() + "\n");
+            outputs.add(e.toString());
         }
         
         @Override
         public void dealWith(IOException e) {
-            outputs.add(e.toString() + "\n");
+            outputs.add(e.toString());
+        }
+        
+        private void addOutput(Output o) {
+            this.addOutput(0, o);
+        }
+        
+        private void addOutput(int indentLevel, Output curr) {
+            // deal with given
+            this.doAdd(indentLevel, curr);
+            if (curr.hasSubtaskOutput()) {
+                this.addOutput(++indentLevel, curr.getSubtaskOutput());
+            }
+            
+            while (curr.hasNext()) {
+                curr = curr.next();
+                this.doAdd(indentLevel, curr);
+                if (curr.hasSubtaskOutput()) {
+                    this.addOutput(indentLevel + 1, curr.getSubtaskOutput());
+                }
+            }
+        }
+        
+        private void doAdd(int indentLevel, Output o) {
+            String indentStr = "";
+            for (int i = 0; i < indentLevel; ++i) {
+                indentStr += "|   ";
+            }
+            
+            if (o instanceof StringOutput) {
+                StringOutput so = (StringOutput) o;
+                
+                // this.add(indentStr + so); // this shows the data aswell as the object type
+                this.add(indentStr + so.getString()); // just shows the data
+            }
+            // else {
+            //     this.add(o); // this is a catch-all that will display with type the recieved
+            // }
+        }
+        
+        private void add(String s) {
+            this.outputs.add(s);
         }
         
         private void showWhatHave() {
             TextView commandOutput = (TextView) findViewById(R.id.commandOutput);
             commandOutput.setText("");
             for (String s : this.outputs) {
-                commandOutput.append(s);
+                commandOutput.append(s + "\n");
             }
         }
     }

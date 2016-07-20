@@ -5,10 +5,10 @@ import java.util.*;
 import com.griffin.core.*;
 import com.griffin.desktop.daemon.task.*;
 
-public class ConcreteTaskFactory extends TaskFactory {
+public class DaemonTaskFactory extends TaskFactory {
     private ServerInfoParser infoParser;
     
-    public ConcreteTaskFactory(ServerInfoParser infoParser) {
+    public DaemonTaskFactory(ServerInfoParser infoParser) {
         this.infoParser = infoParser;
     }
     

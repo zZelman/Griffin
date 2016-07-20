@@ -5,10 +5,10 @@ import java.util.*;
 import com.griffin.core.*;
 import com.griffin.core.task.*;
 
-public class ConcreteTaskFactory extends TaskFactory {
+public class CoreTaskFactory extends TaskFactory {
     private Griffin griffin;
     
-    public ConcreteTaskFactory(Griffin griffin) {
+    public CoreTaskFactory(Griffin griffin) {
         this.griffin = griffin;
     }
     

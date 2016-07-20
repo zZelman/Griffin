@@ -27,7 +27,7 @@ public class Griffin {
         }
         
         // common tasks
-        this.loadedTasks.addAll(new ConcreteTaskFactory(this).getTasks());
+        this.loadedTasks.addAll(new CoreTaskFactory(this).getTasks());
     }
     
     public String printTasks() {

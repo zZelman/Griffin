@@ -16,7 +16,7 @@ public class TestOutput {
     public void tearDown() {
     }
     
-    // @Test
+    @Test
     public void testClassName() {
         Output so = new StringOutput("string");
         Output urio = new UnusedRawInputOutput("unused");
@@ -25,7 +25,7 @@ public class TestOutput {
         System.out.println(urio);
     }
     
-    // @Test
+    @Test
     public void testNormal() {
         StringOutput so0 = new StringOutput("0");
         StringOutput so1 = new StringOutput("1");
@@ -41,7 +41,7 @@ public class TestOutput {
         this.println(0, so0);
     }
     
-    // @Test
+    @Test
     public void testPrepend() {
         StringOutput so1 = new StringOutput("1");
         StringOutput so2 = new StringOutput("2");
@@ -58,7 +58,7 @@ public class TestOutput {
         this.println(0, so0);
     }
     
-    // @Test
+    @Test
     public void testPostpend() {
         StringOutput so0 = new StringOutput("0");
         StringOutput so1 = new StringOutput("1");
@@ -78,7 +78,7 @@ public class TestOutput {
         this.println(0, so0);
     }
     
-    // @Test
+    @Test
     public void testSubtask() {
         StringOutput so0 = new StringOutput("0");
         StringOutput so1 = new StringOutput("1");

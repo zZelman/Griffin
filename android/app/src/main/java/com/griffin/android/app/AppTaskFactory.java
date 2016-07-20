@@ -4,8 +4,8 @@ import java.util.*;
 
 import com.griffin.core.*;
 
-public class ConcreteTaskFactory extends TaskFactory {
-    public ConcreteTaskFactory() {
+public class AppTaskFactory extends TaskFactory {
+    public AppTaskFactory() {
     }
     
     public LoadedTasks getTasks() {
@@ -13,5 +13,4 @@ public class ConcreteTaskFactory extends TaskFactory {
 
         return tasks;
     }
-
 }

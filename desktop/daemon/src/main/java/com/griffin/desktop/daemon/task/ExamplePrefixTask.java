@@ -11,7 +11,7 @@ import com.griffin.core.output.*;
 public class ExamplePrefixTask extends Task {
     private ServerInfoParser infoParser;
     
-    private String command;
+    private String nextCommand;
     
     public ExamplePrefixTask(ServerInfoParser infoParser) {
         super("prefix [command...]",
@@ -26,15 +26,15 @@ public class ExamplePrefixTask extends Task {
         String space = "( )";
         
         String prefix = "(prefix)";
-        String command = "(.+)";
+        String nextCommand = "(.+)";
         
-        Pattern p = Pattern.compile(prefix + space + command, Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
+        Pattern p = Pattern.compile(prefix + space + nextCommand, Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
         Matcher m = p.matcher(rawInput);
         
         if (m.find()) {
-            this.command = m.group(3);
+            this.nextCommand = m.group(3);
             
-            return rawInput.replaceFirst(prefix + space + command, "");
+            return rawInput.replaceFirst(prefix + space + nextCommand, "");
         }
         return null;
     }
@@ -59,7 +59,7 @@ public class ExamplePrefixTask extends Task {
             Socket socket = new Socket(info.getHostName(), info.getPort());
             Communication nextComm = new Communication(socket);
             
-            nextComm.send(this.command);
+            nextComm.send(this.nextCommand);
             
             Object ret;
             while (true) {

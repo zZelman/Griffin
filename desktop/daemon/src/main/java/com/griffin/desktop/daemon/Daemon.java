@@ -77,7 +77,7 @@ public class Daemon implements ServerCallBack, Startable {
             InputStream inputStream = ClassLoader.getSystemClassLoader().getResourceAsStream(this.fileName);
             ServerInfoParser infoParser = new ServerInfoParser(inputStream);
             
-            TaskFactory taskFactory = new ConcreteTaskFactory(infoParser);
+            TaskFactory taskFactory = new DaemonTaskFactory(infoParser);
             Server server = new Server(this, infoParser.getServerInfo(this.target), taskFactory);
             
             this.serverThread = new Thread(server);

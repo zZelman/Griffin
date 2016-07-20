@@ -101,7 +101,7 @@ public class AppService extends Service implements ServerCallBack, Startable {
             InputStream inputStream = this.getResources().openRawResource(R.raw.server_list);
             ServerInfoParser infoParser = new ServerInfoParser(inputStream);
             
-            TaskFactory taskFactory = new ConcreteTaskFactory();
+            TaskFactory taskFactory = new AppTaskFactory();
             Server server = new Server(this, infoParser.getServerInfo(getString(R.string.target)), taskFactory);
             
             new Thread(server).start();

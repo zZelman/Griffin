@@ -61,7 +61,8 @@
           android:id="@+id/commandOutput"
           android:layout_height="wrap_content"
           android:layout_width="match_parent"
-          android:freezesText="true"/>
+          android:freezesText="true"
+          android:fontFamily="serif-monospace"/>
     </HorizontalScrollView>
   </ScrollView>
 </LinearLayout>

@@ -29,7 +29,7 @@ public class Client implements Startable {
             nextComm.send(command);
             
             Object ret;
-            while (true) {
+            while (!Thread.currentThread().isInterrupted()) {
                 ret = nextComm.receive();
                 if (ret instanceof StopCommunication || ret == null) {
                     break;

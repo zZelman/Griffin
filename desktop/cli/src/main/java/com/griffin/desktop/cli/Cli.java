@@ -84,8 +84,8 @@ public class Cli implements ClientCallBack, Startable {
         if (o instanceof StringOutput) {
             StringOutput so = (StringOutput) o;
             
-            this.println(indentStr + so); // this shows the data aswell as the object type
-            // this.println(indentStr + so.getString()); // just shows the data
+            // this.println(indentStr + so); // this shows the data aswell as the object type
+            this.println(indentStr + so.getString()); // just shows the data
         }
         // else {
         //     this.println(o); // this is a catch-all that will display with type the recieved

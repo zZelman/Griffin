@@ -1,0 +1,20 @@
+apply plugin: 'java'
+apply plugin: 'application'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile project(':core')
+}
+
+task runNameserver(type: JavaExec) {
+    main = 'com.griffin.nameserver.Nameserver'
+    classpath = sourceSets.main.runtimeClasspath
+}
+
+task runNameserverClient(type: JavaExec) {
+    main = 'com.griffin.nameserver.NameserverClient'
+    classpath = sourceSets.main.runtimeClasspath
+}

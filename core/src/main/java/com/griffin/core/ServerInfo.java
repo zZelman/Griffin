@@ -1,8 +1,10 @@
 package com.griffin.core;
 
+import java.io.*;
+
 import com.griffin.core.*;
 
-public class ServerInfo {
+public class ServerInfo implements Serializable {
     private String name;
     private String hostName;
     private int port;

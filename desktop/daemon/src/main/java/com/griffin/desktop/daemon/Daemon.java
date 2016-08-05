@@ -71,7 +71,6 @@ public class Daemon implements ServerCallBack, Startable {
         }
         
         Daemon.isRunning = true;
-        this.println("daemon started");
         
         try {
             InputStream inputStream = ClassLoader.getSystemClassLoader().getResourceAsStream(this.fileName);
@@ -85,18 +84,15 @@ public class Daemon implements ServerCallBack, Startable {
         } catch (FileNotFoundException e) {
             Daemon.isRunning = false;
             this.println(e);
-            return false;
         } catch (IOException e) {
             Daemon.isRunning = false;
             this.println(e);
-            return false;
         } catch (ServerInfoException e) {
             Daemon.isRunning = false;
             this.println(e);
-            return false;
         }
 
-        return true;
+        return Daemon.isRunning;
     }
     
     @Override
@@ -105,6 +101,8 @@ public class Daemon implements ServerCallBack, Startable {
             this.println("daemon is not running");
             return false;
         }
+
+        Daemon.isRunning = false;
         
         try {
             this.serverSocket.close();
@@ -134,11 +132,11 @@ public class Daemon implements ServerCallBack, Startable {
             Daemon.usage();
         }
         
-        Daemon d = new Daemon(args[0], args[1]);
+        Daemon daemon = new Daemon(args[0], args[1]);
         
-        if (d.start()) {
+        if (daemon.start()) {
             try {
-                d.getThread().join();
+                daemon.getThread().join();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

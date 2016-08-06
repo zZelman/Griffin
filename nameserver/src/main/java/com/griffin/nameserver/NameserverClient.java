@@ -2,6 +2,8 @@ package com.griffin.nameserver;
 
 import java.io.*;
 import java.net.*;
+import java.util.*;
+import java.util.concurrent.*;
 
 import com.griffin.core.*;
 
@@ -18,7 +20,7 @@ public class NameserverClient {
         NameserverAction action = null;
         {
             String name = "daemon";
-            String hostName = "10.0.0.31";
+            String hostName = "10.0.0.32";
             int port = 6000;
             // action = new NameserverAction(new ServerInfo(name, hostName, port)); // ping
             action = new NameserverAction(name); // get
@@ -41,7 +43,15 @@ public class NameserverClient {
                     break;
                 }
                 
-                System.out.println(ret);
+                if (ret instanceof NameserverNoEntry) {
+                    continue;
+                }
+                
+                LinkedList<ServerInfo> enteries = (LinkedList<ServerInfo>) ret;
+
+                for (ServerInfo serverInfo : enteries) {
+                    System.out.println(serverInfo);
+                }
             }
         } catch (UnknownHostException e) {
             e.printStackTrace();

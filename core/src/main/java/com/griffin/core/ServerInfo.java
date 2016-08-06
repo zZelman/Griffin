@@ -27,10 +27,26 @@ public class ServerInfo implements Serializable {
         return this.port;
     }
     
+    @Override
     public String toString() {
         return "Info:\n" +
                "    name - " + this.name + "\n" +
                "    hostName - " + this.hostName + "\n" +
                "    port - " + this.port;
+    }
+    
+    @Override
+    public boolean equals(Object o) {
+        boolean ret = false;
+        if (o instanceof ServerInfo) {
+            ServerInfo other = (ServerInfo) o;
+            
+            // ip+port means equal
+            if (this.hostName.equals(other.hostName) &&
+                this.port == other.port) {
+                ret = true;
+            }
+        }
+        return ret;
     }
 }

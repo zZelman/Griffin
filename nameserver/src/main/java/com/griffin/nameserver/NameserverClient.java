@@ -6,6 +6,7 @@ import java.util.*;
 import java.util.concurrent.*;
 
 import com.griffin.core.*;
+import com.griffin.core.output.*;
 
 public class NameserverClient {
     public static void main(String[] args) {
@@ -23,9 +24,9 @@ public class NameserverClient {
             String hostName = "10.0.0.32";
             int port = 6000;
             // action = new NameserverAction(new ServerInfo(name, hostName, port)); // ping
-            action = new NameserverAction(name); // get
+            // action = new NameserverAction(name); // get
             // action = new NameserverAction(NameserverAction.Action.DUMP); // dump
-            // action = new NameserverAction(NameserverAction.Action.HELP); // help
+            action = new NameserverAction(NameserverAction.Action.HELP); // help
         }
         
         Socket socket = null;
@@ -46,11 +47,33 @@ public class NameserverClient {
                 if (ret instanceof NameserverNoEntry) {
                     continue;
                 }
-                
-                LinkedList<ServerInfo> enteries = (LinkedList<ServerInfo>) ret;
 
-                for (ServerInfo serverInfo : enteries) {
-                    System.out.println(serverInfo);
+                // get
+                if (ret instanceof LinkedList<?>) {
+                    LinkedList<ServerInfo> enteries = (LinkedList<ServerInfo>) ret;
+                    for (ServerInfo serverInfo : enteries) {
+                        System.out.println(serverInfo);
+                    }
+                }
+
+                // dump
+                if (ret instanceof ConcurrentHashMap<?, ?>) {
+                    ConcurrentHashMap<String, LinkedList<ServerInfo>> servers = (ConcurrentHashMap<String, LinkedList<ServerInfo>>) ret;
+                    for (Map.Entry<String, LinkedList<ServerInfo>> entry : servers.entrySet()) {
+                        String name = entry.getKey();
+                        LinkedList<ServerInfo> enteries = entry.getValue();
+                        
+                        System.out.println(name);
+                        for (ServerInfo serverInfo : enteries) {
+                            System.out.println(serverInfo);
+                        }
+                    }
+                }
+
+                // help
+                if (ret instanceof StringOutput) {
+                    StringOutput out = (StringOutput) ret;
+                    System.out.println(out.getString());
                 }
             }
         } catch (UnknownHostException e) {

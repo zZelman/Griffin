@@ -21,6 +21,9 @@ public class Nameserver implements Runnable, Startable {
     
     private final String SERVER_STOPPING = "server has recieved the stop command, and is ending";
     private final String BAD_COMMAND = "first communication must be in NameserverAction form";
+
+    private final String BAD_ACTION = "action inside of given NamserverAction is incorrect";
+    private final String HELP_MESSAGE = "TODO: help message";
     
     public Nameserver(ServerInfo info) throws IOException {
         this.info = info;
@@ -100,7 +103,6 @@ public class Nameserver implements Runnable, Startable {
                     }
                     
                     // the thread deals with prevComm closing
-                    // the thread deals with checking firstInput
                     new Thread(new CommunicationThread(prevComm, action)).start();
                 } else {
                     prevComm.send(new StringOutput(BAD_COMMAND));
@@ -125,8 +127,6 @@ public class Nameserver implements Runnable, Startable {
     class CommunicationThread implements Runnable {
         private final Communication prevComm;
         private final NameserverAction action;
-        
-        private final String BAD_ACTION = "action inside of given NamserverAction is incorrect";
         
         public CommunicationThread(Communication prevComm, NameserverAction action) {
             this.prevComm = prevComm;
@@ -200,6 +200,7 @@ public class Nameserver implements Runnable, Startable {
         private void doGet() throws IOException {
             System.out.println("get");
             System.out.println(this.action.getTarget());
+            System.out.println();
             
             String target = this.action.getTarget();
             LinkedList<ServerInfo> enteries = serverList.get(target);
@@ -213,10 +214,16 @@ public class Nameserver implements Runnable, Startable {
         
         private void doDump() throws IOException {
             System.out.println("dump");
+            System.out.println();
+            
+            this.prevComm.send(serverList);
         }
         
         private void doHelp() throws IOException {
             System.out.println("help");
+            System.out.println();
+
+            this.prevComm.send(new StringOutput(HELP_MESSAGE));
         }
     }
     

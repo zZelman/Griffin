@@ -15,7 +15,7 @@ public class Nameserver implements Runnable, Startable {
     private Thread serverThread;
     
     private final String SERVER_STOPPING = "server has recieved the stop command, and is ending";
-    private final String BAD_COMMAND = "first communication must be in String form";
+    private final String BAD_COMMAND = "first communication must be in NameserverAction form";
     
     public Nameserver(ServerInfo info) throws IOException {
         this.info = info;
@@ -119,6 +119,8 @@ public class Nameserver implements Runnable, Startable {
         private final Communication prevComm;
         private final NameserverAction action;
         
+        private final String BAD_ACTION = "action inside of given NamserverAction is incorrect";
+        
         public CommunicationThread(Communication prevComm, NameserverAction action) {
             this.prevComm = prevComm;
             this.action = action;
@@ -136,7 +138,23 @@ public class Nameserver implements Runnable, Startable {
         @Override
         public void run() {
             try {
-                System.out.println(this.action.toString());
+                switch (this.action.getAction()) {
+                    case PING:
+                        this.doPing();
+                        break;
+                    case GET:
+                        this.doGet();
+                        break;
+                    case DUMP:
+                        this.doDump();
+                        break;
+                    case HELP:
+                        this.doHelp();
+                        break;
+                    default:
+                        prevComm.send(new StringOutput(BAD_ACTION));
+                        break;
+                }
                 
                 this.prevComm.send(new StopCommunication());
             } catch (IOException e) {
@@ -148,6 +166,24 @@ public class Nameserver implements Runnable, Startable {
                     this.println(e);
                 }
             }
+        }
+        
+        private void doPing() {
+            System.out.println("ping");
+            System.out.println(this.action.getInfo());
+        }
+        
+        private void doGet() {
+            System.out.println("get");
+            System.out.println(this.action.getTarget());
+        }
+        
+        private void doDump() {
+            System.out.println("dump");
+        }
+        
+        private void doHelp() {
+            System.out.println("help");
         }
     }
     

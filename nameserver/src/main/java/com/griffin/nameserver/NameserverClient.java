@@ -20,7 +20,10 @@ public class NameserverClient {
             String name = "daemon";
             String hostName = "10.0.0.31";
             int port = 6000;
-            action = new NameserverAction(new ServerInfo(name, hostName, port));
+            // action = new NameserverAction(new ServerInfo(name, hostName, port)); // ping
+            action = new NameserverAction(name); // get
+            // action = new NameserverAction(NameserverAction.Action.DUMP); // dump
+            // action = new NameserverAction(NameserverAction.Action.HELP); // help
         }
         
         Socket socket = null;

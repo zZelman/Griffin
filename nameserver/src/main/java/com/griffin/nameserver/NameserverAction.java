@@ -35,7 +35,7 @@ public class NameserverAction implements Serializable {
         return this.action;
     }
     
-    public ServerInfo getServerInfo() {
+    public ServerInfo getInfo() {
         return this.info;
     }
     

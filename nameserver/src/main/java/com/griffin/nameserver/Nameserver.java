@@ -9,14 +9,14 @@ import com.griffin.core.*;
 import com.griffin.core.output.*;
 
 public class Nameserver implements Runnable, Startable {
-    private final ServerInfo info;
-    private final ServerSocket serverSocket;
+    private String fileName;
+    private String target;
     
     private static boolean isRunning = false;
     
+    private ServerSocket serverSocket;
     private Thread serverThread;
     
-    private final int SIZE = 10; // size of records to keep for each target (length)
     private ConcurrentLinkedQueue<ServerInfo> serverList;
     
     private final String SERVER_STOPPING = "server has recieved the stop command, and is ending";
@@ -25,10 +25,9 @@ public class Nameserver implements Runnable, Startable {
     private final String BAD_ACTION = "action inside of given NamserverAction is incorrect";
     private final String HELP_MESSAGE = "TODO: help message";
     
-    public Nameserver(ServerInfo info) throws IOException {
-        this.info = info;
-        
-        this.serverSocket = new ServerSocket(info.getPort());
+    public Nameserver(String fileName, String target) {
+        this.fileName = fileName;
+        this.target = target;
         
         this.serverList = new ConcurrentLinkedQueue<ServerInfo>();
     }
@@ -38,7 +37,7 @@ public class Nameserver implements Runnable, Startable {
     }
     
     public void println(String s) {
-        System.out.println("server thread: " + s);
+        System.out.println(s);
     }
     
     public void println(Exception e) {
@@ -55,8 +54,27 @@ public class Nameserver implements Runnable, Startable {
         
         Nameserver.isRunning = true;
         
-        this.serverThread = new Thread(this);
-        this.serverThread.start();
+        try {
+            InputStream inputStream = ClassLoader.getSystemClassLoader().getResourceAsStream(this.fileName);
+            ServerInfoParser infoParser = new ServerInfoParser(inputStream);
+
+            ServerInfo info = infoParser.getServerInfo(this.target);
+            this.serverSocket = new ServerSocket(info.getPort());
+
+            this.println(info.toFormatedString());
+            
+            this.serverThread = new Thread(this);
+            this.serverThread.start();
+        } catch (FileNotFoundException e) {
+            Nameserver.isRunning = false;
+            this.println(e);
+        } catch (IOException e) {
+            Nameserver.isRunning = false;
+            this.println(e);
+        } catch (ServerInfoException e) {
+            Nameserver.isRunning = false;
+            this.println(e);
+        }
         
         return Nameserver.isRunning;
     }
@@ -134,7 +152,7 @@ public class Nameserver implements Runnable, Startable {
         }
         
         public void println(String s) {
-            System.out.println(s);
+            System.out.println("[" + prevComm.getRemoteAddr() + "] " + s);
         }
         
         public void println(Exception e) {
@@ -217,21 +235,21 @@ public class Nameserver implements Runnable, Startable {
             this.prevComm.send(new StringOutput(HELP_MESSAGE));
         }
     }
+
+    public static void usage() {
+        System.out.println("error in command line paramiters");
+        System.out.println("    usage: [nameserver_filename] [target]");
+        System.exit(1);
+    }
     
     public static void main(String[] args) {
-        String name = "nameserver";
-        String hostName = "10.0.0.31";
-        int port = 6001;
-        
-        Nameserver nameserver = null;
-        try {
-            nameserver = new Nameserver(new ServerInfo(name, hostName, port));
-        } catch (IOException e) {
-            e.printStackTrace();
-            return;
+        if (args.length != 2) {
+            Nameserver.usage();
         }
         
-        if (nameserver != null && nameserver.start()) {
+        Nameserver nameserver = new Nameserver(args[0], args[1]);
+        
+        if (nameserver.start()) {
             try {
                 nameserver.getThread().join();
             } catch (InterruptedException e) {

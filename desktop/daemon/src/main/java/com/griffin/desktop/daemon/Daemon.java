@@ -30,7 +30,7 @@ public class Daemon implements ServerCallBack, Startable {
     
     @Override
     public void serverInfo(ServerInfo info) {
-        this.println(info.toString());
+        this.println(info.toFormatedString());
     }
     
     @Override
@@ -128,7 +128,7 @@ public class Daemon implements ServerCallBack, Startable {
     }
     
     public static void main(String[] args) {
-        if (args.length < 2) {
+        if (args.length != 2) {
             Daemon.usage();
         }
         

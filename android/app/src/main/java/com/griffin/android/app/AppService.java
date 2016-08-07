@@ -45,7 +45,7 @@ public class AppService extends Service implements ServerCallBack, Startable {
     
     @Override
     public void serverInfo(ServerInfo info) {
-        this.showToast(info.toString());
+        this.showToast(info.toFormatedString());
     }
     
     @Override

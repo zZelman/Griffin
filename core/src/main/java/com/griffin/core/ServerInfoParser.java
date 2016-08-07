@@ -39,7 +39,7 @@ public class ServerInfoParser {
         if (name == null ||
             hostName == null ||
             port == -1) {
-            throw new ServerInfoException("name or formating of the info file is incorrect");
+            throw new ServerInfoException("name or formating of the info file is incorrect. name=[" + name + "], hostName=[" + hostName + "], port=[" + port + "]");
         }
         
         return new ServerInfo(name, hostName, port);

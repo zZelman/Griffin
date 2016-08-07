@@ -34,4 +34,12 @@ public class Communication {
         this.out.close();
         this.socket.close();
     }
+
+    public String getRemoteAddr() {
+        return this.socket.getRemoteSocketAddress().toString();
+    }
+
+    public String getLocalAddr() {
+        return this.socket.getLocalAddress().toString() + ":" + this.socket.getLocalPort();
+    }
 }

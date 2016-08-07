@@ -177,11 +177,11 @@ public class Nameserver implements Runnable, Startable {
                         this.doHelp();
                         break;
                     default:
+                        // TODO: this might break clients that do not use NameserverClient, but needs to be here
                         prevComm.send(new StringOutput(BAD_ACTION));
+                        this.prevComm.send(new StopCommunication());
                         break;
                 }
-                
-                this.prevComm.send(new StopCommunication());
             } catch (IOException e) {
                 this.println(e);
             } finally {
@@ -217,6 +217,7 @@ public class Nameserver implements Runnable, Startable {
             if (sent == false) {
                 this.prevComm.send(new NameserverNoEntry());
             }
+            this.prevComm.send(new StopCommunication());
         }
         
         private void doDump() throws IOException {
@@ -227,18 +228,20 @@ public class Nameserver implements Runnable, Startable {
             }
             
             this.prevComm.send(serverList);
+            this.prevComm.send(new StopCommunication());
         }
         
         private void doHelp() throws IOException {
             this.println("help");
             
             this.prevComm.send(new StringOutput(HELP_MESSAGE));
+            this.prevComm.send(new StopCommunication());
         }
     }
 
     public static void usage() {
         System.out.println("error in command line paramiters");
-        System.out.println("    usage: [nameserver_filename] [target]");
+        System.out.println("    usage: [server_list_filename] [target]");
         System.exit(1);
     }
     

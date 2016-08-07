@@ -10,6 +10,8 @@ import org.ini4j.*;
 import com.griffin.core.*;
 
 public class ServerInfoParser {
+    private final String NAMESERVER = "nameserver";
+    
     private final String HOST_NAME = "hostname";
     private final String PORT = "port";
     
@@ -27,6 +29,10 @@ public class ServerInfoParser {
         Ini ini = new Ini(inputStream);
         this.iniPrefs = new IniPreferences(ini);
     }
+
+    public ServerInfo getNameserverInfo() throws ServerInfoException {
+        return this.getServerInfo(NAMESERVER);
+    }
     
     public ServerInfo getServerInfo(String name) throws ServerInfoException {
         // TODO: move server_list.ini outside of the jar, prob some gradle config
@@ -39,7 +45,7 @@ public class ServerInfoParser {
         if (name == null ||
             hostName == null ||
             port == -1) {
-            throw new ServerInfoException("name or formating of the info file is incorrect. name=[" + name + "], hostName=[" + hostName + "], port=[" + port + "]");
+            throw new ServerInfoException("name or formating of the info file is incorrect. name=["+name+"], hostName=["+hostName+"], port=["+port+"]");
         }
         
         return new ServerInfo(name, hostName, port);

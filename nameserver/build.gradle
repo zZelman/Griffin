@@ -12,7 +12,7 @@ dependencies {
 task runNameserver(type: JavaExec) {
     main = 'com.griffin.nameserver.Nameserver'
     classpath = sourceSets.main.runtimeClasspath
-    args 'nameserver.ini nameserver'.split(' ')
+    args 'server_list.ini nameserver'.split(' ')
 }
 
 task runNameserverClient(type: JavaExec) {

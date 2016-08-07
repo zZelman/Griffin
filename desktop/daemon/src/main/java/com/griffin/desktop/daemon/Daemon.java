@@ -4,6 +4,7 @@ import java.net.*;
 import java.io.*;
 
 import com.griffin.core.*;
+import com.griffin.nameserver.*;
 
 public class Daemon implements ServerCallBack, Startable {
     private String fileName;
@@ -75,9 +76,13 @@ public class Daemon implements ServerCallBack, Startable {
         try {
             InputStream inputStream = ClassLoader.getSystemClassLoader().getResourceAsStream(this.fileName);
             ServerInfoParser infoParser = new ServerInfoParser(inputStream);
+
+            ServerInfo info = infoParser.getServerInfo(this.target);
             
-            TaskFactory taskFactory = new DaemonTaskFactory(infoParser);
-            Server server = new Server(this, infoParser.getServerInfo(this.target), taskFactory);
+            NameserverClient nameserverClient = new NameserverClient(infoParser.getNameserverInfo());
+            nameserverClient.ping(info);
+            
+            Server server = new Server(this, info, new DaemonTaskFactory(infoParser));
             
             this.serverThread = new Thread(server);
             this.serverThread.start();

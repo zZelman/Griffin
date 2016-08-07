@@ -131,36 +131,4 @@ public class NameserverClient {
         
         return output;
     }
-    
-    public static void main(String[] args) throws Exception {
-        String name;
-        String hostName;
-        int port;
-        
-        name = "nameserver";
-        hostName = "10.0.0.31";
-        port = 6001;
-        NameserverClient nameserverClient = new NameserverClient(new ServerInfo(name, hostName, port));
-
-        // ping
-        name = "nameserver";
-        hostName = "10.0.0.31";
-        port = 6001;
-        nameserverClient.ping(new ServerInfo(name, hostName, port));
-
-        // get
-        name = "nameserver";
-        ServerInfo info = nameserverClient.get(name);
-        System.out.println(info.toFormatedString());
-
-        // dump
-        ConcurrentLinkedQueue<ServerInfo> serverList = nameserverClient.dump();
-        for (ServerInfo server : serverList) {
-            System.out.println(server.toFormatedString());
-        }
-
-        // help
-        StringOutput output = nameserverClient.help();
-        System.out.println(output.getString());
-    }
 }

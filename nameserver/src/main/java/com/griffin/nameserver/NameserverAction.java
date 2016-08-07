@@ -4,7 +4,8 @@ import java.io.*;
 
 import com.griffin.core.*;
 
-public class NameserverAction implements Serializable {
+// only visable inside of the package
+class NameserverAction implements Serializable {
     public enum Action {
         PING,  // Server just came online, tell Nameserver to update w/ given info
         GET,   // Client is asking for info about the given target

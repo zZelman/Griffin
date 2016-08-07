@@ -9,6 +9,7 @@ import org.apache.commons.lang3.*;
 
 import com.griffin.core.*;
 import com.griffin.core.output.*;
+import com.griffin.nameserver.*;
 
 public class Cli implements ClientCallBack, Startable {
     private ServerInfo info;
@@ -106,29 +107,45 @@ public class Cli implements ClientCallBack, Startable {
         System.exit(1);
     }
     
+    public static void badTarget(String target) {
+        System.out.println("nameserver did not find an entery for: " + target);
+        System.exit(1);
+    }
+    
     public static void main(String[] args) {
         if (args.length < 3) {
             Cli.usage();
         }
         
+        String fileName = args[0];
+        String target = args[1];
+        
+        String[] commandTokens = ArrayUtils.subarray(args, 2, args.length);
+        Serializable command = StringUtils.join(commandTokens, " ");
+
         ServerInfo info = null;
         try {
-            InputStream inputStream = ClassLoader.getSystemClassLoader().getResourceAsStream(args[0]);
+            InputStream inputStream = ClassLoader.getSystemClassLoader().getResourceAsStream(fileName);
             ServerInfoParser infoParser = new ServerInfoParser(inputStream);
-            info = infoParser.getServerInfo(args[1]);
-        } catch (FileNotFoundException e) {
+            NameserverClient nameserverClient = new NameserverClient(infoParser.getNameserverInfo());
+            info = nameserverClient.get(target);
+        } catch (ServerInfoException e) {
+            e.printStackTrace();
+            System.exit(1);
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+            System.exit(1);
+        } catch (ClassNotFoundException e) {
             e.printStackTrace();
             System.exit(1);
         } catch (IOException e) {
             e.printStackTrace();
             System.exit(1);
-        } catch (ServerInfoException e) {
-            e.printStackTrace();
-            System.exit(1);
         }
         
-        String[] commandTokens = ArrayUtils.subarray(args, 2, args.length);
-        Serializable command = StringUtils.join(commandTokens, " ");
+        if (info == null) {
+            Cli.badTarget(target);
+        }
         
         Cli cli = new Cli(info, command);
         cli.start();

@@ -41,7 +41,7 @@ public class Daemon implements ServerCallBack, Startable {
     
     @Override
     public void startedConnection() {
-        this.println("connection");
+        // this.println("connection");
     }
     
     @Override

@@ -54,8 +54,8 @@ public class AppService extends Service implements ServerCallBack, Startable {
     }
     
     @Override
-    public void startedConnection() {
-        this.showToast("connection");
+    public void startedConnection(String remoteAddr, String localAddr) {
+        this.showToast("connection from: [" + remoteAddr + "]");
     }
     
     @Override

@@ -10,7 +10,6 @@ import com.griffin.core.output.*;
 
 public class Nameserver implements Runnable, Startable {
     private String fileName;
-    private String target;
     
     private static boolean isRunning = false;
     
@@ -25,9 +24,8 @@ public class Nameserver implements Runnable, Startable {
     private final String BAD_ACTION = "action inside of given NamserverAction is incorrect";
     private final String HELP_MESSAGE = "TODO: help message";
     
-    public Nameserver(String fileName, String target) {
+    public Nameserver(String fileName) {
         this.fileName = fileName;
-        this.target = target;
         
         this.serverList = new ConcurrentLinkedQueue<ServerInfo>();
     }
@@ -58,7 +56,7 @@ public class Nameserver implements Runnable, Startable {
             InputStream inputStream = ClassLoader.getSystemClassLoader().getResourceAsStream(this.fileName);
             ServerInfoParser infoParser = new ServerInfoParser(inputStream);
 
-            ServerInfo info = infoParser.getServerInfo(this.target);
+            ServerInfo info = infoParser.getNameserverInfo();
             this.serverSocket = new ServerSocket(info.getPort());
 
             this.println(info.toFormatedString());
@@ -246,11 +244,11 @@ public class Nameserver implements Runnable, Startable {
     }
     
     public static void main(String[] args) {
-        if (args.length != 2) {
+        if (args.length != 1) {
             Nameserver.usage();
         }
         
-        Nameserver nameserver = new Nameserver(args[0], args[1]);
+        Nameserver nameserver = new Nameserver(args[0]);
         
         if (nameserver.start()) {
             try {

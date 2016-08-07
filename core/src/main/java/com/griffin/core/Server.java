@@ -39,9 +39,9 @@ public class Server implements Runnable {
             String possibleStopCommand;
             while (!Thread.currentThread().isInterrupted()) {
                 clientSocket = this.serverSocket.accept();
-                this.callBack.startedConnection();
                 
                 prevComm = new Communication(clientSocket);
+                this.callBack.startedConnection(prevComm.getRemoteAddr(), prevComm.getLocalAddr());
                 firstInput = prevComm.receive();
                 
                 // always check the first communication for an instance of the stop command

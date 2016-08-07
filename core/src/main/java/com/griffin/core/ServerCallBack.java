@@ -10,7 +10,7 @@ public interface ServerCallBack {
     public void startedServerSocket(ServerSocket serverSocket);
     public void serverInfo(ServerInfo info);
     public void taskList(String s);
-    public void startedConnection();
+    public void startedConnection(String remoteAddr, String localAddr);
     public void commandRecieved(String s);
     public void serverEnding(String s);
     public void dealWith(ClassNotFoundException e);

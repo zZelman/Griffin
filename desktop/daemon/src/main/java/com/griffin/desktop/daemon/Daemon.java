@@ -40,8 +40,8 @@ public class Daemon implements ServerCallBack, Startable {
     }
     
     @Override
-    public void startedConnection() {
-        // this.println("connection");
+    public void startedConnection(String remoteAddr, String localAddr) {
+        this.println("connection from: [" + remoteAddr + "]");
     }
     
     @Override

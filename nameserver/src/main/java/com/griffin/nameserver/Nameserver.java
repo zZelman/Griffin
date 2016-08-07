@@ -17,11 +17,11 @@ public class Nameserver implements Runnable, Startable {
     private Thread serverThread;
     
     private final int SIZE = 10; // size of records to keep for each target (length)
-    private ConcurrentHashMap<String, LinkedList<ServerInfo>> serverList;
+    private ConcurrentLinkedQueue<ServerInfo> serverList;
     
     private final String SERVER_STOPPING = "server has recieved the stop command, and is ending";
     private final String BAD_COMMAND = "first communication must be in NameserverAction form";
-
+    
     private final String BAD_ACTION = "action inside of given NamserverAction is incorrect";
     private final String HELP_MESSAGE = "TODO: help message";
     
@@ -30,7 +30,7 @@ public class Nameserver implements Runnable, Startable {
         
         this.serverSocket = new ServerSocket(info.getPort());
         
-        this.serverList = new ConcurrentHashMap<String, LinkedList<ServerInfo>>();
+        this.serverList = new ConcurrentLinkedQueue<ServerInfo>();
     }
     
     public Thread getThread() {
@@ -134,7 +134,7 @@ public class Nameserver implements Runnable, Startable {
         }
         
         public void println(String s) {
-            System.out.println("comm thread: " + s);
+            System.out.println(s);
         }
         
         public void println(Exception e) {
@@ -176,53 +176,44 @@ public class Nameserver implements Runnable, Startable {
         }
         
         private void doPing() throws IOException {
-            System.out.println("ping");
-            System.out.println(this.action.getInfo());
-            System.out.println();
-            
             ServerInfo info = this.action.getInfo();
+            this.println("ping: " + info.toString());
             
-            if (serverList.containsKey(info.getName()) == false) {
-                serverList.put(info.getName(), new LinkedList<ServerInfo>());
-            }
-            
-            LinkedList<ServerInfo> list = serverList.get(info.getName());
-            
-            if (list.size() >= SIZE) {
-                list.removeLast();
-            }
-            
-            list.remove(info);
-            
-            list.push(info);
+            serverList.remove(info); // remove first instance if exists
+            serverList.add(info);
         }
         
         private void doGet() throws IOException {
-            System.out.println("get");
-            System.out.println(this.action.getTarget());
-            System.out.println();
-            
             String target = this.action.getTarget();
-            LinkedList<ServerInfo> enteries = serverList.get(target);
+            this.println("get: " + target);
             
-            if (enteries == null) {
+            boolean sent = false;
+            for (ServerInfo info : serverList) {
+                if (info.getName().equals(target)) {
+                    this.prevComm.send(info);
+                    sent = true;
+                    break;
+                }
+            }
+            
+            if (sent == false) {
                 this.prevComm.send(new NameserverNoEntry());
-            } else {
-                this.prevComm.send(enteries);
             }
         }
         
         private void doDump() throws IOException {
-            System.out.println("dump");
-            System.out.println();
+            this.println("dump");
+            
+            for (ServerInfo info : serverList) {
+                this.println("    " + info.toString());
+            }
             
             this.prevComm.send(serverList);
         }
         
         private void doHelp() throws IOException {
-            System.out.println("help");
-            System.out.println();
-
+            this.println("help");
+            
             this.prevComm.send(new StringOutput(HELP_MESSAGE));
         }
     }

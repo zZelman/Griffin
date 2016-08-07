@@ -10,18 +10,18 @@ import com.griffin.core.output.*;
 
 public class NameserverClient {
     public static void main(String[] args) {
-        ServerInfo info = null;
+        ServerInfo serverInfo = null;
         {
             String name = "nameserver";
             String hostName = "10.0.0.31";
             int port = 6001;
-            info = new ServerInfo(name, hostName, port);
+            serverInfo = new ServerInfo(name, hostName, port);
         }
         
         NameserverAction action = null;
         {
-            String name = "daemon";
-            String hostName = "10.0.0.32";
+            String name = "daemon1";
+            String hostName = "10.0.0.31";
             int port = 6000;
             // action = new NameserverAction(new ServerInfo(name, hostName, port)); // ping
             // action = new NameserverAction(name); // get
@@ -32,7 +32,7 @@ public class NameserverClient {
         Socket socket = null;
         Communication nextComm = null;
         try {
-            socket = new Socket(info.getHostName(), info.getPort());
+            socket = new Socket(serverInfo.getHostName(), serverInfo.getPort());
             nextComm = new Communication(socket);
             
             nextComm.send(action);
@@ -47,29 +47,21 @@ public class NameserverClient {
                 if (ret instanceof NameserverNoEntry) {
                     continue;
                 }
-
+                
                 // get
-                if (ret instanceof LinkedList<?>) {
-                    LinkedList<ServerInfo> enteries = (LinkedList<ServerInfo>) ret;
-                    for (ServerInfo serverInfo : enteries) {
-                        System.out.println(serverInfo);
-                    }
+                if (ret instanceof ServerInfo) {
+                    ServerInfo info = (ServerInfo) ret;
+                    System.out.println(info.toFormatedString());
                 }
-
+                
                 // dump
-                if (ret instanceof ConcurrentHashMap<?, ?>) {
-                    ConcurrentHashMap<String, LinkedList<ServerInfo>> servers = (ConcurrentHashMap<String, LinkedList<ServerInfo>>) ret;
-                    for (Map.Entry<String, LinkedList<ServerInfo>> entry : servers.entrySet()) {
-                        String name = entry.getKey();
-                        LinkedList<ServerInfo> enteries = entry.getValue();
-                        
-                        System.out.println(name);
-                        for (ServerInfo serverInfo : enteries) {
-                            System.out.println(serverInfo);
-                        }
+                if (ret instanceof ConcurrentLinkedQueue<?>) {
+                    ConcurrentLinkedQueue<ServerInfo> serverList = (ConcurrentLinkedQueue<ServerInfo>) ret;
+                    for (ServerInfo info : serverList) {
+                        System.out.println(info.toFormatedString());
                     }
                 }
-
+                
                 // help
                 if (ret instanceof StringOutput) {
                     StringOutput out = (StringOutput) ret;

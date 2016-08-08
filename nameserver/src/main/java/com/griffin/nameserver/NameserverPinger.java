@@ -33,13 +33,13 @@ public class NameserverPinger implements Startable {
         
         private final int INTERVAL = 5; // mins
         private long sleepTime;
-
+        
         public PingThread(NameserverCallback callBack, ServerInfo nameserverInfo, ServerInfo info) {
             this.callBack = callBack;
             this.nameserverClient = new NameserverClient(nameserverInfo);
             this.info = info;
             
-            this.sleepTime = INTERVAL * 1000 * 60;
+            this.sleepTime = INTERVAL * 1000;
         }
         
         public void terminate() {
@@ -52,11 +52,14 @@ public class NameserverPinger implements Startable {
             while (this.isRunning) {
                 try {
                     this.nameserverClient.ping(this.info);
-                    Thread.sleep(this.sleepTime);
                 } catch (UnknownHostException e) {
                     this.callBack.nameserverException(e);
                 } catch (IOException e) {
                     this.callBack.nameserverException(e);
+                }
+                
+                try {
+                    Thread.sleep(this.sleepTime);
                 } catch (InterruptedException e) { }
             }
         }

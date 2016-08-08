@@ -14,14 +14,14 @@ public class Daemon implements NameserverCallback, ServerCallBack, Startable {
     
     private ServerSocket serverSocket;
     private Thread serverThread;
-
+    
     private NameserverPinger nameserverPinger;
     
     public Daemon(String fileName, String target) {
         this.fileName = fileName;
         this.target = target;
     }
-
+    
     public Thread getThread() {
         return this.serverThread;
     }
@@ -60,39 +60,17 @@ public class Daemon implements NameserverCallback, ServerCallBack, Startable {
     public void dealWith(ClassNotFoundException e) {
         this.println(e.getMessage().toLowerCase());
     }
-
+    
     @Override
     public void nameserverException(UnknownHostException e) {
         // caused by the NameserverPinger & if cant reach the nameserver, this server is dead in the water
-
-        Daemon.isRunning = false;
-        
         this.println("lost connection to the nameserver!!");
-        this.println(e);
-        try {
-            this.serverSocket.close();
-        } catch (IOException ex) {
-            this.dealWith(ex);
-        }
-
-        this.nameserverPinger.stop();
     }
     
     @Override
     public void nameserverException(IOException e) {
         // caused by the NameserverPinger & if cant reach the nameserver, this server is dead in the water
-
-        Daemon.isRunning = false;
-        
         this.println("lost connection to the nameserver!!");
-        this.println(e);
-        try {
-            this.serverSocket.close();
-        } catch (IOException ex) {
-            this.dealWith(ex);
-        }
-
-        this.nameserverPinger.stop();
     }
     
     @Override
@@ -112,12 +90,12 @@ public class Daemon implements NameserverCallback, ServerCallBack, Startable {
         try {
             InputStream inputStream = ClassLoader.getSystemClassLoader().getResourceAsStream(this.fileName);
             ServerInfoParser infoParser = new ServerInfoParser(inputStream);
-
+            
             ServerInfo info = infoParser.getServerInfo(this.target);
-
+            
             this.nameserverPinger = new NameserverPinger(this, infoParser.getNameserverInfo(), info);
             this.nameserverPinger.start();
-
+            
             Server server = new Server(this, info, new DaemonTaskFactory(infoParser));
             
             this.serverThread = new Thread(server);
@@ -132,7 +110,7 @@ public class Daemon implements NameserverCallback, ServerCallBack, Startable {
             Daemon.isRunning = false;
             this.println(e);
         }
-
+        
         return Daemon.isRunning;
     }
     
@@ -142,7 +120,7 @@ public class Daemon implements NameserverCallback, ServerCallBack, Startable {
             this.println("daemon is not running");
             return false;
         }
-
+        
         Daemon.isRunning = false;
         
         try {
@@ -150,9 +128,9 @@ public class Daemon implements NameserverCallback, ServerCallBack, Startable {
         } catch (IOException e) {
             this.dealWith(e);
         }
-
+        
         this.nameserverPinger.stop();
-
+        
         return true;
     }
     

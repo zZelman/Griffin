@@ -12,11 +12,13 @@ import java.net.*;
 import com.griffin.android.app.*;
 
 import com.griffin.core.*;
+import com.griffin.nameserver.*;
 
-public class AppService extends Service implements ServerCallBack, Startable {
+public class AppService extends Service implements NameserverCallback, ServerCallBack, Startable {
     public static final int ID = 1234;
     private static boolean isRunning = false;
     private ServerSocket serverSocket;
+    private NameserverPinger nameserverPinger;
     
     public static boolean isRunning() {
         return AppService.isRunning;
@@ -87,6 +89,18 @@ public class AppService extends Service implements ServerCallBack, Startable {
     public void dealWith(IOException e) {
         this.showToast(e.getMessage().toLowerCase());
     }
+
+    @Override
+    public void nameserverException(UnknownHostException e) {
+        // caused by the NameserverPinger & if cant reach the nameserver, this server is dead in the water
+        this.showToast("lost connection to the nameserver!!");
+    }
+    
+    @Override
+    public void nameserverException(IOException e) {
+        // caused by the NameserverPinger & if cant reach the nameserver, this server is dead in the water
+        this.showToast("lost connection to the nameserver!!");
+    }
     
     @Override
     public boolean start() {
@@ -100,9 +114,13 @@ public class AppService extends Service implements ServerCallBack, Startable {
         try {
             InputStream inputStream = this.getResources().openRawResource(R.raw.server_list);
             ServerInfoParser infoParser = new ServerInfoParser(inputStream);
+
+            ServerInfo info = infoParser.getServerInfo(getString(R.string.target));
+
+            this.nameserverPinger = new NameserverPinger(this, infoParser.getNameserverInfo(), info);
+            this.nameserverPinger.start();
             
-            TaskFactory taskFactory = new AppTaskFactory();
-            Server server = new Server(this, infoParser.getServerInfo(getString(R.string.target)), taskFactory);
+            Server server = new Server(this, info, new AppTaskFactory());
             
             new Thread(server).start();
         } catch (FileNotFoundException e) {
@@ -153,6 +171,8 @@ public class AppService extends Service implements ServerCallBack, Startable {
         } catch (IOException e) {
             this.dealWith(e);
         }
+
+        this.nameserverPinger.stop();
         
         stopForeground(true);
         stopSelf();

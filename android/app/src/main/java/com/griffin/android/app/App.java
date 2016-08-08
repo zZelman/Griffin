@@ -20,6 +20,7 @@ import org.apache.commons.lang3.*;
 
 import com.griffin.core.*;
 import com.griffin.core.output.*;
+import com.griffin.nameserver.*;
 
 import com.griffin.android.app.*;
 
@@ -138,11 +139,11 @@ public class App extends Activity implements OnClickListener {
         // String target = "desktop";
         // String command = "prev comm";
         
-        ServerInfo info = null;
+        ServerInfo nameserverInfo = null;
         try {
             InputStream inputStream = this.getResources().openRawResource(R.raw.server_list);
             ServerInfoParser infoParser = new ServerInfoParser(inputStream);
-            info = infoParser.getServerInfo(target);
+            nameserverInfo = infoParser.getNameserverInfo();
         } catch (FileNotFoundException e) {
             Toast.makeText(this, "server info file not found", Toast.LENGTH_SHORT).show();
             return;
@@ -154,7 +155,7 @@ public class App extends Activity implements OnClickListener {
             return;
         }
         
-        new Networking(info, command).execute();
+        new Networking(nameserverInfo, target, command).execute();
         
         this.hideKeyboard();
     }
@@ -177,16 +178,15 @@ public class App extends Activity implements OnClickListener {
     }
     
     class Networking extends AsyncTask<Void, Void, Void> implements ClientCallBack {
-        private final ServerInfo info;
-        private final Serializable command;
-        private Client client;
-        
+        private ServerInfo nameserverInfo;
+        private String target;
+        private Serializable command;
         private List<String> outputs;
         
-        public Networking(ServerInfo info, Serializable command) {
-            this.info = info;
+        public Networking(ServerInfo nameserverInfo, String target, Serializable command) {
+            this.nameserverInfo = nameserverInfo;
+            this.target = target;
             this.command = command;
-            this.client = new Client(this, this.info, this.command);
             
             this.outputs = new LinkedList<String>();
         }
@@ -199,7 +199,30 @@ public class App extends Activity implements OnClickListener {
         
         @Override
         protected Void doInBackground(Void... params) {
-            client.start();
+            NameserverClient nameserverClient = new NameserverClient(this.nameserverInfo);
+            ServerInfo info = null;
+            try {
+                info = nameserverClient.get(this.target);
+            } catch (UnknownHostException e) {
+                outputs.add(e.toString());
+                this.dealWithBadTarget(this.target);
+                return null;
+            } catch (ClassNotFoundException e) {
+                outputs.add(e.toString());
+                this.dealWithBadTarget(this.target);
+                return null;
+            } catch (IOException e) {
+                outputs.add(e.toString());
+                this.dealWithBadTarget(this.target);
+                return null;
+            }
+            
+            if (info == null) {
+                this.dealWithBadTarget(this.target);
+                return null;
+            }
+            
+            new Client(this, info, this.command).start();
             return null;
         }
         
@@ -235,6 +258,11 @@ public class App extends Activity implements OnClickListener {
         @Override
         public void dealWith(IOException e) {
             outputs.add(e.toString());
+        }
+        
+        @Override
+        public void dealWithBadTarget(String target) {
+            outputs.add("target is not on nameserver: " + target);
         }
         
         private void addOutput(Output o) {

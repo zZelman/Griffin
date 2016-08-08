@@ -12,4 +12,5 @@ public interface ClientCallBack {
     public void dealWith(UnknownHostException e);
     public void dealWith(ClassNotFoundException e);
     public void dealWith(IOException e);
+    public void dealWithBadTarget(String target);
 }

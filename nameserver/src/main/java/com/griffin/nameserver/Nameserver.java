@@ -239,7 +239,7 @@ public class Nameserver implements Runnable, Startable {
 
     public static void usage() {
         System.out.println("error in command line paramiters");
-        System.out.println("    usage: [server_list_filename] [target]");
+        System.out.println("    usage: [server_list_filename]");
         System.exit(1);
     }
     

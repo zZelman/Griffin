@@ -6,7 +6,7 @@ import java.io.*;
 import com.griffin.core.*;
 import com.griffin.nameserver.*;
 
-public class Daemon implements ServerCallBack, Startable {
+public class Daemon implements NameserverCallback, ServerCallBack, Startable {
     private String fileName;
     private String target;
     
@@ -14,6 +14,8 @@ public class Daemon implements ServerCallBack, Startable {
     
     private ServerSocket serverSocket;
     private Thread serverThread;
+
+    private NameserverPinger nameserverPinger;
     
     public Daemon(String fileName, String target) {
         this.fileName = fileName;
@@ -58,6 +60,40 @@ public class Daemon implements ServerCallBack, Startable {
     public void dealWith(ClassNotFoundException e) {
         this.println(e.getMessage().toLowerCase());
     }
+
+    @Override
+    public void nameserverException(UnknownHostException e) {
+        // caused by the NameserverPinger & if cant reach the nameserver, this server is dead in the water
+
+        Daemon.isRunning = false;
+        
+        this.println("lost connection to the nameserver!!");
+        this.println(e);
+        try {
+            this.serverSocket.close();
+        } catch (IOException ex) {
+            this.dealWith(ex);
+        }
+
+        this.nameserverPinger.stop();
+    }
+    
+    @Override
+    public void nameserverException(IOException e) {
+        // caused by the NameserverPinger & if cant reach the nameserver, this server is dead in the water
+
+        Daemon.isRunning = false;
+        
+        this.println("lost connection to the nameserver!!");
+        this.println(e);
+        try {
+            this.serverSocket.close();
+        } catch (IOException ex) {
+            this.dealWith(ex);
+        }
+
+        this.nameserverPinger.stop();
+    }
     
     @Override
     public void dealWith(IOException e) {
@@ -78,10 +114,10 @@ public class Daemon implements ServerCallBack, Startable {
             ServerInfoParser infoParser = new ServerInfoParser(inputStream);
 
             ServerInfo info = infoParser.getServerInfo(this.target);
-            
-            NameserverClient nameserverClient = new NameserverClient(infoParser.getNameserverInfo());
-            nameserverClient.ping(info);
-            
+
+            this.nameserverPinger = new NameserverPinger(this, infoParser.getNameserverInfo(), info);
+            this.nameserverPinger.start();
+
             Server server = new Server(this, info, new DaemonTaskFactory(infoParser));
             
             this.serverThread = new Thread(server);
@@ -114,6 +150,8 @@ public class Daemon implements ServerCallBack, Startable {
         } catch (IOException e) {
             this.dealWith(e);
         }
+
+        this.nameserverPinger.stop();
 
         return true;
     }

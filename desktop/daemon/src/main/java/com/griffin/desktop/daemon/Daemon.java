@@ -10,7 +10,7 @@ public class Daemon implements NameserverCallBack, ServerCallBack, Startable {
     private String fileName;
     private String target;
     
-    private static boolean isRunning = false;
+    private boolean isRunning;
     
     private ServerSocket serverSocket;
     private Thread serverThread;
@@ -20,6 +20,8 @@ public class Daemon implements NameserverCallBack, ServerCallBack, Startable {
     public Daemon(String fileName, String target) {
         this.fileName = fileName;
         this.target = target;
+
+        this.isRunning = false;
     }
     
     public Thread getThread() {
@@ -80,12 +82,12 @@ public class Daemon implements NameserverCallBack, ServerCallBack, Startable {
     
     @Override
     public boolean start() {
-        if (Daemon.isRunning == true) {
+        if (this.isRunning == true) {
             this.println("daemon is already running");
             return false;
         }
         
-        Daemon.isRunning = true;
+        this.isRunning = true;
         
         try {
             InputStream inputStream = ClassLoader.getSystemClassLoader().getResourceAsStream(this.fileName);
@@ -98,27 +100,27 @@ public class Daemon implements NameserverCallBack, ServerCallBack, Startable {
             this.serverThread = new Thread(server);
             this.serverThread.start();
         } catch (FileNotFoundException e) {
-            Daemon.isRunning = false;
+            this.isRunning = false;
             this.println(e);
         } catch (IOException e) {
-            Daemon.isRunning = false;
+            this.isRunning = false;
             this.println(e);
         } catch (ServerInfoException e) {
-            Daemon.isRunning = false;
+            this.isRunning = false;
             this.println(e);
         }
         
-        return Daemon.isRunning;
+        return this.isRunning;
     }
     
     @Override
     public boolean stop() {
-        if (Daemon.isRunning == false) {
+        if (this.isRunning == false) {
             this.println("daemon is not running");
             return false;
         }
         
-        Daemon.isRunning = false;
+        this.isRunning = false;
         
         try {
             this.serverSocket.close();
@@ -149,8 +151,10 @@ public class Daemon implements NameserverCallBack, ServerCallBack, Startable {
         if (args.length != 1) {
             Daemon.usage();
         }
+
+        String target = "desktop";
         
-        Daemon daemon = new Daemon(args[0], "desktop");
+        Daemon daemon = new Daemon(args[0], target);
         
         if (daemon.start()) {
             try {

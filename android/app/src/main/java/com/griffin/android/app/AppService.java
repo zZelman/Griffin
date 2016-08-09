@@ -67,7 +67,7 @@ public class AppService extends Service implements NameserverCallBack, ServerCal
     @Override
     public void serverEnding(String s) {
         this.showToast(s);
-
+        
         // this must be here, otherwise the command will be
         // ran on a bad thread & cause a crash
         Handler h = new Handler(AppService.this.getMainLooper());
@@ -88,7 +88,7 @@ public class AppService extends Service implements NameserverCallBack, ServerCal
     public void dealWith(IOException e) {
         this.showToast(e.getMessage().toLowerCase());
     }
-
+    
     @Override
     public void nameserverException(UnknownHostException e) {
         // caused by the NameserverPinger & if cant reach the nameserver, this server is dead in the water
@@ -113,11 +113,11 @@ public class AppService extends Service implements NameserverCallBack, ServerCal
         try {
             InputStream inputStream = this.getResources().openRawResource(R.raw.server_list);
             ServerInfoParser infoParser = new ServerInfoParser(inputStream);
-
+            
             Server server = new Server(this, this,
                                        infoParser, getString(R.string.target),
                                        new AppTaskFactory());
-            
+                                       
             new Thread(server).start();
         } catch (FileNotFoundException e) {
             AppService.isRunning = false;
@@ -136,20 +136,18 @@ public class AppService extends Service implements NameserverCallBack, ServerCal
         Intent intent = new Intent(this, App.class);
         PendingIntent returnToApp =
             PendingIntent.getActivity(
-                this,
-                0,
-                intent,
+                this, 0, intent,
                 PendingIntent.FLAG_UPDATE_CURRENT
             );
             
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
-        .setSmallIcon(R.drawable.ic_notification)
-        .setContentTitle(getString(R.string.notification_title))
-        .setContentText(getString(R.string.notification_text))
-        .setContentIntent(returnToApp);
+        /*   */ .setSmallIcon(R.drawable.ic_notification)
+        /*   */ .setContentTitle(getString(R.string.notification_title))
+        /*   */ .setContentText(getString(R.string.notification_text))
+        /*   */ .setContentIntent(returnToApp);
         
         startForeground(AppService.ID, notificationBuilder.build());
-
+        
         return true;
     }
     
@@ -167,10 +165,10 @@ public class AppService extends Service implements NameserverCallBack, ServerCal
         } catch (IOException e) {
             this.dealWith(e);
         }
-
+        
         stopForeground(true);
         stopSelf();
-
+        
         return true;
     }
     

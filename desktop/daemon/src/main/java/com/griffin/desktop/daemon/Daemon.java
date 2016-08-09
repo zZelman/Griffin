@@ -4,7 +4,7 @@ import java.net.*;
 import java.io.*;
 
 import com.griffin.core.*;
-import com.griffin.nameserver.*;
+import com.griffin.core.nameserver.*;
 
 public class Daemon implements NameserverCallback, ServerCallBack, Startable {
     private String fileName;

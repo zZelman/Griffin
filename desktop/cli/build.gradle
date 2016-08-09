@@ -9,7 +9,6 @@ repositories {
 
 dependencies {
     compile project(':core')
-    compile project(':nameserver')
 }
 
 task runCli(type: JavaExec) {

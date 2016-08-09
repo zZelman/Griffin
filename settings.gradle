@@ -4,5 +4,3 @@ include 'desktop:cli'
 include 'desktop:daemon'
 
 include 'android:app'
-
-include 'nameserver'

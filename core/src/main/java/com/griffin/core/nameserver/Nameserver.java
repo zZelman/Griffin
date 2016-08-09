@@ -1,4 +1,4 @@
-package com.griffin.nameserver;
+package com.griffin.core.nameserver;
 
 import java.net.*;
 import java.io.*;

@@ -23,7 +23,8 @@ public class Cli implements ClientCallBack, Startable {
         if (o instanceof Output) {
             this.printOutput((Output) o);
         } else {
-            this.println(o.toString()); // a catch-all for unexpected output (like "prev comm"'s string)
+            // a catch-all for unexpected output (like "prev comm"'s string)
+            this.println(o.toString());
         }
     }
     

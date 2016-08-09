@@ -37,17 +37,26 @@ public class Client implements Startable {
                 
                 this.callBack.recieved(ret);
             }
+        } catch (ConnectException e) {
+            this.callBack.dealWith(e);
+            return false;
         } catch (UnknownHostException e) {
             this.callBack.dealWith(e);
+            return false;
         } catch (ClassNotFoundException e) {
             this.callBack.dealWith(e);
+            return false;
         } catch (IOException e) {
             this.callBack.dealWith(e);
+            return false;
         } finally {
             try {
-                nextComm.close();
+                if (nextComm != null) {
+                    nextComm.close();
+                }
             } catch (IOException e) {
                 this.callBack.dealWith(e);
+                return false;
             }
         }
         

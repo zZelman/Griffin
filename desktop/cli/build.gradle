@@ -17,5 +17,5 @@ dependencies {
 
 run {
     standardInput = System.in
-    args 'server_list.ini android help'.split(' ')
+    args 'server_list.ini desktop help'.split(' ')
 }

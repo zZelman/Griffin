@@ -32,18 +32,23 @@ public class Cli implements ClientCallBack, Startable {
     }
     
     @Override
+    public void dealWith(ConnectException e) {
+        this.println(e);
+    }
+    
+    @Override
     public void dealWith(UnknownHostException e) {
-        e.printStackTrace();
+        this.println(e);
     }
     
     @Override
     public void dealWith(ClassNotFoundException e) {
-        e.printStackTrace();
+        this.println(e);
     }
     
     @Override
     public void dealWith(IOException e) {
-        e.printStackTrace();
+        this.println(e);
     }
     
     @Override
@@ -100,6 +105,10 @@ public class Cli implements ClientCallBack, Startable {
     private void println(String s) {
         System.out.println(s);
     }
+
+    private void println(Exception e) {
+        e.printStackTrace();
+}
     
     public static void usage() {
         System.out.println("error in command line paramiters");
@@ -148,7 +157,8 @@ public class Cli implements ClientCallBack, Startable {
         }
         
         Cli cli = new Cli(info, command);
-        cli.start();
-        cli.stop();
+        if (cli.start()) {
+            cli.stop();
+        }
     }
 }

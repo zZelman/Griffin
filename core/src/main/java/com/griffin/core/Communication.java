@@ -12,6 +12,15 @@ public class Communication {
     
     public Communication(Socket socket) throws IOException {
         this.socket = socket;
+        this.init();
+    }
+
+    public Communication(String hostName, int port) throws IOException {
+        this.socket = new Socket(hostName, port);
+        this.init();
+    }
+
+    private void init() throws IOException {
         this.out = new ObjectOutputStream(this.socket.getOutputStream());
         this.in = new ObjectInputStream(this.socket.getInputStream());
     }

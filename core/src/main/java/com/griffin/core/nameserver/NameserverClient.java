@@ -18,12 +18,9 @@ public class NameserverClient {
     public void ping(ServerInfo info) throws UnknownHostException, IOException {
         NameserverAction action = new NameserverAction(info);
         
-        Socket socket = null;
         Communication nextComm = null;
         try {
-            socket = new Socket(this.nameserver.getHostName(), this.nameserver.getPort());
-            nextComm = new Communication(socket);
-            
+            nextComm = new Communication(this.nameserver.getHostName(), this.nameserver.getPort());
             nextComm.send(action);
         } finally {
             if (nextComm != null) {
@@ -35,13 +32,10 @@ public class NameserverClient {
     public ServerInfo get(String target) throws UnknownHostException, ClassNotFoundException, IOException {
         NameserverAction action = new NameserverAction(target);
         
-        Socket socket = null;
         Communication nextComm = null;
         ServerInfo info = null;
         try {
-            socket = new Socket(this.nameserver.getHostName(), this.nameserver.getPort());
-            nextComm = new Communication(socket);
-            
+            nextComm = new Communication(this.nameserver.getHostName(), this.nameserver.getPort());
             nextComm.send(action);
             
             Object ret;
@@ -71,13 +65,10 @@ public class NameserverClient {
     public ConcurrentLinkedQueue<ServerInfo> dump() throws UnknownHostException, ClassNotFoundException, IOException {
         NameserverAction action = new NameserverAction(NameserverAction.Action.DUMP);
         
-        Socket socket = null;
         Communication nextComm = null;
         ConcurrentLinkedQueue<ServerInfo> serverList = null;
         try {
-            socket = new Socket(this.nameserver.getHostName(), this.nameserver.getPort());
-            nextComm = new Communication(socket);
-            
+            nextComm = new Communication(this.nameserver.getHostName(), this.nameserver.getPort());
             nextComm.send(action);
             
             Object ret;
@@ -103,13 +94,10 @@ public class NameserverClient {
     public StringOutput help() throws UnknownHostException, ClassNotFoundException, IOException {
         NameserverAction action = new NameserverAction(NameserverAction.Action.HELP);
         
-        Socket socket = null;
         Communication nextComm = null;
         StringOutput output = null;
         try {
-            socket = new Socket(this.nameserver.getHostName(), this.nameserver.getPort());
-            nextComm = new Communication(socket);
-            
+            nextComm = new Communication(this.nameserver.getHostName(), this.nameserver.getPort());
             nextComm.send(action);
             
             Object ret;

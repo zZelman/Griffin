@@ -12,14 +12,10 @@ import com.griffin.core.output.*;
 import com.griffin.core.nameserver.*;
 
 public class Cli implements ClientCallBack, Startable {
-    private ServerInfo info;
-    private Serializable command;
     private Client client;
     
-    public Cli(ServerInfo info, Serializable command) {
-        this.info = info;
-        this.command = command;
-        this.client = new Client(this, this.info, this.command);
+    public Cli(ServerInfoParser infoParser, String target, Serializable command) {
+        this.client = new Client(this, infoParser, target, command);
     }
     
     @Override
@@ -29,6 +25,11 @@ public class Cli implements ClientCallBack, Startable {
         } else {
             this.println(o.toString()); // a catch-all for unexpected output (like "prev comm"'s string)
         }
+    }
+    
+    @Override
+    public void dealWith(ServerInfoException e) {
+        this.println(e);
     }
     
     @Override
@@ -49,6 +50,11 @@ public class Cli implements ClientCallBack, Startable {
     @Override
     public void dealWith(IOException e) {
         this.println(e);
+    }
+    
+    @Override
+    public void dealWithBadTarget(String target) {
+        this.println("nameserver did not have an entery for: " + target);
     }
     
     @Override
@@ -105,19 +111,14 @@ public class Cli implements ClientCallBack, Startable {
     private void println(String s) {
         System.out.println(s);
     }
-
+    
     private void println(Exception e) {
         e.printStackTrace();
-}
+    }
     
     public static void usage() {
         System.out.println("error in command line paramiters");
         System.out.println("    usage: [server_info_filename] [target] [command...]");
-        System.exit(1);
-    }
-    
-    public static void badTarget(String target) {
-        System.out.println("nameserver did not find an entery for: " + target);
         System.exit(1);
     }
     
@@ -132,33 +133,17 @@ public class Cli implements ClientCallBack, Startable {
         String[] commandTokens = ArrayUtils.subarray(args, 2, args.length);
         Serializable command = StringUtils.join(commandTokens, " ");
         
-        ServerInfo info = null;
+        ServerInfoParser infoParser = null;
         try {
             InputStream inputStream = ClassLoader.getSystemClassLoader().getResourceAsStream(fileName);
-            ServerInfoParser infoParser = new ServerInfoParser(inputStream);
-            NameserverClient nameserverClient = new NameserverClient(infoParser.getNameserverInfo());
-            info = nameserverClient.get(target);
-        } catch (ServerInfoException e) {
-            e.printStackTrace();
-            System.exit(1);
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-            System.exit(1);
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-            System.exit(1);
+            infoParser = new ServerInfoParser(inputStream);
         } catch (IOException e) {
             e.printStackTrace();
             System.exit(1);
         }
         
-        if (info == null) {
-            Cli.badTarget(target);
-        }
-        
-        Cli cli = new Cli(info, command);
-        if (cli.start()) {
-            cli.stop();
-        }
+        Cli cli = new Cli(infoParser, target, command);
+        cli.start();
+        cli.stop();
     }
 }

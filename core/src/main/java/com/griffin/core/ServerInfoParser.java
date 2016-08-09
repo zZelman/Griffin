@@ -28,6 +28,7 @@ public class ServerInfoParser {
     private void init(InputStream inputStream) throws IOException {
         Ini ini = new Ini(inputStream);
         this.iniPrefs = new IniPreferences(ini);
+        inputStream.close();
     }
 
     public ServerInfo getNameserverInfo() throws ServerInfoException {

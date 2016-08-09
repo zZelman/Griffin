@@ -6,26 +6,33 @@ import java.lang.*;
 import java.util.*;
 
 import com.griffin.core.*;
+import com.griffin.core.nameserver.*;
 
 public class Client implements Startable {
     private final ClientCallBack callBack;
-    private final ServerInfo info;
+    private final ServerInfoParser infoParser;
+    private final String target;
     private final Serializable command;
     
-    public Client(ClientCallBack callBack, ServerInfo info, Serializable command) {
+    public Client(ClientCallBack callBack, ServerInfoParser infoParser, String target, Serializable command) {
         this.callBack = callBack;
-        this.info = info;
+        this.infoParser = infoParser;
+        this.target = target;
         this.command = command;
     }
     
     @Override
     public boolean start() {
-        Socket socket = null;
         Communication nextComm = null;
         try {
-            socket = new Socket(info.getHostName(), info.getPort());
-            nextComm = new Communication(socket);
+            NameserverClient nameserverClient = new NameserverClient(infoParser.getNameserverInfo());
+            ServerInfo info = nameserverClient.get(this.target);
+            if (info == null) {
+                this.callBack.dealWithBadTarget(this.target);
+                return false;
+            }
             
+            nextComm = new Communication(info.getHostName(), info.getPort());
             nextComm.send(command);
             
             Object ret;
@@ -37,6 +44,9 @@ public class Client implements Startable {
                 
                 this.callBack.recieved(ret);
             }
+        } catch (ServerInfoException e) {
+            this.callBack.dealWith(e);
+            return false;
         } catch (ConnectException e) {
             this.callBack.dealWith(e);
             return false;

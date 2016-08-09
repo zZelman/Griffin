@@ -53,12 +53,11 @@ public class ExamplePrefixTask extends Task {
             return output;
         }
         
+        Communication nextComm = null;
         try {
             // TODO: implement ClientCallBack instead of a custom Client
             
-            Socket socket = new Socket(info.getHostName(), info.getPort());
-            Communication nextComm = new Communication(socket);
-            
+            nextComm = new Communication(info.getHostName(), info.getPort());
             nextComm.send(this.nextCommand);
             
             Object ret;
@@ -89,6 +88,16 @@ public class ExamplePrefixTask extends Task {
             output.addOutput(new StringOutput(e.toString()));
             output.addOutput(new FailureOutput(this.failure));
             return output;
+        } finally {
+            try {
+                if (nextComm != null) {
+                    nextComm.close();
+                }
+            } catch (IOException e) {
+                output.addOutput(new StringOutput(e.toString()));
+                output.addOutput(new FailureOutput(this.failure));
+                return output;
+            }
         }
         
         output.addOutput(new SuccessOutput(this.success));

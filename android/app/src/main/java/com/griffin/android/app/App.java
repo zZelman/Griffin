@@ -139,23 +139,19 @@ public class App extends Activity implements OnClickListener {
         // String target = "desktop";
         // String command = "prev comm";
         
-        ServerInfo nameserverInfo = null;
+        ServerInfoParser infoParser = null;
         try {
             InputStream inputStream = this.getResources().openRawResource(R.raw.server_list);
-            ServerInfoParser infoParser = new ServerInfoParser(inputStream);
-            nameserverInfo = infoParser.getNameserverInfo();
+            infoParser = new ServerInfoParser(inputStream);
         } catch (FileNotFoundException e) {
             Toast.makeText(this, "server info file not found", Toast.LENGTH_SHORT).show();
             return;
         } catch (IOException e) {
             Toast.makeText(this, "io error", Toast.LENGTH_SHORT).show();
             return;
-        } catch (ServerInfoException e) {
-            Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
-            return;
         }
         
-        new Networking(nameserverInfo, target, command).execute();
+        new Networking(infoParser, target, command).execute();
         
         this.hideKeyboard();
     }
@@ -178,13 +174,15 @@ public class App extends Activity implements OnClickListener {
     }
     
     class Networking extends AsyncTask<Void, Void, Void> implements ClientCallBack {
-        private ServerInfo nameserverInfo;
+        private ServerInfoParser infoParser;
         private String target;
         private Serializable command;
         private List<String> outputs;
         
-        public Networking(ServerInfo nameserverInfo, String target, Serializable command) {
-            this.nameserverInfo = nameserverInfo;
+        private Client client;
+        
+        public Networking(ServerInfoParser infoParser, String target, Serializable command) {
+            this.infoParser = infoParser;
             this.target = target;
             this.command = command;
             
@@ -199,27 +197,9 @@ public class App extends Activity implements OnClickListener {
         
         @Override
         protected Void doInBackground(Void... params) {
-            NameserverClient nameserverClient = new NameserverClient(this.nameserverInfo);
-            ServerInfo info = null;
-            try {
-                info = nameserverClient.get(this.target);
-            } catch (UnknownHostException e) {
-                outputs.add(e.toString());
-                return null;
-            } catch (ClassNotFoundException e) {
-                outputs.add(e.toString());
-                return null;
-            } catch (IOException e) {
-                outputs.add(e.toString());
-                return null;
-            }
+            this.client = new Client(this, this.infoParser, this.target, this.command);
+            this.client.start();
             
-            if (info == null) {
-                this.outputs.add("nameserver did not find an entery for: " + this.target);
-                return null;
-            }
-            
-            new Client(this, info, this.command).start();
             return null;
         }
         
@@ -230,6 +210,7 @@ public class App extends Activity implements OnClickListener {
         
         @Override
         protected void onPostExecute(Void param) {
+            this.client.stop();
             this.showWhatHave();
         }
         
@@ -240,6 +221,11 @@ public class App extends Activity implements OnClickListener {
             } else {
                 this.add(o.toString()); // a catch-all for unexpected output (like "prev comm"'s string)
             }
+        }
+        
+        @Override
+        public void dealWith(ServerInfoException e) {
+            outputs.add(e.toString());
         }
         
         @Override
@@ -260,6 +246,11 @@ public class App extends Activity implements OnClickListener {
         @Override
         public void dealWith(IOException e) {
             outputs.add(e.toString());
+        }
+        
+        @Override
+        public void dealWithBadTarget(String target) {
+            outputs.add("nameserver did not find an entery for: " + target);
         }
         
         private void addOutput(Output o) {

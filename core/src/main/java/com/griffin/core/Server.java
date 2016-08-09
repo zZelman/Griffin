@@ -6,31 +6,42 @@ import java.util.*;
 
 import com.griffin.core.*;
 import com.griffin.core.output.*;
+import com.griffin.core.nameserver.*;
 
 public class Server implements Runnable {
-    private final ServerCallBack callBack;
-    private final ServerInfo info;
-    private final ServerSocket serverSocket;
-    private final Griffin griffin;
+    private ServerCallBack serverCallBack;
+    private ServerInfo serverInfo;
+
+    private NameserverPinger nameserverPinger;
+    private Griffin griffin;
+    private ServerSocket serverSocket;
     
     private final String STOP_SERVER_COMMAND = "stop server";
     private final String SERVER_STOPPING = "server has recieved the stop command, and is ending";
     private final String BAD_COMMAND = "first communication must be in String form";
     
-    public Server(ServerCallBack callBack, ServerInfo info, TaskFactory taskFactory) throws IOException {
-        this.callBack = callBack;
-        this.info = info;
+    public Server(ServerCallBack serverCallBack, NameserverCallBack nameserverCallBack,
+                  ServerInfoParser infoParser, String target,
+                  TaskFactory taskFactory) throws ServerInfoException, IOException {
+        this.serverCallBack = serverCallBack;
+        this.serverInfo = infoParser.getServerInfo(target);
+
+        this.nameserverPinger = new NameserverPinger(nameserverCallBack,
+                infoParser.getNameserverInfo(),
+                this.serverInfo);
         
         this.griffin = new Griffin(taskFactory);
-        this.serverSocket = new ServerSocket(info.getPort());
         
-        this.callBack.startedServerSocket(this.serverSocket);
+        this.serverSocket = new ServerSocket(this.serverInfo.getPort());
+        this.serverCallBack.startedServerSocket(this.serverSocket);
     }
     
     @Override
     public void run() {
-        this.callBack.serverInfo(this.info);
-        this.callBack.taskList(this.griffin.printTasks());
+        this.serverCallBack.serverInfo(this.serverInfo);
+        this.serverCallBack.taskList(this.griffin.printTasks());
+
+        this.nameserverPinger.start();
         
         try {
             Socket clientSocket;
@@ -41,7 +52,7 @@ public class Server implements Runnable {
                 clientSocket = this.serverSocket.accept();
                 
                 prevComm = new Communication(clientSocket);
-                this.callBack.startedConnection(prevComm.getRemoteAddr(), prevComm.getLocalAddr());
+                this.serverCallBack.startedConnection(prevComm.getRemoteAddr(), prevComm.getLocalAddr());
                 firstInput = prevComm.receive();
                 
                 // always check the first communication for an instance of the stop command
@@ -56,31 +67,33 @@ public class Server implements Runnable {
                 
                 // the thread deals with prevComm closing
                 // the thread deals with checking firstInput
-                new Thread(new CommunicationThread(this.callBack, this.griffin, prevComm, firstInput)).start();
+                new Thread(new CommunicationThread(this.serverCallBack, this.griffin, prevComm, firstInput)).start();
             }
         } catch (ClassNotFoundException e) {
-            this.callBack.dealWith(e);
+            this.serverCallBack.dealWith(e);
         } catch (IOException e) {
-            this.callBack.dealWith(e);
+            this.serverCallBack.dealWith(e);
         } finally {
             try {
                 this.serverSocket.close();
             } catch (IOException e) {
-                this.callBack.dealWith(e);
+                this.serverCallBack.dealWith(e);
             }
         }
+
+        this.nameserverPinger.stop();
         
-        this.callBack.serverEnding(SERVER_STOPPING);
+        this.serverCallBack.serverEnding(SERVER_STOPPING);
     }
     
     class CommunicationThread implements Runnable {
-        private final ServerCallBack callBack;
+        private final ServerCallBack serverCallBack;
         private final Griffin griffin;
         private final Communication prevComm;
         private final Object firstInput;
         
-        public CommunicationThread(ServerCallBack callBack, Griffin griffin, Communication prevComm, Object firstInput) {
-            this.callBack = callBack;
+        public CommunicationThread(ServerCallBack serverCallBack, Griffin griffin, Communication prevComm, Object firstInput) {
+            this.serverCallBack = serverCallBack;
             this.griffin = griffin;
             this.prevComm = prevComm;
             this.firstInput = firstInput;
@@ -91,7 +104,7 @@ public class Server implements Runnable {
             try {
                 if (this.firstInput instanceof String) {
                     String command = (String) this.firstInput;
-                    this.callBack.commandRecieved(command);
+                    this.serverCallBack.commandRecieved(command);
                     
                     Output output = this.griffin.doCommand(command, prevComm);
                     this.prevComm.send(output);
@@ -101,12 +114,12 @@ public class Server implements Runnable {
                 
                 this.prevComm.send(new StopCommunication());
             } catch (IOException e) {
-                this.callBack.dealWith(e);
+                this.serverCallBack.dealWith(e);
             } finally {
                 try {
                     this.prevComm.close();
                 } catch (IOException e) {
-                    this.callBack.dealWith(e);
+                    this.serverCallBack.dealWith(e);
                 }
             }
         }

@@ -8,7 +8,7 @@ import com.griffin.core.*;
 public class NameserverPinger implements Startable {
     private PingThread pingThread;
     
-    public NameserverPinger(NameserverCallback callback, ServerInfo nameserverInfo, ServerInfo info) {
+    public NameserverPinger(NameserverCallBack callback, ServerInfo nameserverInfo, ServerInfo info) {
         this.pingThread = new PingThread(callback, nameserverInfo, info);
     }
     
@@ -25,7 +25,7 @@ public class NameserverPinger implements Startable {
     }
     
     public class PingThread implements Runnable {
-        private NameserverCallback callBack;
+        private NameserverCallBack callBack;
         private NameserverClient nameserverClient;
         private ServerInfo info;
         
@@ -34,7 +34,7 @@ public class NameserverPinger implements Startable {
         private final int INTERVAL = 5;
         private long sleepTime;
         
-        public PingThread(NameserverCallback callBack, ServerInfo nameserverInfo, ServerInfo info) {
+        public PingThread(NameserverCallBack callBack, ServerInfo nameserverInfo, ServerInfo info) {
             this.callBack = callBack;
             this.nameserverClient = new NameserverClient(nameserverInfo);
             this.info = info;

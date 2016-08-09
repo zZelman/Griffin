@@ -6,7 +6,7 @@ import java.io.*;
 import com.griffin.core.*;
 import com.griffin.core.nameserver.*;
 
-public class Daemon implements NameserverCallback, ServerCallBack, Startable {
+public class Daemon implements NameserverCallBack, ServerCallBack, Startable {
     private String fileName;
     private String target;
     
@@ -91,12 +91,9 @@ public class Daemon implements NameserverCallback, ServerCallBack, Startable {
             InputStream inputStream = ClassLoader.getSystemClassLoader().getResourceAsStream(this.fileName);
             ServerInfoParser infoParser = new ServerInfoParser(inputStream);
             
-            ServerInfo info = infoParser.getServerInfo(this.target);
-            
-            this.nameserverPinger = new NameserverPinger(this, infoParser.getNameserverInfo(), info);
-            this.nameserverPinger.start();
-            
-            Server server = new Server(this, info, new DaemonTaskFactory(infoParser));
+            Server server = new Server(this, this,
+                                       infoParser, this.target,
+                                       new DaemonTaskFactory(infoParser));
             
             this.serverThread = new Thread(server);
             this.serverThread.start();

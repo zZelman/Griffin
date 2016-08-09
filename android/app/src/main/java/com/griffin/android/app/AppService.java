@@ -14,7 +14,7 @@ import com.griffin.android.app.*;
 import com.griffin.core.*;
 import com.griffin.core.nameserver.*;
 
-public class AppService extends Service implements NameserverCallback, ServerCallBack, Startable {
+public class AppService extends Service implements NameserverCallBack, ServerCallBack, Startable {
     public static final int ID = 1234;
     private static boolean isRunning = false;
     private ServerSocket serverSocket;

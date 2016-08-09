@@ -26,3 +26,11 @@ test {
     minHeapSize = "128m"
     maxHeapSize = "512m"
 }
+
+// task runNameserver(type: JavaExec) {
+//     standardInput = System.in
+//     args 'server_list.ini'.split(' ')
+    
+//     main = 'com.griffin.core.nameserver.Nameserver'
+//     classpath = sourceSets.main.runtimeClasspath
+// }

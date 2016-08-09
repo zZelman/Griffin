@@ -57,7 +57,7 @@ task clean(type: Delete) {
     delete rootProject.buildDir
 }
 
-task appStart(type: Exec, dependsOn: 'installDebug') {
+task runApp(type: Exec, dependsOn: 'installDebug') {
     // linux 
     commandLine 'adb', 'shell', 'am', 'start', '-n', 'com.griffin.android.app/.App'
 }

@@ -243,6 +243,11 @@ public class App extends Activity implements OnClickListener {
         }
         
         @Override
+        public void dealWith(ConnectException e) {
+            outputs.add(e.toString());
+        }
+        
+        @Override
         public void dealWith(UnknownHostException e) {
             outputs.add(e.toString());
         }

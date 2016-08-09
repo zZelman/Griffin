@@ -1,10 +1,7 @@
 apply plugin: 'java'
-apply plugin: 'application'
 
 sourceCompatibility = JavaVersion.VERSION_1_7
 targetCompatibility = JavaVersion.VERSION_1_7
-
-mainClassName = "com.griffin.nameserver.Nameserver"
 
 repositories {
     mavenCentral()
@@ -14,7 +11,10 @@ dependencies {
     compile project(':core')
 }
 
-run {
+task runNameserver(type: JavaExec) {
     standardInput = System.in
     args 'server_list.ini'.split(' ')
+    
+    main = 'com.griffin.nameserver.Nameserver'
+    classpath = sourceSets.main.runtimeClasspath
 }

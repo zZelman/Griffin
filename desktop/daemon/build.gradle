@@ -1,10 +1,7 @@
 apply plugin: 'java'
-apply plugin: 'application'
 
 sourceCompatibility = JavaVersion.VERSION_1_7
 targetCompatibility = JavaVersion.VERSION_1_7
-
-mainClassName = "com.griffin.desktop.daemon.Daemon"
 
 repositories {
     mavenCentral()
@@ -15,7 +12,10 @@ dependencies {
     compile project(':nameserver')
 }
 
-run {
+task runDaemon(type: JavaExec) {
     standardInput = System.in
     args 'server_list.ini'.split(' ')
+    
+    main = 'com.griffin.desktop.daemon.Daemon'
+    classpath = sourceSets.main.runtimeClasspath
 }

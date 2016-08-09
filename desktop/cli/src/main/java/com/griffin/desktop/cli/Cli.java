@@ -122,7 +122,7 @@ public class Cli implements ClientCallBack, Startable {
         
         String[] commandTokens = ArrayUtils.subarray(args, 2, args.length);
         Serializable command = StringUtils.join(commandTokens, " ");
-
+        
         ServerInfo info = null;
         try {
             InputStream inputStream = ClassLoader.getSystemClassLoader().getResourceAsStream(fileName);

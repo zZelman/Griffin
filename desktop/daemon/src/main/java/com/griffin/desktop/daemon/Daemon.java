@@ -144,16 +144,16 @@ public class Daemon implements NameserverCallback, ServerCallBack, Startable {
     
     public static void usage() {
         System.out.println("error in command line paramiters");
-        System.out.println("    usage: [server_info_filename] [target]");
+        System.out.println("    usage: [server_info_filename]");
         System.exit(1);
     }
     
     public static void main(String[] args) {
-        if (args.length != 2) {
+        if (args.length != 1) {
             Daemon.usage();
         }
         
-        Daemon daemon = new Daemon(args[0], args[1]);
+        Daemon daemon = new Daemon(args[0], "desktop");
         
         if (daemon.start()) {
             try {

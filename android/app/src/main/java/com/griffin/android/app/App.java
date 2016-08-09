@@ -205,20 +205,17 @@ public class App extends Activity implements OnClickListener {
                 info = nameserverClient.get(this.target);
             } catch (UnknownHostException e) {
                 outputs.add(e.toString());
-                this.dealWithBadTarget(this.target);
                 return null;
             } catch (ClassNotFoundException e) {
                 outputs.add(e.toString());
-                this.dealWithBadTarget(this.target);
                 return null;
             } catch (IOException e) {
                 outputs.add(e.toString());
-                this.dealWithBadTarget(this.target);
                 return null;
             }
             
             if (info == null) {
-                this.dealWithBadTarget(this.target);
+                this.outputs.add("nameserver did not find an entery for: " + this.target);
                 return null;
             }
             
@@ -258,11 +255,6 @@ public class App extends Activity implements OnClickListener {
         @Override
         public void dealWith(IOException e) {
             outputs.add(e.toString());
-        }
-        
-        @Override
-        public void dealWithBadTarget(String target) {
-            outputs.add("target is not on nameserver: " + target);
         }
         
         private void addOutput(Output o) {

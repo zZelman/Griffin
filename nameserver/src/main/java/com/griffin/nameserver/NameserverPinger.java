@@ -31,7 +31,7 @@ public class NameserverPinger implements Startable {
         
         private volatile boolean isRunning;
         
-        private final int INTERVAL = 5; // mins
+        private final int INTERVAL = 5;
         private long sleepTime;
         
         public PingThread(NameserverCallback callBack, ServerInfo nameserverInfo, ServerInfo info) {
@@ -39,7 +39,8 @@ public class NameserverPinger implements Startable {
             this.nameserverClient = new NameserverClient(nameserverInfo);
             this.info = info;
             
-            this.sleepTime = INTERVAL * 1000;
+            // this.sleepTime = INTERVAL * 1000 * 60; // mins
+            this.sleepTime = INTERVAL * 1000; // sec
         }
         
         public void terminate() {

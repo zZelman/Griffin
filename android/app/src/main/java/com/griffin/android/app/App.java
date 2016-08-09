@@ -219,7 +219,8 @@ public class App extends Activity implements OnClickListener {
             if (o instanceof Output) {
                 this.addOutput((Output) o);
             } else {
-                this.add(o.toString()); // a catch-all for unexpected output (like "prev comm"'s string)
+                // a catch-all for unexpected output (like "prev comm"'s string)
+                this.add(o.toString());
             }
         }
         

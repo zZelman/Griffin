@@ -18,7 +18,6 @@ public class AppService extends Service implements NameserverCallBack, ServerCal
     public static final int ID = 1234;
     private static boolean isRunning = false;
     private ServerSocket serverSocket;
-    private NameserverPinger nameserverPinger;
     
     public static boolean isRunning() {
         return AppService.isRunning;
@@ -115,12 +114,9 @@ public class AppService extends Service implements NameserverCallBack, ServerCal
             InputStream inputStream = this.getResources().openRawResource(R.raw.server_list);
             ServerInfoParser infoParser = new ServerInfoParser(inputStream);
 
-            ServerInfo info = infoParser.getServerInfo(getString(R.string.target));
-
-            this.nameserverPinger = new NameserverPinger(this, infoParser.getNameserverInfo(), info);
-            this.nameserverPinger.start();
-            
-            Server server = new Server(this, info, new AppTaskFactory());
+            Server server = new Server(this, this,
+                                       infoParser, getString(R.string.target),
+                                       new AppTaskFactory());
             
             new Thread(server).start();
         } catch (FileNotFoundException e) {
@@ -172,8 +168,6 @@ public class AppService extends Service implements NameserverCallBack, ServerCal
             this.dealWith(e);
         }
 
-        this.nameserverPinger.stop();
-        
         stopForeground(true);
         stopSelf();
 

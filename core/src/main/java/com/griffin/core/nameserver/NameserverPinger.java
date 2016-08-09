@@ -6,35 +6,35 @@ import java.io.*;
 import com.griffin.core.*;
 
 public class NameserverPinger implements Startable {
-    private PingThread pingThread;
+    private Pinger pinger;
+    private Thread pingThread;
     
     public NameserverPinger(NameserverCallBack callback, ServerInfo nameserverInfo, ServerInfo info) {
-        this.pingThread = new PingThread(callback, nameserverInfo, info);
+        this.pinger = new Pinger(callback, nameserverInfo, info);
     }
     
     @Override
     public boolean start() {
-        new Thread(this.pingThread).start();
+        this.pingThread = new Thread(this.pinger);
+        this.pingThread.start();
         return true;
     }
     
     @Override
     public boolean stop() {
-        this.pingThread.terminate();
+        this.pingThread.interrupt();
         return true;
     }
     
-    public class PingThread implements Runnable {
+    public class Pinger implements Runnable {
         private NameserverCallBack callBack;
         private NameserverClient nameserverClient;
         private ServerInfo info;
         
-        private volatile boolean isRunning;
-        
         private final int INTERVAL = 5;
         private long sleepTime;
         
-        public PingThread(NameserverCallBack callBack, ServerInfo nameserverInfo, ServerInfo info) {
+        public Pinger(NameserverCallBack callBack, ServerInfo nameserverInfo, ServerInfo info) {
             this.callBack = callBack;
             this.nameserverClient = new NameserverClient(nameserverInfo);
             this.info = info;
@@ -43,14 +43,9 @@ public class NameserverPinger implements Startable {
             this.sleepTime = INTERVAL * 1000; // sec
         }
         
-        public void terminate() {
-            this.isRunning = false;
-        }
-        
         @Override
         public void run() {
-            this.isRunning = true;
-            while (this.isRunning) {
+            while (!Thread.currentThread().isInterrupted()) {
                 try {
                     this.nameserverClient.ping(this.info);
                 } catch (UnknownHostException e) {
@@ -61,7 +56,9 @@ public class NameserverPinger implements Startable {
                 
                 try {
                     Thread.sleep(this.sleepTime);
-                } catch (InterruptedException e) { }
+                } catch (InterruptedException e) {
+                    break;
+                }
             }
         }
     }

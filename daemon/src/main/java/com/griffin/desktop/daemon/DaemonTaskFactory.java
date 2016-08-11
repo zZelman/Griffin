@@ -16,7 +16,7 @@ public class DaemonTaskFactory extends TaskFactory {
         LoadedTasks tasks = new LoadedTasks();
         
         // open ended
-        tasks.addOpenEndedTask(new ExamplePrefixTask(this.infoParser));
+        tasks.addOpenEndedTask(new ExamplePrefixTask(this.griffin));
         
         // parameterized
         tasks.addParameterizedTask(new ExampleParameterizedTask());
@@ -25,6 +25,8 @@ public class DaemonTaskFactory extends TaskFactory {
         tasks.addSimpleTask(new ExampleHelloWorldTask());
         tasks.addSimpleTask(new ExamplePrevCommTask());
         tasks.addSimpleTask(new ExampleChainTask(this.infoParser));
+        tasks.addSimpleTask(new ExampleNetworking1Task(this.infoParser));
+        tasks.addSimpleTask(new ExampleNetworking2Task(this.infoParser));
         
         return tasks;
     }

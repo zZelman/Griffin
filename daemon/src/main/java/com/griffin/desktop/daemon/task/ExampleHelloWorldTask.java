@@ -12,7 +12,8 @@ public class ExampleHelloWorldTask extends Task {
               "hello world: success",
               "hello world: failure");
     }
-    
+
+    @Override
     public Output doAction(Communication prevComm) {
         Output output = new StartingOutput(this.command);
 

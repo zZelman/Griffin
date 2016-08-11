@@ -16,7 +16,8 @@ public class ExampleParameterizedTask extends Task {
               "print [str] [str]: success",
               "print [str] [str]: failure");
     }
-    
+
+    @Override
     public String canUse(String rawInput) {
         String space = "( )";
         
@@ -35,7 +36,8 @@ public class ExampleParameterizedTask extends Task {
         }
         return null;
     }
-    
+
+    @Override
     public Output doAction(Communication prevComm) {
         // TODO: acutally have word1 and word2 in the StartingOutput
         Output output = new StartingOutput(this.command);
@@ -45,7 +47,8 @@ public class ExampleParameterizedTask extends Task {
         output.addOutput(new SuccessOutput(this.success));
         return output;
     }
-    
+
+    @Override
     public void clear() {
         this.word1 = "";
         this.word2 = "";

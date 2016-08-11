@@ -101,7 +101,7 @@ public class Cli implements ClientCallBack, Startable {
             this.println(indentStr + so.getString()); // just shows the data
         }
         // else {
-        //     this.println(o); // this is a catch-all that will display with type the recieved
+            // this.println(indentStr + o); // this is a catch-all that will display with type the recieved
         // }
     }
     

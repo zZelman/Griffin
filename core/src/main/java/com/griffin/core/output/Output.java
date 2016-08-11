@@ -11,6 +11,10 @@ public class Output implements Iterator<Output>, Serializable {
     private Output end = null;
     
     public void addOutput(Output o) {
+        if (o == null) {
+            return;
+        }
+        
         if (this.next == null) {
             this.next = o;
             this.end = o;
@@ -48,6 +52,19 @@ public class Output implements Iterator<Output>, Serializable {
     
     public Output getSubtaskOutput() {
         return this.subtask;
+    }
+    
+    public boolean containsError() {
+        Output curr = this;
+        while (curr.hasNext()) {
+            curr = curr.next();
+            
+            if (curr instanceof ErrorOutput) {
+                return true;
+            }
+        }
+        
+        return false;
     }
     
     @Override

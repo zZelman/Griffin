@@ -9,19 +9,19 @@ import com.griffin.core.*;
 import com.griffin.core.output.*;
 
 public class ExamplePrefixTask extends Task {
-    private ServerInfoParser infoParser;
-    
+    private final Griffin griffin;
     private String nextCommand;
     
-    public ExamplePrefixTask(ServerInfoParser infoParser) {
+    public ExamplePrefixTask(Griffin griffin) {
         super("prefix [command...]",
               "(example) runs the [command...] and mutates the output",
               "prefix [command...]: success",
               "prefix [command...]: failure");
               
-        this.infoParser = infoParser;
+        this.griffin = griffin;
     }
     
+    @Override
     public String canUse(String rawInput) {
         String space = "( )";
         
@@ -39,68 +39,28 @@ public class ExamplePrefixTask extends Task {
         return null;
     }
     
+    @Override
     public Output doAction(Communication prevComm) {
         Output output = new StartingOutput(this.command);
         
-        // only because this is an example task
-        String targetName = "desktop";
-        ServerInfo info = null;
+        Output ret = this.griffin.doCommand(nextCommand, prevComm);
         try {
-            info = this.infoParser.getServerInfo(targetName);
-        } catch (ServerInfoException e) {
-            output.addOutput(new StringOutput(e.toString()));
-            output.addOutput(new FailureOutput(this.failure));
-            return output;
-        }
-        
-        Communication nextComm = null;
-        try {
-            // TODO: implement ClientCallBack instead of a custom Client
-            
-            nextComm = new Communication(info.getHostName(), info.getPort());
-            nextComm.send(this.nextCommand);
-            
-            Object ret;
-            while (true) {
-                ret = nextComm.receive();
-                if (ret instanceof StopCommunication || ret == null) {
-                    break;
-                }
-                
-                // guaranteed to be Output
-                output.setSubtaskOutput((Output) ret);
-            }
-            
-            nextComm.close();
-        } catch (UnknownHostException e) {
-            output.addOutput(new StringOutput(e.toString()));
-            output.addOutput(new FailureOutput(this.failure));
-            return output;
-        } catch (ClassNotFoundException e) {
-            output.addOutput(new StringOutput(e.toString()));
-            output.addOutput(new FailureOutput(this.failure));
-            return output;
-        } catch (IOException e) {
-            output.addOutput(new StringOutput(e.toString()));
-            output.addOutput(new FailureOutput(this.failure));
-            return output;
+            output.setSubtaskOutput(ret);
         } catch (SubtaskOutputException e) {
-            output.addOutput(new StringOutput(e.toString()));
-            output.addOutput(new FailureOutput(this.failure));
-            return output;
-        } finally {
-            try {
-                if (nextComm != null) {
-                    nextComm.close();
-                }
-            } catch (IOException e) {
-                output.addOutput(new StringOutput(e.toString()));
-                output.addOutput(new FailureOutput(this.failure));
-                return output;
-            }
+            output.addOutput(new ErrorOutput(e.toString()));
         }
         
-        output.addOutput(new SuccessOutput(this.success));
+        if (output.containsError()) {
+            output.addOutput(new FailureOutput(this.failure));
+        } else {
+            output.addOutput(new SuccessOutput(this.success));
+        }
+        
         return output;
+    }
+    
+    @Override
+    public void clear() {
+        this.nextCommand = "";
     }
 }

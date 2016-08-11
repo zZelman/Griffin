@@ -7,27 +7,25 @@ import com.griffin.core.task.*;
 import com.griffin.core.output.*;
 
 public class Griffin {
-    private final String noExistErrorMsg = "rawInput does not exist";
-    private final String startCommandMsg = "running command: ";
-    private final String endCommdMsg = " has ended";
-    private final String commandStuffLeftOver = "there were parts of the command that were not used: ";
-    
-    private Output output;
+    private final String emptyRawInput = "the given input is empty: ";
+
     private LoadedTasks loadedTasks;
     
     public Griffin(TaskFactory taskFactory) {
-        this.output = new Output();
         this.loadedTasks = new LoadedTasks();
         
         // NOTE: given before common to allow given to have priority over keywords in common (ie help)
         
         // given tasks
         if (taskFactory != null) {
+            taskFactory.setGriffin(this);
             this.loadedTasks.addAll(taskFactory.getTasks());
         }
         
         // common tasks
-        this.loadedTasks.addAll(new CoreTaskFactory(this).getTasks());
+        CoreTaskFactory core = new CoreTaskFactory();
+        core.setGriffin(this);
+        this.loadedTasks.addAll(core.getTasks());
     }
     
     public String printTasks() {
@@ -41,9 +39,14 @@ public class Griffin {
     public void setLoadedTasks(LoadedTasks loadedTasks) {
         this.loadedTasks = loadedTasks;
     }
-    
+
     public Output doCommand(String rawInput, Communication comm) {
         Output output = new Output();
+        
+        if ("".equals(rawInput)) {
+            output.addOutput(new ErrorOutput(emptyRawInput + "[" + rawInput + "]"));
+            return output;
+        }
         
         boolean oneCommandExecuted;
         String canUseOutput;

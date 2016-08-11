@@ -39,23 +39,18 @@ public class Daemon implements NameserverCallBack, ServerCallBack, Startable {
     }
     
     @Override
-    public void taskList(String s) {
-        this.println(s);
+    public void taskList(String taskList) {
+        this.println(taskList);
     }
     
     @Override
-    public void startedConnection(String remoteAddr, String localAddr) {
-        this.println("connection from: [" + remoteAddr + "]");
+    public void commandRecieved(String remoteAddr, String localAddr, String command) {
+        this.println("[" + remoteAddr + "] " + command);
     }
     
     @Override
-    public void commandRecieved(String s) {
-        this.println("input: [" + s + "]");
-    }
-    
-    @Override
-    public void serverEnding(String s) {
-        this.println(s);
+    public void serverEnding(String msg) {
+        this.println(msg);
     }
     
     @Override

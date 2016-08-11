@@ -52,7 +52,6 @@ public class Server implements Runnable {
                 clientSocket = this.serverSocket.accept();
                 
                 prevComm = new Communication(clientSocket);
-                this.serverCallBack.startedConnection(prevComm.getRemoteAddr(), prevComm.getLocalAddr());
                 firstInput = prevComm.receive();
                 
                 // always check the first communication for an instance of the stop command
@@ -104,7 +103,7 @@ public class Server implements Runnable {
             try {
                 if (this.firstInput instanceof String) {
                     String command = (String) this.firstInput;
-                    this.serverCallBack.commandRecieved(command);
+                    this.serverCallBack.commandRecieved(this.prevComm.getRemoteAddr(), this.prevComm.getLocalAddr(), command);
                     
                     Output output = this.griffin.doCommand(command, prevComm);
                     this.prevComm.send(output);

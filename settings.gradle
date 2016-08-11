@@ -1,6 +1,6 @@
 include 'core'
 
-include 'desktop:cli'
-include 'desktop:daemon'
+include 'cli'
+include 'daemon'
 
-include 'android:app'
+include 'app'

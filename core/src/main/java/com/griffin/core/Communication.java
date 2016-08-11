@@ -50,16 +50,30 @@ public class Communication {
     }
     
     public void close() throws IOException {
+        if (this.in == null ||
+            this.out == null ||
+            this.socket == null) {
+            return;
+        }
+        
         this.in.close();
         this.out.close();
         this.socket.close();
     }
     
     public String getRemoteAddr() {
+        if (this.socket == null) {
+            return null;
+        }
+        
         return this.socket.getRemoteSocketAddress().toString();
     }
     
     public String getLocalAddr() {
+        if (this.socket == null) {
+            return null;
+        }
+        
         return this.socket.getLocalAddress().toString() + ":" + this.socket.getLocalPort();
     }
 }

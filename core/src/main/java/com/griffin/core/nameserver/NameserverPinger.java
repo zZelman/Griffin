@@ -26,7 +26,7 @@ public class NameserverPinger implements Startable {
         return true;
     }
     
-    public class Pinger implements Runnable {
+    private class Pinger implements Runnable {
         private NameserverCallBack callBack;
         private NameserverClient nameserverClient;
         private ServerInfo info;
@@ -39,8 +39,8 @@ public class NameserverPinger implements Startable {
             this.nameserverClient = new NameserverClient(nameserverInfo);
             this.info = info;
             
-            // this.sleepTime = INTERVAL * 1000 * 60; // mins
-            this.sleepTime = INTERVAL * 1000; // sec
+            this.sleepTime = INTERVAL * 1000 * 60; // mins
+            // this.sleepTime = INTERVAL * 1000; // sec
         }
         
         @Override

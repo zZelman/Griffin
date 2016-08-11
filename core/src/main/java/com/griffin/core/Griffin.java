@@ -5,14 +5,17 @@ import java.util.*;
 import com.griffin.core.*;
 import com.griffin.core.task.*;
 import com.griffin.core.output.*;
+import com.griffin.core.recurring.*;
 
 public class Griffin {
     private final String emptyRawInput = "the given input is empty: ";
 
     private LoadedTasks loadedTasks;
+    private RecurringManager recurringManager;
     
     public Griffin(TaskFactory taskFactory) {
         this.loadedTasks = new LoadedTasks();
+        this.recurringManager = new RecurringManager(this);
         
         // NOTE: given before common to allow given to have priority over keywords in common (ie help)
         
@@ -23,7 +26,7 @@ public class Griffin {
         }
         
         // common tasks
-        CoreTaskFactory core = new CoreTaskFactory();
+        CoreTaskFactory core = new CoreTaskFactory(this.recurringManager);
         core.setGriffin(this);
         this.loadedTasks.addAll(core.getTasks());
     }

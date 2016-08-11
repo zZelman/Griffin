@@ -4,15 +4,23 @@ import java.util.*;
 
 import com.griffin.core.*;
 import com.griffin.core.task.*;
+import com.griffin.core.recurring.*;
 
 public class CoreTaskFactory extends TaskFactory {
+    private RecurringManager recurringManager;
+    
+    public CoreTaskFactory(RecurringManager recurringManager) {
+        this.recurringManager = recurringManager;
+    }
+    
     public LoadedTasks getTasks() {
         LoadedTasks tasks = new LoadedTasks();
-
+        
+        // open ended
+        tasks.addOpenEndedTask(new AddRecurringTask(this.recurringManager));
+        
         // parameterized
-        // NOTE: it might not be a good idea to have
-        //       parameterized tasks in the common domain
-
+        
         // simple
         tasks.addSimpleTask(new StopServerTask());
         tasks.addSimpleTask(new PrintHelpTask(this.griffin));

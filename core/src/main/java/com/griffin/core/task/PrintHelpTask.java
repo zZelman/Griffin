@@ -16,7 +16,8 @@ public class PrintHelpTask extends Task {
               
         this.griffin = griffin;
     }
-    
+
+    @Override
     public Output doAction(Communication prevComm) {
         Output output = new StartingOutput(this.command);
         

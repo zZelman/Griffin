@@ -23,7 +23,8 @@ public class StopServerTask extends Task {
               "stop server: success",
               "stop server: failure");
     }
-    
+
+    @Override
     public Output doAction(Communication prevComm) {
         Output output = new StartingOutput(this.command);
         

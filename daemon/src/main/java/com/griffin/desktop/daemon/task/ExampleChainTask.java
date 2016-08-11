@@ -7,88 +7,98 @@ import java.io.*;
 import com.griffin.core.*;
 import com.griffin.core.output.*;
 
-public class ExampleChainTask extends Task {
-    private ServerInfoParser infoParser;
+public class ExampleChainTask extends Task implements ClientCallBack {
+    private final ServerInfoParser infoParser;
+    private final String target = "desktop";
+    private final String nextCommand = "help";
+    
+    private Client client;
+    private Output output;
+    private boolean isSuccess;
     
     public ExampleChainTask(ServerInfoParser infoParser) {
         super("chain",
-              "(example) executes the other command 'chain' 70/30 yes/no",
+              "(example) executes the other command 'help' on target 'desktop'",
               "chain: success",
               "chain: failure");
               
         this.infoParser = infoParser;
+        
+        this.client = new Client(this, this.infoParser, this.target, this.nextCommand);
+        this.output = new StartingOutput(this.command);
+        this.isSuccess = false;
     }
     
+    @Override
     public Output doAction(Communication prevComm) {
-        Output output = new StartingOutput(this.command);
+        this.isSuccess = true;
         
-        // if (new Random().nextFloat() < 0.30f) {
-        //     output.addExecutionMessage(this.command + ": last node");
-        //     output.setReturnMessage(this.success);
-        //     return output;
-        // }
+        this.client.start();
+        this.client.stop();
         
-        // only because this is an example task
-        String targetName = "desktop";
-        ServerInfo info = null;
-        try {
-            info = this.infoParser.getServerInfo(targetName);
-        } catch (ServerInfoException e) {
-            output.addOutput(new StringOutput(e.toString()));
-            output.addOutput(new FailureOutput(this.failure));
-            return output;
+        if (this.isSuccess) {
+            this.output.addOutput(new SuccessOutput(this.success));
+            return this.output;
         }
-
-        Communication nextComm = null;
+        
+        this.output.addOutput(new FailureOutput(this.failure));
+        return this.output;
+    }
+    
+    @Override
+    public void clear() {
+        this.client = new Client(this, this.infoParser, this.target, this.command);
+        this.output = new StartingOutput(this.command);
+        this.isSuccess = false;
+    }
+    
+    @Override
+    public void recieved(Object o) {
         try {
-            // TODO: implement ClientCallBack instead of a custom Client
-            
-            nextComm = new Communication(info.getHostName(), info.getPort());
-            
-            Serializable command = "help";
-            nextComm.send(command);
-            
-            Object ret;
-            while (true) {
-                ret = nextComm.receive();
-                if (ret instanceof StopCommunication || ret == null) {
-                    break;
-                }
-                
-                // guaranteed to be Output
-                output.setSubtaskOutput((Output) ret);
+            if (o instanceof Output) {
+                this.output.setSubtaskOutput((Output) o);
+            } else {
+                // a catch-all for unexpected output (like "prev comm"'s string)
+                this.output.addOutput(new StringOutput(o.toString()));
             }
-            
-            nextComm.close();
-        } catch (UnknownHostException e) {
-            output.addOutput(new StringOutput(e.toString()));
-            output.addOutput(new FailureOutput(this.failure));
-            return output;
-        } catch (ClassNotFoundException e) {
-            output.addOutput(new StringOutput(e.toString()));
-            output.addOutput(new FailureOutput(this.failure));
-            return output;
-        } catch (IOException e) {
-            output.addOutput(new StringOutput(e.toString()));
-            output.addOutput(new FailureOutput(this.failure));
-            return output;
         } catch (SubtaskOutputException e) {
-            output.addOutput(new StringOutput(e.toString()));
-            output.addOutput(new FailureOutput(this.failure));
-            return output;
-        } finally {
-            try {
-                if (nextComm != null) {
-                    nextComm.close();
-                }
-            } catch (IOException e) {
-                output.addOutput(new StringOutput(e.toString()));
-                output.addOutput(new FailureOutput(this.failure));
-                return output;
-            }
+            this.helper(e);
         }
-        
-        output.addOutput(new SuccessOutput(this.success));
-        return output;
+    }
+    
+    @Override
+    public void dealWith(ServerInfoException e) {
+        this.helper(e);
+    }
+    
+    @Override
+    public void dealWith(ConnectException e) {
+        this.helper(e);
+    }
+    
+    @Override
+    public void dealWith(UnknownHostException e) {
+        this.helper(e);
+    }
+    
+    @Override
+    public void dealWith(ClassNotFoundException e) {
+        this.helper(e);
+    }
+    
+    @Override
+    public void dealWith(IOException e) {
+        this.helper(e);
+    }
+    
+    @Override
+    public void dealWithBadTarget(String target) {
+        this.output.addOutput(new StringOutput("nameserver did not have an entery for: " + target));
+        this.isSuccess = false;
+    }
+    
+    private void helper(Exception e) {
+        this.output.addOutput(new StringOutput(e.toString()));
+        this.isSuccess = false;
     }
 }

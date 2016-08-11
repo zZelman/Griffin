@@ -39,7 +39,7 @@ public abstract class Task {
                 NOTE: this method MUST remove the command from the rawInput and return that new string
     */
     public String canUse(String rawInput) {
-        if (rawInput.contains(this.getCommand())) {
+        if (rawInput.matches(".*\\b" + this.getCommand() + "\\b.*")) {
             return rawInput.replaceFirst(this.getCommand(), "");
         }
         return null;

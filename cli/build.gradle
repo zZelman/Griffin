@@ -13,7 +13,7 @@ dependencies {
 
 task runCli(type: JavaExec) {
     standardInput = System.in
-    args 'server_list.ini android stop server'.split(' ')
+    args 'server_list.ini desktop chain'.split(' ')
     
     main = 'com.griffin.desktop.cli.Cli'
     classpath = sourceSets.main.runtimeClasspath

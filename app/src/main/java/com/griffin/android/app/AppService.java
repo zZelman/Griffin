@@ -50,23 +50,18 @@ public class AppService extends Service implements NameserverCallBack, ServerCal
     }
     
     @Override
-    public void taskList(String s) {
-        this.showToast(s);
+    public void taskList(String taskList) {
+        this.showToast(taskList);
     }
     
     @Override
-    public void startedConnection(String remoteAddr, String localAddr) {
-        this.showToast("connection from: [" + remoteAddr + "]");
+    public void commandRecieved(String remoteAddr, String localAddr, String command) {
+        this.showToast("[" + remoteAddr + "] " + command);
     }
     
     @Override
-    public void commandRecieved(String s) {
-        this.showToast("input: [" + s + "]");
-    }
-    
-    @Override
-    public void serverEnding(String s) {
-        this.showToast(s);
+    public void serverEnding(String msg) {
+        this.showToast(msg);
         
         // this must be here, otherwise the command will be
         // ran on a bad thread & cause a crash

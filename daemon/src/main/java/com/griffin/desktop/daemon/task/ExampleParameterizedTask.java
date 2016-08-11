@@ -11,12 +11,13 @@ public class ExampleParameterizedTask extends Task {
     private String word2;
     
     public ExampleParameterizedTask() {
+        // TODO: maybe some formal replacement syntax for commands who are parameterized
         super("print [str] [str]",
               "(example) print on the server the two strings in the [str] position",
               "print [str] [str]: success",
               "print [str] [str]: failure");
     }
-
+    
     @Override
     public String canUse(String rawInput) {
         String space = "( )";
@@ -25,7 +26,7 @@ public class ExampleParameterizedTask extends Task {
         String word1 = "([^ ]+)";
         String word2 = "([^ ]+)";
         
-        Pattern p = Pattern.compile(print + space + word1 + space + word2, Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
+        Pattern p = Pattern.compile(print + space + word1 + space + word2, Pattern.DOTALL);
         Matcher m = p.matcher(rawInput);
         
         if (m.find()) {
@@ -36,18 +37,17 @@ public class ExampleParameterizedTask extends Task {
         }
         return null;
     }
-
+    
     @Override
     public Output doAction(Communication prevComm) {
-        // TODO: acutally have word1 and word2 in the StartingOutput
-        Output output = new StartingOutput(this.command);
+        Output output = new StartingOutput("print " + this.word1 + " " + this.word2);
         
-        System.out.println("[ExampleParameterizedTask::doAction] word1=" + this.word1 + ", word2=" + this.word2);
+        System.out.println("[ExampleParameterizedTask] word1=" + this.word1 + ", word2=" + this.word2);
         
-        output.addOutput(new SuccessOutput(this.success));
+        output.addOutput(new SuccessOutput("print " + this.word1 + " " + this.word2 + ": success"));
         return output;
     }
-
+    
     @Override
     public void clear() {
         this.word1 = "";

@@ -16,7 +16,7 @@ public class ExamplePrevCommTask extends Task {
     public Output doAction(Communication prevComm) {
         Output output = new StartingOutput(this.command);
         
-        output.addOutput(new StringOutput("[ExamplePrevCommTask::doAction] client communication"));
+        output.addOutput(new StringOutput("[ExamplePrevCommTask]"));
         
         try {
             prevComm.send("~~ communication from the actual Task");

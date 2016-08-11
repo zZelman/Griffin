@@ -28,7 +28,7 @@ public class ExamplePrefixTask extends Task {
         String prefix = "(prefix)";
         String nextCommand = "(.+)";
         
-        Pattern p = Pattern.compile(prefix + space + nextCommand, Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
+        Pattern p = Pattern.compile(prefix + space + nextCommand, Pattern.DOTALL);
         Matcher m = p.matcher(rawInput);
         
         if (m.find()) {

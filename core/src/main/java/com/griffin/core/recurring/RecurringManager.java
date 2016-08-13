@@ -44,11 +44,19 @@ public class RecurringManager {
     }
     
     public Output list() {
-        return null;
+        if (this.jobs.isEmpty()) {
+            return new StringOutput("no recurring tasks");
+        }
+        
+        Output output = new Output();
+        for (RecurringJob job : this.jobs) {
+            output.addOutput(new StringOutput("name: " + job.getName() + ", period: " + job.getPeriod() + ", command: " + job.getCommand()));
+        }
+        return output;
     }
     
     private RecurringJob find(String name) {
-        for (RecurringJob job : jobs) {
+        for (RecurringJob job : this.jobs) {
             if (name.equals(job.getName())) {
                 return job;
             }

@@ -19,6 +19,7 @@ public class CoreTaskFactory extends TaskFactory {
         // open ended
         tasks.addOpenEndedTask(new AddRecurringTask(this.recurringManager));
         tasks.addOpenEndedTask(new RemoveRecurringTask(this.recurringManager));
+        tasks.addOpenEndedTask(new ListRecurringTask(this.recurringManager));
         
         // parameterized
         

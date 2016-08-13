@@ -140,7 +140,7 @@ public class Nameserver implements Runnable, Startable {
         this.println(SERVER_STOPPING);
     }
     
-    class CommunicationThread implements Runnable {
+    private class CommunicationThread implements Runnable {
         private final Communication prevComm;
         private final NameserverAction action;
         

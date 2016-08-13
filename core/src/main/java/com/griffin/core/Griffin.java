@@ -12,7 +12,7 @@ public class Griffin {
 
     private LoadedTasks loadedTasks;
     
-    public Griffin(TaskFactory taskFactory, ServerInfoParser infoParser) throws ServerInfoException {
+    public Griffin(TaskFactory taskFactory, ServerInfo nameserverInfo, ServerInfo serverInfo) throws ServerInfoException {
         this.loadedTasks = new LoadedTasks();
         
         // NOTE: given before common to allow given to have priority over keywords in common (ie help)
@@ -24,7 +24,7 @@ public class Griffin {
         }
         
         // common tasks
-        CoreTaskFactory core = new CoreTaskFactory(infoParser.getNameserverInfo(), new RecurringManager(this));
+        CoreTaskFactory core = new CoreTaskFactory(new RecurringManager(this), nameserverInfo, serverInfo);
         core.setGriffin(this);
         this.loadedTasks.addAll(core.getTasks());
     }

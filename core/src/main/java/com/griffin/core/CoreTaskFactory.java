@@ -7,12 +7,14 @@ import com.griffin.core.task.*;
 import com.griffin.core.recurring.*;
 
 public class CoreTaskFactory extends TaskFactory {
-    private ServerInfo nameserverInfo;
     private RecurringManager recurringManager;
+    private ServerInfo nameserverInfo;
+    private ServerInfo serverInfo;
     
-    public CoreTaskFactory(ServerInfo nameserverInfo, RecurringManager recurringManager) {
-        this.nameserverInfo = nameserverInfo;
+    public CoreTaskFactory(RecurringManager recurringManager, ServerInfo nameserverInfo, ServerInfo serverInfo) {
         this.recurringManager = recurringManager;
+        this.nameserverInfo = nameserverInfo;
+        this.serverInfo = serverInfo;
     }
     
     public LoadedTasks getTasks() {
@@ -26,6 +28,7 @@ public class CoreTaskFactory extends TaskFactory {
         
         // simple
         tasks.addSimpleTask(new NameserverListTask(this.nameserverInfo));
+        tasks.addSimpleTask(new NameserverPingTask(this.nameserverInfo, this.serverInfo));
         tasks.addSimpleTask(new ListRecurringTask(this.recurringManager));
         tasks.addSimpleTask(new StopServerTask());
         tasks.addSimpleTask(new PrintHelpTask(this.griffin));

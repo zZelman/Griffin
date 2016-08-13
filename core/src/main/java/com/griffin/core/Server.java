@@ -26,11 +26,13 @@ public class Server implements Runnable {
         this.serverCallBack = serverCallBack;
         this.serverInfo = infoParser.getServerInfo(target);
 
+        ServerInfo nameserverInfo = infoParser.getNameserverInfo();
+        
         this.nameserverPinger = new NameserverPinger(nameserverCallBack,
-                infoParser.getNameserverInfo(),
+                nameserverInfo,
                 this.serverInfo);
         
-        this.griffin = new Griffin(taskFactory, infoParser);
+        this.griffin = new Griffin(taskFactory, nameserverInfo, this.serverInfo);
         
         this.serverSocket = new ServerSocket(this.serverInfo.getPort());
         this.serverCallBack.startedServerSocket(this.serverSocket);

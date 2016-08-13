@@ -59,7 +59,6 @@ public class AddRecurringTask extends Task {
             isSuccess = this.recurringManager.add(this.name, this.period, this.nextCommand);
         } catch (IOException e) {
             output.addOutput(new ErrorOutput(e.toString()));
-            e.printStackTrace();
             isSuccess = false;
         }
         

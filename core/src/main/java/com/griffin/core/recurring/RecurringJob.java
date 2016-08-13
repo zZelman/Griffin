@@ -74,12 +74,13 @@ public class RecurringJob implements Startable {
         
         public JobThread() throws IOException {
             this.prevComm = new Communication(); // default constructor means input/output are munched
-            this.sleepTime = period * 1000;
+            this.sleepTime = period * 1000; // sec
         }
         
         @Override
         public void run() {
             while (!Thread.currentThread().isInterrupted()) {
+                // execute the command, and do nothing with it because there is no where to put it
                 Output ret = griffin.doCommand(command, this.prevComm);
                 
                 try {

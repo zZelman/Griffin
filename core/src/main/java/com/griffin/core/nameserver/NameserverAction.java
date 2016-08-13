@@ -9,7 +9,7 @@ class NameserverAction implements Serializable {
     public enum Action {
         PING,  // Server just came online, tell Nameserver to update w/ given info
         GET,   // Client is asking for info about the given target
-        DUMP,  // Client is asking for all information about everyone
+        LIST,  // Client is asking for all information about everyone
         HELP,  // Client does not know what to do, give use info
         STOP   // Client requests that the Nameserver stop
     }

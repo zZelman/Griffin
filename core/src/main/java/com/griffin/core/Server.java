@@ -30,7 +30,7 @@ public class Server implements Runnable {
                 infoParser.getNameserverInfo(),
                 this.serverInfo);
         
-        this.griffin = new Griffin(taskFactory);
+        this.griffin = new Griffin(taskFactory, infoParser);
         
         this.serverSocket = new ServerSocket(this.serverInfo.getPort());
         this.serverCallBack.startedServerSocket(this.serverSocket);

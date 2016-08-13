@@ -12,7 +12,7 @@ public class ListRecurringTask extends Task {
     
     public ListRecurringTask(RecurringManager recurringManager) {
         super("list recurring",
-              "executes the 'command' every 'sec' on this server",
+              "prints a list of recurring jobs",
               "list recurring: success",
               "list recurring: failure");
               

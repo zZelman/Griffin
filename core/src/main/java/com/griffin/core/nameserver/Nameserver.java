@@ -168,8 +168,8 @@ public class Nameserver implements Runnable, Startable {
                     case GET:
                         this.doGet();
                         break;
-                    case DUMP:
-                        this.doDump();
+                    case LIST:
+                        this.doList();
                         break;
                     case HELP:
                         this.doHelp();
@@ -218,8 +218,8 @@ public class Nameserver implements Runnable, Startable {
             this.prevComm.send(new StopCommunication());
         }
         
-        private void doDump() throws IOException {
-            this.println("dump");
+        private void doList() throws IOException {
+            this.println("list");
             
             for (ServerInfo info : serverList) {
                 this.println("    " + info.toString());

@@ -11,11 +11,9 @@ public class Griffin {
     private final String emptyRawInput = "the given input is empty: ";
 
     private LoadedTasks loadedTasks;
-    private RecurringManager recurringManager;
     
-    public Griffin(TaskFactory taskFactory) {
+    public Griffin(TaskFactory taskFactory, ServerInfoParser infoParser) throws ServerInfoException {
         this.loadedTasks = new LoadedTasks();
-        this.recurringManager = new RecurringManager(this);
         
         // NOTE: given before common to allow given to have priority over keywords in common (ie help)
         
@@ -26,7 +24,7 @@ public class Griffin {
         }
         
         // common tasks
-        CoreTaskFactory core = new CoreTaskFactory(this.recurringManager);
+        CoreTaskFactory core = new CoreTaskFactory(infoParser.getNameserverInfo(), new RecurringManager(this));
         core.setGriffin(this);
         this.loadedTasks.addAll(core.getTasks());
     }

@@ -16,7 +16,7 @@ public class AddRecurringTask extends Task {
     
     public AddRecurringTask(RecurringManager recurringManager) {
         super("add recurring [name] [sec] [command...]",
-              "executes the 'command' every 'sec' on this server",
+              "executes the 'command' every 'sec' on this server named 'name'",
               "add recurring [name] [sec] [command...]: success",
               "add recurring [name] [sec] [command...]: failure");
 

@@ -62,8 +62,8 @@ public class NameserverClient {
         return info;
     }
     
-    public ConcurrentLinkedQueue<ServerInfo> dump() throws UnknownHostException, ClassNotFoundException, IOException {
-        NameserverAction action = new NameserverAction(NameserverAction.Action.DUMP);
+    public ConcurrentLinkedQueue<ServerInfo> list() throws UnknownHostException, ClassNotFoundException, IOException {
+        NameserverAction action = new NameserverAction(NameserverAction.Action.LIST);
         
         Communication nextComm = null;
         ConcurrentLinkedQueue<ServerInfo> serverList = null;
@@ -118,5 +118,21 @@ public class NameserverClient {
         }
         
         return output;
+    }
+
+    @Override
+    public String toString() {
+        return "NameserverClient:[nameserver:" + this.nameserver.toString() + "]";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        boolean ret = false;
+        if (o instanceof NameserverClient) {
+            NameserverClient other = (NameserverClient) o;
+            
+            ret = this.nameserver.equals(other.nameserver);
+        }
+        return ret;
     }
 }

@@ -14,7 +14,7 @@ public class RemoveRecurringTask extends Task {
     
     public RemoveRecurringTask(RecurringManager recurringManager) {
         super("remove recurring [name]",
-              "executes the 'command' every 'sec' on this server",
+              "removes 'name' from the reucrring jobs",
               "remove recurring [name]: success",
               "remove recurring [name]: failure");
               

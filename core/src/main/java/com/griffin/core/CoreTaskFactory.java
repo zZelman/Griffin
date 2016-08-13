@@ -7,9 +7,11 @@ import com.griffin.core.task.*;
 import com.griffin.core.recurring.*;
 
 public class CoreTaskFactory extends TaskFactory {
+    private ServerInfo nameserverInfo;
     private RecurringManager recurringManager;
     
-    public CoreTaskFactory(RecurringManager recurringManager) {
+    public CoreTaskFactory(ServerInfo nameserverInfo, RecurringManager recurringManager) {
+        this.nameserverInfo = nameserverInfo;
         this.recurringManager = recurringManager;
     }
     
@@ -18,12 +20,13 @@ public class CoreTaskFactory extends TaskFactory {
         
         // open ended
         tasks.addOpenEndedTask(new AddRecurringTask(this.recurringManager));
-        tasks.addOpenEndedTask(new RemoveRecurringTask(this.recurringManager));
-        tasks.addOpenEndedTask(new ListRecurringTask(this.recurringManager));
         
         // parameterized
+        tasks.addParameterizedTask(new RemoveRecurringTask(this.recurringManager));
         
         // simple
+        tasks.addSimpleTask(new NameserverListTask(this.nameserverInfo));
+        tasks.addSimpleTask(new ListRecurringTask(this.recurringManager));
         tasks.addSimpleTask(new StopServerTask());
         tasks.addSimpleTask(new PrintHelpTask(this.griffin));
         

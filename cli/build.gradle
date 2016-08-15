@@ -13,7 +13,7 @@ dependencies {
 
 task runCli(type: JavaExec) {
     standardInput = System.in
-    args 'server_list.ini desktop stop server'.split(' ')
+    args 'server_list.ini desktop shell cat ~/.bash_aliases'.split(' ')
     
     main = 'com.griffin.cli.Cli'
     classpath = sourceSets.main.runtimeClasspath

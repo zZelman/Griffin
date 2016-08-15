@@ -15,6 +15,6 @@ task runDaemon(type: JavaExec) {
     standardInput = System.in
     args 'server_list.ini'.split(' ')
     
-    main = 'com.griffin.desktop.daemon.Daemon'
+    main = 'com.griffin.daemon.Daemon'
     classpath = sourceSets.main.runtimeClasspath
 }

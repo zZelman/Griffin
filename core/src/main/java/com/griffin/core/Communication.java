@@ -28,6 +28,10 @@ public class Communication {
         this.out = new ObjectOutputStream(this.socket.getOutputStream());
         this.in = new ObjectInputStream(this.socket.getInputStream());
     }
+
+    public boolean isHeadless() {
+        return (this.in == null || this.out == null);
+    }
     
     public void send(Serializable s) throws IOException {
         if (this.out == null) {

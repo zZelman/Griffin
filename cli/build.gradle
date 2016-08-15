@@ -13,8 +13,8 @@ dependencies {
 
 task runCli(type: JavaExec) {
     standardInput = System.in
-    args 'server_list.ini desktop nameserver ping'.split(' ')
+    args 'server_list.ini desktop add recurring named 5 hello world thing'.split(' ')
     
-    main = 'com.griffin.desktop.cli.Cli'
+    main = 'com.griffin.cli.Cli'
     classpath = sourceSets.main.runtimeClasspath
 }

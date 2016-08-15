@@ -33,7 +33,7 @@ public class Server implements Runnable {
                 nameserverInfo,
                 this.serverInfo);
         
-        this.griffin = new Griffin(taskFactory, nameserverInfo, this.serverInfo);
+        this.griffin = new Griffin(taskFactory, serverCallBack, nameserverInfo, this.serverInfo);
         
         this.serverSocket = new ServerSocket(this.serverInfo.getPort());
         this.serverCallBack.startedServerSocket(this.serverSocket);
@@ -106,8 +106,6 @@ public class Server implements Runnable {
             try {
                 if (this.firstInput instanceof String) {
                     String command = (String) this.firstInput;
-                    this.serverCallBack.commandRecieved(this.prevComm.getRemoteAddr(), this.prevComm.getLocalAddr(), command);
-                    
                     Output output = this.griffin.doCommand(command, prevComm);
                     this.prevComm.send(output);
                 } else {

@@ -10,11 +10,13 @@ import com.griffin.core.server.*;
 
 public class Griffin {
     private final String emptyRawInput = "the given input is empty: ";
-
-    private LoadedTasks loadedTasks;
     
-    public Griffin(TaskFactory taskFactory, ServerInfo nameserverInfo, ServerInfo serverInfo) throws ServerInfoException {
+    private LoadedTasks loadedTasks;
+    private ServerCallBack serverCallBack;
+    
+    public Griffin(TaskFactory taskFactory, ServerCallBack serverCallBack, ServerInfo nameserverInfo, ServerInfo serverInfo) throws ServerInfoException {
         this.loadedTasks = new LoadedTasks();
+        this.serverCallBack = serverCallBack;
         
         // NOTE: given before common to allow given to have priority over keywords in common (ie help)
         
@@ -25,7 +27,7 @@ public class Griffin {
         }
         
         // common tasks
-        CoreTaskFactory core = new CoreTaskFactory(new RecurringManager(this), nameserverInfo, serverInfo);
+        CoreTaskFactory core = new CoreTaskFactory(new RecurringManager(this, serverCallBack), nameserverInfo, serverInfo);
         core.setGriffin(this);
         this.loadedTasks.addAll(core.getTasks());
     }
@@ -41,13 +43,18 @@ public class Griffin {
     public void setLoadedTasks(LoadedTasks loadedTasks) {
         this.loadedTasks = loadedTasks;
     }
-
+    
     public Output doCommand(String rawInput, Communication comm) {
         Output output = new Output();
         
         if ("".equals(rawInput)) {
             output.addOutput(new ErrorOutput(emptyRawInput + "[" + rawInput + "]"));
             return output;
+        }
+        
+        // print rawInput if not recurring (recurring takes care of its own printing)
+        if (!comm.isHeadless()) {
+            this.serverCallBack.commandRecieved(comm.getRemoteAddr(), comm.getLocalAddr(), rawInput);
         }
         
         boolean oneCommandExecuted;

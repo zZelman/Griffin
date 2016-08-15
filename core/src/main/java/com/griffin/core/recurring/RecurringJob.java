@@ -5,17 +5,20 @@ import java.io.*;
 
 import com.griffin.core.*;
 import com.griffin.core.output.*;
+import com.griffin.core.server.*;
 
 public class RecurringJob implements Startable {
     private Griffin griffin;
+    private ServerCallBack serverCallBack;
     private String name;
     private int period;
     private String command;
     
     private Thread thread;
     
-    public RecurringJob(Griffin griffin, String name, int period, String command) throws IOException {
+    public RecurringJob(Griffin griffin, ServerCallBack serverCallBack, String name, int period, String command) throws IOException {
         this.griffin = griffin;
+        this.serverCallBack = serverCallBack;
         this.name = name;
         this.period = period;
         this.command = command;
@@ -71,15 +74,20 @@ public class RecurringJob implements Startable {
     private class JobThread implements Runnable {
         private Communication prevComm;
         private long sleepTime;
+        private String addr;
         
         public JobThread() throws IOException {
             this.prevComm = new Communication(); // default constructor means input/output are munched
             this.sleepTime = period * 1000; // sec
+            this.addr = "reucrring - " + name + ":" + period;
         }
         
         @Override
         public void run() {
             while (!Thread.currentThread().isInterrupted()) {
+                // this is where recurring takes care of its own printing
+                serverCallBack.commandRecieved(addr, addr, command);
+                
                 // execute the command, and do nothing with it because there is no where to put it
                 Output ret = griffin.doCommand(command, this.prevComm);
                 

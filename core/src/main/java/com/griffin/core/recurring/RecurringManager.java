@@ -5,14 +5,17 @@ import java.util.concurrent.*;
 
 import com.griffin.core.*;
 import com.griffin.core.output.*;
+import com.griffin.core.server.*;
 
 public class RecurringManager {
     private Griffin griffin;
+    private ServerCallBack serverCallBack;
     
     private ConcurrentLinkedQueue<RecurringJob> jobs;
     
-    public RecurringManager(Griffin griffin) {
+    public RecurringManager(Griffin griffin, ServerCallBack serverCallBack) {
         this.griffin = griffin;
+        this.serverCallBack = serverCallBack;
         
         this.jobs = new ConcurrentLinkedQueue<RecurringJob>();
     }
@@ -22,7 +25,7 @@ public class RecurringManager {
             return false;
         }
         
-        RecurringJob job = new RecurringJob(this.griffin, name, period, command);
+        RecurringJob job = new RecurringJob(this.griffin, this.serverCallBack, name, period, command);
         if (job.start()) {
             this.jobs.add(job);
             return true;

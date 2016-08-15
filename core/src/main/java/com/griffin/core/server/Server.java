@@ -61,6 +61,7 @@ public class Server implements Runnable {
                 if (firstInput instanceof String) {
                     possibleStopCommand = (String) firstInput;
                     if (possibleStopCommand.equals(STOP_SERVER_COMMAND)) {
+                        this.serverCallBack.commandRecieved(prevComm.getRemoteAddr(), prevComm.getLocalAddr(), STOP_SERVER_COMMAND);
                         prevComm.send(new StringOutput(SERVER_STOPPING));
                         prevComm.send(new StopCommunication());
                         break;

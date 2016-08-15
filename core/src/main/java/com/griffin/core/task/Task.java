@@ -4,24 +4,40 @@ import com.griffin.core.*;
 import com.griffin.core.output.*;
 
 public abstract class Task {
-    protected final String command;
-    protected final String info;
-    protected final String success;
-    protected final String failure;
+    private final String command;
+    private final String description;
+    protected String success;
+    protected String failure;
     
-    public Task(String command, String info, String success, String failure) {
+    private String runtimeCommand;
+    
+    public Task(String command, String description) {
         this.command = command;
-        this.info = info;
-        this.success = success;
-        this.failure = failure;
+        this.description = description;
+
+        this.resetRuntimeCommand();
     }
     
     public String getCommand() {
         return this.command;
     }
     
-    public String getInfo() {
-        return this.info;
+    public String getDescription() {
+        return this.description;
+    }
+    
+    public String getRuntimeCommand() {
+        return this.runtimeCommand;
+    }
+    
+    protected void setRuntimeCommand(String cmd) {
+        this.runtimeCommand = cmd;
+        this.success = cmd + ": success";
+        this.failure = cmd + ": failure";
+    }
+
+    protected void resetRuntimeCommand() {
+        this.setRuntimeCommand(this.command);
     }
     
     /**
@@ -37,11 +53,14 @@ public abstract class Task {
         @arg rawInput the raw (whole) command string
         @return null if this task can not use the raw input, !null if the task can
                 NOTE: this method MUST remove the command from the rawInput and return that new string
+                NOTE: this method MUST set runTimeCommand
     */
     public String canUse(String rawInput) {
-        if (rawInput.matches(".*\\b" + this.getCommand() + "\\b.*")) {
-            return rawInput.replaceFirst(this.getCommand(), "");
+        if (rawInput.matches(".*\\b" + this.command + "\\b.*")) {
+            this.resetRuntimeCommand();
+            return rawInput.replaceFirst(this.command, "");
         }
+        this.resetRuntimeCommand();
         return null;
     }
     
@@ -58,5 +77,7 @@ public abstract class Task {
     
         Not abstract because not all tasks create state, it is ment to be overriden by those who do
     */
-    public void clear() {}
+    public void clear() {
+        this.resetRuntimeCommand();
+    }
 }

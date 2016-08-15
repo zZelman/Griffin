@@ -9,13 +9,11 @@ import com.griffin.core.task.*;
 public class ExamplePrevCommTask extends Task {
     public ExamplePrevCommTask() {
         super("prev comm",
-              "(example) does previous communication",
-              "prev comm: success",
-              "prev comm: failure");
+              "(example) does previous communication");
     }
     
     public Output doAction(Communication prevComm) {
-        Output output = new StartingOutput(this.command);
+        Output output = new StartingOutput(this.getRuntimeCommand());
         
         output.addOutput(new StringOutput("[ExamplePrevCommTask]"));
         

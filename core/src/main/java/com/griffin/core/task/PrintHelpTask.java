@@ -10,16 +10,14 @@ public class PrintHelpTask extends Task {
     
     public PrintHelpTask(Griffin griffin) {
         super("help",
-              "prints all commands and their descriptions",
-              "help: success",
-              "help: failure");
+              "prints all commands and their descriptions");
               
         this.griffin = griffin;
     }
 
     @Override
     public Output doAction(Communication prevComm) {
-        Output output = new StartingOutput(this.command);
+        Output output = new StartingOutput(this.getRuntimeCommand());
         
         LoadedTasks loadedTasks = this.griffin.getLoadedTasks();
         
@@ -43,7 +41,7 @@ public class PrintHelpTask extends Task {
     private void helper(Output output, String section, List<Task> tasks) {
         output.addOutput(new FormatedStringOutput("    " + section));
         for (Task t : tasks) {
-            output.addOutput(new FormatedStringOutput("        " + t.getCommand() + " - " + t.getInfo()));
+            output.addOutput(new FormatedStringOutput("        " + t.getCommand() + " - " + t.getDescription()));
         }
     }
 }

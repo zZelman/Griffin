@@ -14,9 +14,7 @@ public class NameserverPingTask extends Task {
     
     public NameserverPingTask(ServerInfo nameserverInfo, ServerInfo serverInfo) {
         super("nameserver ping",
-              "tells this server to issue a ping to the nameserver",
-              "nameserver ping: success",
-              "nameserver ping: failure");
+              "tells this server to issue a ping to the nameserver");
               
         this.client = new NameserverClient(nameserverInfo);
         this.serverInfo = serverInfo;
@@ -24,7 +22,7 @@ public class NameserverPingTask extends Task {
     
     @Override
     public Output doAction(Communication prevComm) {
-        Output output = new StartingOutput(this.command);
+        Output output = new StartingOutput(this.getRuntimeCommand());
         
         try {
             this.client.ping(this.serverInfo);

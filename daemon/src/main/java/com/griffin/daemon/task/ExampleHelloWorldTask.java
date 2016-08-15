@@ -9,14 +9,12 @@ import com.griffin.core.task.*;
 public class ExampleHelloWorldTask extends Task {
     public ExampleHelloWorldTask() {
         super("hello world",
-              "(example) basic example of what things do",
-              "hello world: success",
-              "hello world: failure");
+              "(example) basic example of what things do");
     }
 
     @Override
     public Output doAction(Communication prevComm) {
-        Output output = new StartingOutput(this.command);
+        Output output = new StartingOutput(this.getRuntimeCommand());
 
         System.out.println("server execution");
         

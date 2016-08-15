@@ -14,9 +14,7 @@ public class RemoveRecurringTask extends Task {
     
     public RemoveRecurringTask(RecurringManager recurringManager) {
         super("remove recurring [name]",
-              "removes 'name' from the reucrring jobs",
-              "remove recurring [name]: success",
-              "remove recurring [name]: failure");
+              "removes 'name' from the reucrring jobs");
               
         this.recurringManager = recurringManager;
     }
@@ -33,7 +31,8 @@ public class RemoveRecurringTask extends Task {
         
         if (m.find()) {
             this.name = m.group(3);
-            
+
+            this.setRuntimeCommand("remove recurring " + this.name);
             return rawInput.replaceFirst(prefix + space + name, "");
         }
         return null;
@@ -41,15 +40,14 @@ public class RemoveRecurringTask extends Task {
     
     @Override
     public Output doAction(Communication prevComm) {
-        String cmd = "remove recurring " + this.name;
-        Output output = new StartingOutput(cmd);
+        Output output = new StartingOutput(this.getRuntimeCommand());
         
         boolean isSuccess = this.recurringManager.remove(this.name);
         
         if (isSuccess) {
-            output.addOutput(new SuccessOutput(cmd + ": success"));
+            output.addOutput(new SuccessOutput(this.success));
         } else {
-            output.addOutput(new FailureOutput(cmd + ": failure"));
+            output.addOutput(new FailureOutput(this.failure));
         }
         
         return output;
@@ -57,6 +55,7 @@ public class RemoveRecurringTask extends Task {
     
     @Override
     public void clear() {
+        this.resetRuntimeCommand();
         this.name = "";
     }
 }

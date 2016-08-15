@@ -12,16 +12,14 @@ public class ListRecurringTask extends Task {
     
     public ListRecurringTask(RecurringManager recurringManager) {
         super("list recurring",
-              "prints a list of recurring jobs",
-              "list recurring: success",
-              "list recurring: failure");
+              "prints a list of recurring jobs");
               
         this.recurringManager = recurringManager;
     }
     
     @Override
     public Output doAction(Communication prevComm) {
-        Output output = new StartingOutput(this.command);
+        Output output = new StartingOutput(this.getRuntimeCommand());
         
         output.addOutput(this.recurringManager.list());
         

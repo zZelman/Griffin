@@ -19,17 +19,15 @@ import com.griffin.core.output.*;
 public class StopServerTask extends Task {
     public StopServerTask() {
         super("stop server",
-              "stops the server's execution (must be the only command)",
-              "stop server: success",
-              "stop server: failure");
+              "stops the server's execution (must be the only command)");
     }
 
     @Override
     public Output doAction(Communication prevComm) {
-        Output output = new StartingOutput(this.command);
+        Output output = new StartingOutput(this.getRuntimeCommand());
         
         output.addOutput(new StringOutput("the server has not stopped"));
-        output.addOutput(new StringOutput("\"" + this.command + "\" must be the only command"));
+        output.addOutput(new StringOutput("\"" + this.getCommand() + "\" must be the only command"));
         
         output.addOutput(new FailureOutput(this.failure));
         return output;

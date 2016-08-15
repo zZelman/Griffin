@@ -15,9 +15,7 @@ public class ExamplePrefixTask extends Task {
     
     public ExamplePrefixTask(Griffin griffin) {
         super("prefix [command...]",
-              "(example) runs the [command...] and mutates the output",
-              "prefix [command...]: success",
-              "prefix [command...]: failure");
+              "(example) runs the [command...] and mutates the output");
               
         this.griffin = griffin;
     }
@@ -34,7 +32,8 @@ public class ExamplePrefixTask extends Task {
         
         if (m.find()) {
             this.nextCommand = m.group(3);
-            
+
+            this.setRuntimeCommand("prefix " + this.nextCommand);
             return rawInput.replaceFirst(prefix + space + nextCommand, "");
         }
         return null;
@@ -42,7 +41,7 @@ public class ExamplePrefixTask extends Task {
     
     @Override
     public Output doAction(Communication prevComm) {
-        Output output = new StartingOutput(this.command);
+        Output output = new StartingOutput(this.getRuntimeCommand());
         
         Output ret = this.griffin.doCommand(nextCommand, prevComm);
         try {
@@ -62,6 +61,7 @@ public class ExamplePrefixTask extends Task {
     
     @Override
     public void clear() {
+        this.resetRuntimeCommand();
         this.nextCommand = "";
     }
 }

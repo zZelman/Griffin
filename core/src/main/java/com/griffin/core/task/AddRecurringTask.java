@@ -16,9 +16,7 @@ public class AddRecurringTask extends Task {
     
     public AddRecurringTask(RecurringManager recurringManager) {
         super("add recurring [name] [sec] [command...]",
-              "executes the 'command' every 'sec' on this server named 'name'",
-              "add recurring [name] [sec] [command...]: success",
-              "add recurring [name] [sec] [command...]: failure");
+              "executes the 'command' every 'sec' on this server named 'name'");
 
         this.recurringManager = recurringManager;
     }
@@ -43,7 +41,8 @@ public class AddRecurringTask extends Task {
                 return null;
             }
             this.nextCommand = m.group(7);
-            
+
+            this.setRuntimeCommand("add recurring " + this.name + " " + this.period + " " + this.nextCommand);
             return rawInput.replaceFirst(prefix + space + name + space + period + space + nextCommand, "");
         }
         return null;
@@ -51,8 +50,7 @@ public class AddRecurringTask extends Task {
     
     @Override
     public Output doAction(Communication prevComm) {
-        String cmd = "add recurring " + this.name + " " + this.period + " " + this.nextCommand;
-        Output output = new StartingOutput(cmd);
+        Output output = new StartingOutput(this.getRuntimeCommand());
         
         boolean isSuccess = false;
         try {
@@ -63,9 +61,9 @@ public class AddRecurringTask extends Task {
         }
         
         if (isSuccess) {
-            output.addOutput(new SuccessOutput(cmd + ": success"));
+            output.addOutput(new SuccessOutput(this.success));
         } else {
-            output.addOutput(new FailureOutput(cmd + ": failure"));
+            output.addOutput(new FailureOutput(this.failure));
         }
         
         return output;
@@ -73,6 +71,7 @@ public class AddRecurringTask extends Task {
     
     @Override
     public void clear() {
+        this.resetRuntimeCommand();
         this.name = "";
         this.period = 0;
         this.nextCommand = "";

@@ -14,9 +14,7 @@ public class ExampleParameterizedTask extends Task {
     public ExampleParameterizedTask() {
         // TODO: maybe some formal replacement syntax for commands who are parameterized
         super("print [str] [str]",
-              "(example) print on the server the two strings in the [str] position",
-              "print [str] [str]: success",
-              "print [str] [str]: failure");
+              "(example) print on the server the two strings in the [str] position");
     }
     
     @Override
@@ -33,7 +31,8 @@ public class ExampleParameterizedTask extends Task {
         if (m.find()) {
             this.word1 = m.group(3);
             this.word2 = m.group(5);
-            
+
+            this.setRuntimeCommand("print " + this.word1 + " " + this.word2);
             return rawInput.replaceFirst(print + space + word1 + space + word2, "");
         }
         return null;
@@ -41,16 +40,17 @@ public class ExampleParameterizedTask extends Task {
     
     @Override
     public Output doAction(Communication prevComm) {
-        Output output = new StartingOutput("print " + this.word1 + " " + this.word2);
+        Output output = new StartingOutput(this.getRuntimeCommand());
         
         System.out.println("[ExampleParameterizedTask] word1=" + this.word1 + ", word2=" + this.word2);
         
-        output.addOutput(new SuccessOutput("print " + this.word1 + " " + this.word2 + ": success"));
+        output.addOutput(new SuccessOutput(this.success));
         return output;
     }
     
     @Override
     public void clear() {
+        this.resetRuntimeCommand();
         this.word1 = "";
         this.word2 = "";
     }

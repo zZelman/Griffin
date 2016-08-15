@@ -14,16 +14,14 @@ public class NameserverListTask extends Task {
     
     public NameserverListTask(ServerInfo nameserverInfo) {
         super("nameserver list",
-              "prints what the nameserver knows about servers",
-              "nameserver list: success",
-              "nameserver list: failure");
+              "prints what the nameserver knows about servers");
               
         this.client = new NameserverClient(nameserverInfo);
     }
     
     @Override
     public Output doAction(Communication prevComm) {
-        Output output = new StartingOutput(this.command);
+        Output output = new StartingOutput(this.getRuntimeCommand());
         
         ConcurrentLinkedQueue<ServerInfo> infos = null;
         try {

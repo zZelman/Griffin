@@ -81,7 +81,7 @@ public class LoadedTasks {
     private void toStringHelper(StringBuffer sb, String section, List<Task> tasks) {
         sb.append(this.indent + section + this.newLine);
         for (Task t : tasks) {
-            sb.append(this.indent + this.indent + t.getCommand() + " - " + t.getInfo() + this.newLine);
+            sb.append(this.indent + this.indent + t.getCommand() + " - " + t.getDescription() + this.newLine);
         }
     }
 }

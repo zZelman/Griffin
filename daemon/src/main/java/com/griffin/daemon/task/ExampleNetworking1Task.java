@@ -23,12 +23,10 @@ public class ExampleNetworking1Task extends Task implements ClientCallBack {
     
     public ExampleNetworking1Task(ServerInfoParser infoParser) {
         super("net1",
-              "(example) executes the other command 'net2' on target 'desktop'",
-              "net1: success",
-              "net1: failure");
+              "(example) executes the other command 'net2' on target 'desktop'");
               
         this.infoParser = infoParser;
-        this.output = new StartingOutput(this.command);
+        this.output = new StartingOutput(this.getRuntimeCommand());
         // this.prevComm = null;
     }
     
@@ -52,7 +50,7 @@ public class ExampleNetworking1Task extends Task implements ClientCallBack {
     
     @Override
     public void clear() {
-        this.output = new StartingOutput(this.command);
+        this.output = new StartingOutput(this.getRuntimeCommand());
         // this.prevComm = null;
     }
     

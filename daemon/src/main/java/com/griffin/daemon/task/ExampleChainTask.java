@@ -21,12 +21,10 @@ public class ExampleChainTask extends Task implements ClientCallBack {
     
     public ExampleChainTask(ServerInfoParser infoParser) {
         super("chain",
-              "(example) executes the other command 'chain' on target 'desktop' 70% of the time",
-              "chain: success",
-              "chain: failure");
+              "(example) executes the other command 'chain' on target 'desktop' 70% of the time");
               
         this.infoParser = infoParser;
-        this.output = new StartingOutput(this.command);
+        this.output = new StartingOutput(this.getRuntimeCommand());
         this.prevComm = null;
     }
     
@@ -54,7 +52,7 @@ public class ExampleChainTask extends Task implements ClientCallBack {
     
     @Override
     public void clear() {
-        this.output = new StartingOutput(this.command);
+        this.output = new StartingOutput(this.getRuntimeCommand());
         this.prevComm = null;
     }
     

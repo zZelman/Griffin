@@ -175,7 +175,7 @@ public class App extends Activity implements OnClickListener {
                activeNetwork.isConnectedOrConnecting();
     }
     
-    class Networking extends AsyncTask<Void, Void, Void> implements ClientCallBack {
+    private class Networking extends AsyncTask<Void, Void, Void> implements ClientCallBack {
         private ServerInfoParser infoParser;
         private String target;
         private Serializable command;

@@ -88,7 +88,7 @@ public class Server implements Runnable {
         this.serverCallBack.serverEnding(SERVER_STOPPING);
     }
     
-    class CommunicationThread implements Runnable {
+    private class CommunicationThread implements Runnable {
         private final ServerCallBack serverCallBack;
         private final Griffin griffin;
         private final Communication prevComm;

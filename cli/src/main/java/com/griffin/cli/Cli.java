@@ -1,4 +1,4 @@
-package com.griffin.desktop.cli;
+package com.griffin.cli;
 
 import java.net.*;
 import java.io.*;

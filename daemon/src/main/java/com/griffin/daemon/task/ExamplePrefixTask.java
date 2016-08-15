@@ -1,4 +1,4 @@
-package com.griffin.desktop.daemon.task;
+package com.griffin.daemon.task;
 
 import java.util.*;
 import java.net.*;

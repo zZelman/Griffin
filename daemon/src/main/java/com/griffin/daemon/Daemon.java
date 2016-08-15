@@ -1,4 +1,4 @@
-package com.griffin.desktop.daemon;
+package com.griffin.daemon;
 
 import java.net.*;
 import java.io.*;
@@ -6,6 +6,7 @@ import java.io.*;
 import com.griffin.core.*;
 import com.griffin.core.nameserver.*;
 import com.griffin.core.server.*;
+import com.griffin.daemon.task.*;
 
 public class Daemon implements NameserverCallBack, ServerCallBack, Startable {
     private String fileName;

@@ -1,4 +1,4 @@
-package com.griffin.desktop.daemon.task;
+package com.griffin.daemon.task;
 
 import java.util.*;
 import java.net.*;
@@ -10,20 +10,20 @@ import com.griffin.core.client.*;
 import com.griffin.core.server.*;
 import com.griffin.core.task.*;
 
-public class ExampleChainTask extends Task implements ClientCallBack {
+public class ExampleNetworking2Task extends Task implements ClientCallBack {
     private ServerInfoParser infoParser;
     
     private final String target = "desktop";
-    private final String nextCommand = "chain";
+    private final String nextCommand = "prev comm";
     
     private Output output;
     private Communication prevComm;
     
-    public ExampleChainTask(ServerInfoParser infoParser) {
-        super("chain",
-              "(example) executes the other command 'chain' on target 'desktop' 70% of the time",
-              "chain: success",
-              "chain: failure");
+    public ExampleNetworking2Task(ServerInfoParser infoParser) {
+        super("net2",
+              "(example) executes the other command 'prev comm' on target 'desktop'",
+              "net2: success",
+              "net2: failure");
               
         this.infoParser = infoParser;
         this.output = new StartingOutput(this.command);
@@ -32,16 +32,12 @@ public class ExampleChainTask extends Task implements ClientCallBack {
     
     @Override
     public Output doAction(Communication prevComm) {
-        if (new Random().nextFloat() < 0.30f) {
-            this.output.addOutput(new StringOutput("last node"));
-        } else {
-            Client client = new Client(this, this.infoParser, this.target, this.nextCommand);
-            
-            this.prevComm = prevComm;
-            
-            client.start();
-            client.stop();
-        }
+        Client client = new Client(this, this.infoParser, this.target, this.nextCommand);
+        
+        this.prevComm = prevComm;
+        
+        client.start();
+        client.stop();
         
         if (this.output.containsError()) {
             this.output.addOutput(new FailureOutput(this.failure));

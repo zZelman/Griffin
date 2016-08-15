@@ -4,6 +4,7 @@ import java.io.*;
 
 import com.griffin.core.*;
 import com.griffin.core.output.*;
+import com.griffin.core.task.*;
 
 public class ExamplePrevCommTask extends Task {
     public ExamplePrevCommTask() {

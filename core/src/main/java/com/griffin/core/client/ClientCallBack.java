@@ -1,4 +1,4 @@
-package com.griffin.core;
+package com.griffin.core.client;
 
 import java.net.*;
 import java.io.*;
@@ -6,6 +6,7 @@ import java.lang.*;
 import java.util.*;
 
 import com.griffin.core.*;
+import com.griffin.core.server.*;
 
 public interface ClientCallBack {
     public void recieved(Object o);

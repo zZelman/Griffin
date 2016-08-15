@@ -7,6 +7,7 @@ import java.util.regex.*;
 
 import com.griffin.core.*;
 import com.griffin.core.output.*;
+import com.griffin.core.task.*;
 
 public class ExamplePrefixTask extends Task {
     private final Griffin griffin;

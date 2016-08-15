@@ -1,4 +1,4 @@
-package com.griffin.core;
+package com.griffin.core.server;
 
 import java.io.*;
 

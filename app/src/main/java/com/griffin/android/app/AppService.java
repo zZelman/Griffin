@@ -13,6 +13,7 @@ import com.griffin.android.app.*;
 
 import com.griffin.core.*;
 import com.griffin.core.nameserver.*;
+import com.griffin.core.server.*;
 
 public class AppService extends Service implements NameserverCallBack, ServerCallBack, Startable {
     public static final int ID = 1234;

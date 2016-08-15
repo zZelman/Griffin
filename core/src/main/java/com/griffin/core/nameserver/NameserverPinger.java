@@ -4,6 +4,7 @@ import java.net.*;
 import java.io.*;
 
 import com.griffin.core.*;
+import com.griffin.core.server.*;
 
 public class NameserverPinger implements Startable {
     private Pinger pinger;

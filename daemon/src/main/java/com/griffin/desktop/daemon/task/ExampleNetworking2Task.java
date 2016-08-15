@@ -6,6 +6,9 @@ import java.io.*;
 
 import com.griffin.core.*;
 import com.griffin.core.output.*;
+import com.griffin.core.client.*;
+import com.griffin.core.server.*;
+import com.griffin.core.task.*;
 
 public class ExampleNetworking2Task extends Task implements ClientCallBack {
     private ServerInfoParser infoParser;

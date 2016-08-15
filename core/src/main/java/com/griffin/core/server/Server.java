@@ -1,4 +1,4 @@
-package com.griffin.core;
+package com.griffin.core.server;
 
 import java.net.*;
 import java.io.*;
@@ -7,6 +7,7 @@ import java.util.*;
 import com.griffin.core.*;
 import com.griffin.core.output.*;
 import com.griffin.core.nameserver.*;
+import com.griffin.core.task.*;
 
 public class Server implements Runnable {
     private ServerCallBack serverCallBack;

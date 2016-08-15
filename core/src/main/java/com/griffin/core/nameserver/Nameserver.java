@@ -7,6 +7,7 @@ import java.util.concurrent.*;
 
 import com.griffin.core.*;
 import com.griffin.core.output.*;
+import com.griffin.core.server.*;
 
 public class Nameserver implements Runnable, Startable {
     private String fileName;

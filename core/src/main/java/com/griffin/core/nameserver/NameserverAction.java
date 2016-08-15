@@ -3,6 +3,7 @@ package com.griffin.core.nameserver;
 import java.io.*;
 
 import com.griffin.core.*;
+import com.griffin.core.server.*;
 
 // only visable inside of the package
 class NameserverAction implements Serializable {

@@ -1,10 +1,11 @@
-package com.griffin.core;
+package com.griffin.core.task;
 
 import java.util.*;
 
 import com.griffin.core.*;
 import com.griffin.core.task.*;
 import com.griffin.core.recurring.*;
+import com.griffin.core.server.*;
 
 public class CoreTaskFactory extends TaskFactory {
     private RecurringManager recurringManager;

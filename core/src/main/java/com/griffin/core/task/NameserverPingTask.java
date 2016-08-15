@@ -6,6 +6,7 @@ import java.net.*;
 import com.griffin.core.*;
 import com.griffin.core.output.*;
 import com.griffin.core.nameserver.*;
+import com.griffin.core.server.*;
 
 public class NameserverPingTask extends Task {
     private NameserverClient client;

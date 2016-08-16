@@ -13,7 +13,7 @@ dependencies {
 
 task runCli(type: JavaExec) {
     standardInput = System.in
-    args 'server_list.ini android shell ls'.split(' ')
+    args 'server_list.ini desktop shell dropbox-home pull'.split(' ')
     
     main = 'com.griffin.cli.Cli'
     classpath = sourceSets.main.runtimeClasspath

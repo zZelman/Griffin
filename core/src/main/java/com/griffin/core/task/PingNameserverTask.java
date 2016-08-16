@@ -2,33 +2,31 @@ package com.griffin.core.task;
 
 import java.io.*;
 import java.net.*;
-import java.util.concurrent.*;
 
 import com.griffin.core.*;
 import com.griffin.core.output.*;
 import com.griffin.core.nameserver.*;
 import com.griffin.core.server.*;
 
-public class NameserverListTask extends Task {
+public class PingNameserverTask extends Task {
     private NameserverClient client;
+    private ServerInfo serverInfo;
     
-    public NameserverListTask(ServerInfo nameserverInfo) {
-        super("nameserver list",
-              "prints what the nameserver knows about servers");
+    public PingNameserverTask(ServerInfo nameserverInfo, ServerInfo serverInfo) {
+        super("ping nameserver",
+              "tells this server to issue a ping to the nameserver");
               
         this.client = new NameserverClient(nameserverInfo);
+        this.serverInfo = serverInfo;
     }
     
     @Override
     public Output doAction(Communication prevComm) {
         Output output = new StartingOutput(this.getRuntimeCommand());
         
-        ConcurrentLinkedQueue<ServerInfo> infos = null;
         try {
-            infos = this.client.list();
+            this.client.ping(this.serverInfo);
         } catch (UnknownHostException e) {
-            output.addOutput(new ErrorOutput(e.toString()));
-        } catch (ClassNotFoundException e) {
             output.addOutput(new ErrorOutput(e.toString()));
         } catch (IOException e) {
             output.addOutput(new ErrorOutput(e.toString()));
@@ -37,14 +35,6 @@ public class NameserverListTask extends Task {
         if (output.containsError()) {
             output.addOutput(new FailureOutput(this.failure));
             return output;
-        }
-        
-        if (infos.isEmpty()) {
-            output.addOutput(new StringOutput("no server infos avalable"));
-        }
-        
-        for (ServerInfo info : infos) {
-            output.addOutput(new StringOutput("name: " + info.getName() + ", hostName: " + info.getHostName() + ", port: " + info.getPort()));
         }
         
         output.addOutput(new SuccessOutput(this.success));

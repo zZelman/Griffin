@@ -34,8 +34,8 @@ public class CoreTaskFactory extends TaskFactory {
         tasks.addParameterizedTask(new RemoveRecurringTask(this.recurringManager));
         
         // simple
-        tasks.addSimpleTask(new NameserverListTask(this.nameserverInfo));
-        tasks.addSimpleTask(new NameserverPingTask(this.nameserverInfo, this.serverInfo));
+        tasks.addSimpleTask(new ListNameserverTask(this.nameserverInfo));
+        tasks.addSimpleTask(new PingNameserverTask(this.nameserverInfo, this.serverInfo));
         tasks.addSimpleTask(new ListRecurringTask(this.recurringManager));
         tasks.addSimpleTask(new StopServerTask());
         tasks.addSimpleTask(new PrintHelpTask(this.griffin));

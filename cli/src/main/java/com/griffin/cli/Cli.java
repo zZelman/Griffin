@@ -4,6 +4,7 @@ import java.net.*;
 import java.io.*;
 import java.lang.*;
 import java.util.*;
+import java.util.prefs.*;
 
 import org.apache.commons.lang3.*;
 
@@ -18,6 +19,10 @@ public class Cli implements ClientCallBack, Startable {
     
     public Cli(ServerInfoParser infoParser, String target, Serializable command) {
         this.client = new Client(this, infoParser, target, command);
+    }
+    
+    public Cli(ServerInfoParser infoParser, Serializable command) {
+        this.client = new Client(this, infoParser, command);
     }
     
     @Override
@@ -103,7 +108,7 @@ public class Cli implements ClientCallBack, Startable {
             this.println(indentStr + so.getString()); // just shows the data
         }
         // else {
-            // this.println(indentStr + o); // this is a catch-all that will display with type the recieved
+        // this.println(indentStr + o); // this is a catch-all that will display with type the recieved
         // }
     }
     
@@ -122,22 +127,18 @@ public class Cli implements ClientCallBack, Startable {
     public static void usage() {
         System.out.println("error in command line paramiters");
         System.out.println("    usage: [server_info_filename] [target] [command...]");
+        System.out.println("    usage: [server_info_filename] [command...]");
         System.exit(1);
     }
     
     public static void main(String[] args) {
-        if (args.length < 3) {
+        if (args.length < 2) {
             Cli.usage();
         }
         
-        String fileName = args[0];
-        String target = args[1];
-        
-        String[] commandTokens = ArrayUtils.subarray(args, 2, args.length);
-        Serializable command = StringUtils.join(commandTokens, " ");
-        
         ServerInfoParser infoParser = null;
         try {
+            String fileName = args[0];
             InputStream inputStream = ClassLoader.getSystemClassLoader().getResourceAsStream(fileName);
             infoParser = new ServerInfoParser(inputStream);
         } catch (IOException e) {
@@ -145,7 +146,23 @@ public class Cli implements ClientCallBack, Startable {
             System.exit(1);
         }
         
-        Cli cli = new Cli(infoParser, target, command);
+        Cli cli = null;
+        try {
+            String target = args[1];
+            if (infoParser.targetExists(target)) {
+                String[] commandTokens = ArrayUtils.subarray(args, 2, args.length);
+                Serializable command = StringUtils.join(commandTokens, " ");
+                cli = new Cli(infoParser, target, command);
+            } else {
+                String[] commandTokens = ArrayUtils.subarray(args, 1, args.length);
+                Serializable command = StringUtils.join(commandTokens, " ");
+                cli = new Cli(infoParser, command);
+            }
+        } catch (BackingStoreException e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
+        
         cli.start();
         cli.stop();
     }

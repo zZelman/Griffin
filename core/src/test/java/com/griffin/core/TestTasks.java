@@ -18,32 +18,17 @@ public class TestTasks {
     }
     
     @Test
-    public void testPrintHelpTask() {
-        Griffin g = new Griffin(null);
-        Task t = new PrintHelpTask(g);
-        Output o = t.doAction(null);
-        
-        this.println(0, o);
-    }
-    
-    private void println(int indentLevel, Output curr) {
-        String indentStr = "";
-        for (int i = 0; i < indentLevel; ++i) {
-            indentStr += "|   ";
+    public void testJava() throws Exception {
+        String input = "desktop hello world android thing thing thing android thing desktop ddd";
+
+        String[] names = new String[]{"desktop", "android"};
+
+        String[] s = input.split("(?=(android|desktop))");
+        ArrayList<String> list = new ArrayList<String>();
+        for (String str : s) {
+            list.add(str.trim());
         }
-        
-        // deal with given
-        System.out.println(indentStr + curr);
-        if (curr.hasSubtaskOutput()) {
-            this.println(++indentLevel, curr.getSubtaskOutput());
-        }
-        
-        while (curr.hasNext()) {
-            curr = curr.next();
-            System.out.println(indentStr + curr);
-            if (curr.hasSubtaskOutput()) {
-                this.println(++indentLevel, curr.getSubtaskOutput());
-            }
-        }
+
+        System.out.println(list);
     }
 }

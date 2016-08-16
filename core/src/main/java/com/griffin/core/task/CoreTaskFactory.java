@@ -11,11 +11,15 @@ public class CoreTaskFactory extends TaskFactory {
     private RecurringManager recurringManager;
     private ServerInfo nameserverInfo;
     private ServerInfo serverInfo;
+    private ServerInfoParser infoParser;
     
-    public CoreTaskFactory(RecurringManager recurringManager, ServerInfo nameserverInfo, ServerInfo serverInfo) {
+    public CoreTaskFactory(RecurringManager recurringManager,
+                           ServerInfo nameserverInfo, ServerInfo serverInfo,
+                           ServerInfoParser infoParser) {
         this.recurringManager = recurringManager;
         this.nameserverInfo = nameserverInfo;
         this.serverInfo = serverInfo;
+        this.infoParser = infoParser;
     }
     
     public LoadedTasks getTasks() {
@@ -24,6 +28,7 @@ public class CoreTaskFactory extends TaskFactory {
         // open ended
         tasks.addOpenEndedTask(new AddRecurringTask(this.recurringManager));
         tasks.addOpenEndedTask(new ShellTask());
+        tasks.addOpenEndedTask(new RunTask(this.infoParser));
         
         // parameterized
         tasks.addParameterizedTask(new RemoveRecurringTask(this.recurringManager));

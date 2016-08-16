@@ -2,6 +2,7 @@ package com.griffin.core.server;
 
 import java.net.*;
 import java.io.*;
+import java.util.*;
 import java.lang.*;
 import java.util.prefs.*;
 
@@ -33,6 +34,10 @@ public class ServerInfoParser {
 
     public ServerInfo getNameserverInfo() throws ServerInfoException {
         return this.getServerInfo(NAMESERVER);
+    }
+
+    public String[] getAllNames() throws BackingStoreException {
+        return this.iniPrefs.childrenNames();
     }
     
     public ServerInfo getServerInfo(String name) throws ServerInfoException {

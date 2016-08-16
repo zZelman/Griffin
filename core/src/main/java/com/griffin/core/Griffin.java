@@ -14,7 +14,9 @@ public class Griffin {
     private LoadedTasks loadedTasks;
     private ServerCallBack serverCallBack;
     
-    public Griffin(TaskFactory taskFactory, ServerCallBack serverCallBack, ServerInfo nameserverInfo, ServerInfo serverInfo) throws ServerInfoException {
+    public Griffin(TaskFactory taskFactory, ServerCallBack serverCallBack,
+                   ServerInfo nameserverInfo, ServerInfo serverInfo,
+                   ServerInfoParser infoParser) throws ServerInfoException {
         this.loadedTasks = new LoadedTasks();
         this.serverCallBack = serverCallBack;
         
@@ -27,7 +29,9 @@ public class Griffin {
         }
         
         // common tasks
-        CoreTaskFactory core = new CoreTaskFactory(new RecurringManager(this, serverCallBack), nameserverInfo, serverInfo);
+        CoreTaskFactory core = new CoreTaskFactory(new RecurringManager(this, serverCallBack),
+                nameserverInfo, serverInfo,
+                infoParser);
         core.setGriffin(this);
         this.loadedTasks.addAll(core.getTasks());
     }

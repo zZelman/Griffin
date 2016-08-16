@@ -32,10 +32,9 @@ public class ExampleNetworking1Task extends Task implements ClientCallBack {
     
     @Override
     public Output doAction(Communication prevComm) {
-        Client client = new Client(this, this.infoParser, this.target, this.nextCommand);
-        
         // this.prevComm = prevComm;
         
+        Client client = new Client(this, this.infoParser, this.target, this.nextCommand);
         client.start();
         client.stop();
         

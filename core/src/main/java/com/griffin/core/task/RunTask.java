@@ -22,7 +22,6 @@ public class RunTask extends Task implements ClientCallBack {
               "runs the command on the target server NOTE: not recursive and server names are reserved in this context");
               
         this.infoParser = infoParser;
-        this.resetRuntimeCommand();
     }
     
     @Override
@@ -75,6 +74,7 @@ public class RunTask extends Task implements ClientCallBack {
     @Override
     public void clear() {
         this.resetRuntimeCommand();
+        this.output = null;
         this.input = "";
     }
     

@@ -26,8 +26,14 @@ public class Client implements Startable {
     public boolean start() {
         Communication nextComm = null;
         try {
-            NameserverClient nameserverClient = new NameserverClient(infoParser.getNameserverInfo());
-            ServerInfo info = nameserverClient.get(this.target);
+            ServerInfo info = null;
+            if (this.infoParser.isLocalhost(this.target)) {
+                info = this.infoParser.getLocalhostInfo();
+            } else {
+                NameserverClient nameserverClient = new NameserverClient(infoParser.getNameserverInfo());
+                info = nameserverClient.get(this.target);
+            }
+            
             if (info == null) {
                 this.callBack.dealWithBadTarget(this.target);
                 return false;

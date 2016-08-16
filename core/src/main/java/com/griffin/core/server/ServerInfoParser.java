@@ -12,6 +12,7 @@ import com.griffin.core.*;
 
 public class ServerInfoParser {
     private final String NAMESERVER = "nameserver";
+    private final String LOCALHOST = "localhost";
     
     private final String HOST_NAME = "hostname";
     private final String PORT = "port";
@@ -31,11 +32,11 @@ public class ServerInfoParser {
         this.iniPrefs = new IniPreferences(ini);
         inputStream.close();
     }
-
+    
     public ServerInfo getNameserverInfo() throws ServerInfoException {
         return this.getServerInfo(NAMESERVER);
     }
-
+    
     public String[] getAllNames() throws BackingStoreException {
         return this.iniPrefs.childrenNames();
     }
@@ -51,9 +52,17 @@ public class ServerInfoParser {
         if (name == null ||
             hostName == null ||
             port == -1) {
-            throw new ServerInfoException("name or formating of the info file is incorrect. name=["+name+"], hostName=["+hostName+"], port=["+port+"]");
+            throw new ServerInfoException("name or formating of the info file is incorrect. name=[" + name + "], hostName=[" + hostName + "], port=[" + port + "]");
         }
         
         return new ServerInfo(name, hostName, port);
+    }
+    
+    public ServerInfo getLocalhostInfo() throws ServerInfoException {
+        return this.getServerInfo(LOCALHOST);
+    }
+
+    public boolean isLocalhost(String target) {
+        return target.equals(LOCALHOST);
     }
 }

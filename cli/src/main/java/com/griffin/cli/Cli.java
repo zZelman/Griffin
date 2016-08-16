@@ -21,10 +21,6 @@ public class Cli implements ClientCallBack, Startable {
         this.client = new Client(this, infoParser, target, command);
     }
     
-    public Cli(ServerInfoParser infoParser, Serializable command) {
-        this.client = new Client(this, infoParser, command);
-    }
-    
     @Override
     public void recieved(Object o) {
         if (o instanceof Output) {
@@ -126,8 +122,7 @@ public class Cli implements ClientCallBack, Startable {
     
     public static void usage() {
         System.out.println("error in command line paramiters");
-        System.out.println("    usage: [server_info_filename] [target] [command...]");
-        System.out.println("    usage: [server_info_filename] [command...]");
+        System.out.println("    usage: [target] [command...]");
         System.exit(1);
     }
     
@@ -138,7 +133,7 @@ public class Cli implements ClientCallBack, Startable {
         
         ServerInfoParser infoParser = null;
         try {
-            String fileName = args[0];
+            String fileName = "server_list.ini";
             InputStream inputStream = ClassLoader.getSystemClassLoader().getResourceAsStream(fileName);
             infoParser = new ServerInfoParser(inputStream);
         } catch (IOException e) {
@@ -146,23 +141,12 @@ public class Cli implements ClientCallBack, Startable {
             System.exit(1);
         }
         
-        Cli cli = null;
-        try {
-            String target = args[1];
-            if (infoParser.targetExists(target)) {
-                String[] commandTokens = ArrayUtils.subarray(args, 2, args.length);
-                Serializable command = StringUtils.join(commandTokens, " ");
-                cli = new Cli(infoParser, target, command);
-            } else {
-                String[] commandTokens = ArrayUtils.subarray(args, 1, args.length);
-                Serializable command = StringUtils.join(commandTokens, " ");
-                cli = new Cli(infoParser, command);
-            }
-        } catch (BackingStoreException e) {
-            e.printStackTrace();
-            System.exit(1);
-        }
+        String[] commandTokens = ArrayUtils.subarray(args, 1, args.length);
         
+        String target = args[0];
+        Serializable command = StringUtils.join(commandTokens, " ");
+        
+        Cli cli = new Cli(infoParser, target, command);
         cli.start();
         cli.stop();
     }

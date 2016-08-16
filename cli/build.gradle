@@ -13,7 +13,7 @@ dependencies {
 
 task runCli(type: JavaExec) {
     standardInput = System.in
-    args 'server_list.ini list nameserver'.split(' ')
+    args 'localhost list nameserver'.split(' ')
     
     main = 'com.griffin.cli.Cli'
     classpath = sourceSets.main.runtimeClasspath

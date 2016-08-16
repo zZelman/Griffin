@@ -15,6 +15,7 @@ import java.net.*;
 import java.io.*;
 import java.lang.*;
 import java.util.*;
+import java.util.prefs.*;
 
 import org.apache.commons.lang3.*;
 
@@ -112,11 +113,6 @@ public class App extends Activity implements OnClickListener {
     private void sendCommand() {
         this.vibrate();
         
-        if (!this.checkNetworkConnection()) {
-            Toast.makeText(this, "no network connection", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        
         String state = Environment.getExternalStorageState();
         if (state.equals(Environment.MEDIA_MOUNTED) == false) {
             Toast.makeText(this, "cannot access server info file", Toast.LENGTH_SHORT).show();
@@ -126,20 +122,6 @@ public class App extends Activity implements OnClickListener {
         //// this comment is for when the file is in the home directory (not yet, still in dev)
         // String baseDir = Environment.getExternalStorageDirectory().getAbsolutePath();
         // baseDir + File.separator + "server_list.ini",
-        
-        // source: http://stackoverflow.com/a/9378468/961312
-        String[] userInput = this.commandText.getText().toString().split(" ", 2);
-        
-        if (userInput.length != 2) {
-            Toast.makeText(this, "please enter a command", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        
-        String target = userInput[0];
-        String command = userInput[1];
-        
-        // String target = "desktop";
-        // String command = "prev comm";
         
         ServerInfoParser infoParser = null;
         try {
@@ -152,6 +134,12 @@ public class App extends Activity implements OnClickListener {
             Toast.makeText(this, "io error", Toast.LENGTH_SHORT).show();
             return;
         }
+        
+        String[] userInput = this.commandText.getText().toString().split(" ");
+        String[] commandTokens = ArrayUtils.subarray(userInput, 1, userInput.length);
+        
+        String target = userInput[0];
+        Serializable command = StringUtils.join(commandTokens, " ");
         
         new Networking(infoParser, target, command).execute();
         
@@ -208,6 +196,7 @@ public class App extends Activity implements OnClickListener {
         @Override
         protected void onProgressUpdate(Void... params) {
             this.showWhatHave();
+            commandOutput.append("working...");
         }
         
         @Override

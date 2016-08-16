@@ -22,16 +22,12 @@ public class Client implements Startable {
         this.command = command;
     }
     
-    public Client(ClientCallBack callBack, ServerInfoParser infoParser, Serializable command) {
-        this(callBack, infoParser, null, command);
-    }
-    
     @Override
     public boolean start() {
         Communication nextComm = null;
         try {
             ServerInfo info = null;
-            if (this.target == null || this.infoParser.isLocalhost(this.target)) {
+            if (this.infoParser.isLocalhost(this.target)) {
                 info = this.infoParser.getLocalhostInfo();
             } else {
                 NameserverClient nameserverClient = new NameserverClient(infoParser.getNameserverInfo());

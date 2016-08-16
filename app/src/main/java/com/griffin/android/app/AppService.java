@@ -52,7 +52,6 @@ public class AppService extends Service implements NameserverCallBack, ServerCal
     
     @Override
     public void taskList(String taskList) {
-        this.showToast(taskList);
     }
     
     @Override
@@ -82,18 +81,16 @@ public class AppService extends Service implements NameserverCallBack, ServerCal
     
     @Override
     public void dealWith(IOException e) {
-        this.showToast(e.getMessage().toLowerCase());
+        // this.showToast(e.getMessage().toLowerCase());
     }
     
     @Override
     public void nameserverException(UnknownHostException e) {
-        // caused by the NameserverPinger & if cant reach the nameserver, this server is dead in the water
         this.showToast("lost connection to the nameserver!!");
     }
     
     @Override
     public void nameserverException(IOException e) {
-        // caused by the NameserverPinger & if cant reach the nameserver, this server is dead in the water
         this.showToast("lost connection to the nameserver!!");
     }
     
@@ -104,8 +101,6 @@ public class AppService extends Service implements NameserverCallBack, ServerCal
         }
         
         AppService.isRunning = true;
-        Toast.makeText(this, "service started", Toast.LENGTH_SHORT).show();
-        
         try {
             InputStream inputStream = this.getResources().openRawResource(R.raw.server_list);
             ServerInfoParser infoParser = new ServerInfoParser(inputStream);
@@ -154,13 +149,10 @@ public class AppService extends Service implements NameserverCallBack, ServerCal
         }
         
         AppService.isRunning = false;
-        Toast.makeText(this, "service stopped", Toast.LENGTH_SHORT).show();
         
         try {
             this.serverSocket.close();
-        } catch (IOException e) {
-            this.dealWith(e);
-        }
+        } catch (IOException e) {}
         
         stopForeground(true);
         stopSelf();
@@ -173,7 +165,7 @@ public class AppService extends Service implements NameserverCallBack, ServerCal
         h.post(new Runnable() {
             @Override
             public void run() {
-                Toast.makeText(AppService.this, s, Toast.LENGTH_SHORT).show();
+                Toast.makeText(AppService.this, s, Toast.LENGTH_LONG).show();
             }
         });
     }

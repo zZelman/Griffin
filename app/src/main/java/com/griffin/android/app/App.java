@@ -119,13 +119,16 @@ public class App extends Activity implements OnClickListener {
             return;
         }
         
-        //// this comment is for when the file is in the home directory (not yet, still in dev)
-        // String baseDir = Environment.getExternalStorageDirectory().getAbsolutePath();
-        // baseDir + File.separator + "server_list.ini",
-        
         ServerInfoParser infoParser = null;
         try {
-            InputStream inputStream = this.getResources().openRawResource(R.raw.server_list);
+            // DEV
+            // InputStream inputStream = this.getResources().openRawResource(R.raw.server_list);
+
+            // PROD
+            String baseDir = Environment.getExternalStorageDirectory().getAbsolutePath();
+            String fileName = baseDir + File.separator + "server_list.ini";
+            InputStream inputStream = new FileInputStream(fileName);
+            
             infoParser = new ServerInfoParser(inputStream);
         } catch (FileNotFoundException e) {
             Toast.makeText(this, "server info file not found", Toast.LENGTH_SHORT).show();

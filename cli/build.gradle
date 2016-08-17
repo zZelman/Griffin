@@ -18,3 +18,13 @@ task runCli(type: JavaExec) {
     main = 'com.griffin.cli.Cli'
     classpath = sourceSets.main.runtimeClasspath
 }
+
+task jarCli(type: Jar) {
+    baseName = project.name + '-all'
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+    manifest {
+        attributes 'Implementation-Title': 'Cli', 'Implementation-Version': 1.0
+        attributes 'Main-Class': 'com.griffin.cli.Cli'
+    }
+}

@@ -18,3 +18,13 @@ task runDaemon(type: JavaExec) {
     main = 'com.griffin.daemon.Daemon'
     classpath = sourceSets.main.runtimeClasspath
 }
+
+task jarDaemon(type: Jar) {
+    baseName = project.name + '-all'
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+    manifest {
+        attributes 'Implementation-Title': 'Daemon', 'Implementation-Version': 1.0
+        attributes 'Main-Class': 'com.griffin.daemon.Daemon'
+    }
+}

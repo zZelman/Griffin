@@ -88,7 +88,12 @@ public class Daemon implements NameserverCallBack, ServerCallBack, Startable {
         this.isRunning = true;
         
         try {
-            InputStream inputStream = ClassLoader.getSystemClassLoader().getResourceAsStream(this.fileName);
+            // DEV
+            // InputStream inputStream = ClassLoader.getSystemClassLoader().getResourceAsStream(this.fileName);
+
+            // PROD
+            InputStream inputStream = new FileInputStream(this.fileName);
+            
             ServerInfoParser infoParser = new ServerInfoParser(inputStream);
             
             Server server = new Server(this, this,

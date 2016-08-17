@@ -54,12 +54,17 @@ public class Nameserver implements Runnable, Startable {
         Nameserver.isRunning = true;
         
         try {
-            InputStream inputStream = ClassLoader.getSystemClassLoader().getResourceAsStream(this.fileName);
+            // DEV
+            // InputStream inputStream = ClassLoader.getSystemClassLoader().getResourceAsStream(this.fileName);
+            
+            // PROD
+            InputStream inputStream = new FileInputStream(this.fileName);
+            
             ServerInfoParser infoParser = new ServerInfoParser(inputStream);
-
+            
             ServerInfo info = infoParser.getNameserverInfo();
             this.serverSocket = new ServerSocket(info.getPort());
-
+            
             this.println(info.toFormatedString());
             this.println("");
             
@@ -238,7 +243,7 @@ public class Nameserver implements Runnable, Startable {
             this.prevComm.send(new StopCommunication());
         }
     }
-
+    
     public static void usage() {
         System.out.println("the nameserver does not have command line parameters");
         System.exit(1);
@@ -248,7 +253,7 @@ public class Nameserver implements Runnable, Startable {
         if (args.length != 0) {
             Nameserver.usage();
         }
-
+        
         String fileName = "server_list.ini";
         Nameserver nameserver = new Nameserver(fileName);
         

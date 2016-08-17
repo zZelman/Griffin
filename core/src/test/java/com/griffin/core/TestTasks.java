@@ -19,16 +19,5 @@ public class TestTasks {
     
     @Test
     public void testJava() throws Exception {
-        String input = "desktop hello world android thing thing thing android thing desktop ddd";
-
-        String[] names = new String[]{"desktop", "android"};
-
-        String[] s = input.split("(?=(android|desktop))");
-        ArrayList<String> list = new ArrayList<String>();
-        for (String str : s) {
-            list.add(str.trim());
-        }
-
-        System.out.println(list);
     }
 }

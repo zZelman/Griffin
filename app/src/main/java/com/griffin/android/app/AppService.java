@@ -165,7 +165,7 @@ public class AppService extends Service implements NameserverCallBack, ServerCal
         h.post(new Runnable() {
             @Override
             public void run() {
-                Toast.makeText(AppService.this, s, Toast.LENGTH_LONG).show();
+                Toast.makeText(AppService.this, s, Toast.LENGTH_SHORT).show();
             }
         });
     }

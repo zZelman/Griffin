@@ -134,7 +134,12 @@ public class Cli implements ClientCallBack, Startable {
         ServerInfoParser infoParser = null;
         try {
             String fileName = "server_list.ini";
-            InputStream inputStream = ClassLoader.getSystemClassLoader().getResourceAsStream(fileName);
+            // DEV
+            // InputStream inputStream = ClassLoader.getSystemClassLoader().getResourceAsStream(fileName);
+            
+            // PROD
+            InputStream inputStream = new FileInputStream(fileName);
+            
             infoParser = new ServerInfoParser(inputStream);
         } catch (IOException e) {
             e.printStackTrace();

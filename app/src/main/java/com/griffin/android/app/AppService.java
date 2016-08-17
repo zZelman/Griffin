@@ -55,8 +55,8 @@ public class AppService extends Service implements NameserverCallBack, ServerCal
     }
     
     @Override
-    public void commandRecieved(String remoteAddr, String localAddr, String command) {
-        this.showToast("[" + remoteAddr + "] " + command);
+    public void commandRecieved(String datetime, String remoteAddr, String localAddr, String command) {
+        this.showToast("[" + remoteAddr + " - " + datetime + "] " + command);
     }
     
     @Override

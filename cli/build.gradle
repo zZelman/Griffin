@@ -13,7 +13,7 @@ dependencies {
 
 task runCli(type: JavaExec) {
     standardInput = System.in
-    args 'desktop chain'.split(' ')
+    args 'desktop help'.split(' ')
     
     main = 'com.griffin.cli.Cli'
     classpath = sourceSets.main.runtimeClasspath

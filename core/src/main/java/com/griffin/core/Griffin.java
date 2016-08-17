@@ -58,7 +58,9 @@ public class Griffin {
         
         // print rawInput if not recurring (recurring takes care of its own printing)
         if (!comm.isHeadless()) {
-            this.serverCallBack.commandRecieved(comm.getRemoteAddr(), comm.getLocalAddr(), rawInput);
+            this.serverCallBack.commandRecieved(comm.getDateTime(),
+                                                comm.getRemoteAddr(), comm.getLocalAddr(),
+                                                rawInput);
         }
         
         boolean oneCommandExecuted;

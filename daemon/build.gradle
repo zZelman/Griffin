@@ -13,7 +13,7 @@ dependencies {
 
 task runDaemon(type: JavaExec) {
     standardInput = System.in
-    args 'server_list.ini'.split(' ')
+    // args ''.split(' ')
     
     main = 'com.griffin.daemon.Daemon'
     classpath = sourceSets.main.runtimeClasspath

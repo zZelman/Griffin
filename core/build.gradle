@@ -29,7 +29,7 @@ test {
 
 task runNameserver(type: JavaExec) {
     standardInput = System.in
-    args 'server_list.ini'.split(' ')
+    // args ''.split(' ')
     
     main = 'com.griffin.core.nameserver.Nameserver'
     classpath = sourceSets.main.runtimeClasspath

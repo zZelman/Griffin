@@ -22,7 +22,7 @@ public class Daemon implements NameserverCallBack, ServerCallBack, Startable {
     public Daemon(String fileName, String target) {
         this.fileName = fileName;
         this.target = target;
-
+        
         this.isRunning = false;
     }
     
@@ -38,6 +38,7 @@ public class Daemon implements NameserverCallBack, ServerCallBack, Startable {
     @Override
     public void serverInfo(ServerInfo info) {
         this.println(info.toFormatedString());
+        this.println("");
     }
     
     @Override
@@ -46,8 +47,8 @@ public class Daemon implements NameserverCallBack, ServerCallBack, Startable {
     }
     
     @Override
-    public void commandRecieved(String remoteAddr, String localAddr, String command) {
-        this.println("[" + remoteAddr + "] " + command);
+    public void commandRecieved(String datetime, String remoteAddr, String localAddr, String command) {
+        this.println("[" + remoteAddr + " - " + datetime + "] " + command);
     }
     
     @Override
@@ -93,7 +94,7 @@ public class Daemon implements NameserverCallBack, ServerCallBack, Startable {
             Server server = new Server(this, this,
                                        infoParser, this.target,
                                        new DaemonTaskFactory(infoParser));
-            
+                                       
             this.serverThread = new Thread(server);
             this.serverThread.start();
         } catch (FileNotFoundException e) {
@@ -139,19 +140,18 @@ public class Daemon implements NameserverCallBack, ServerCallBack, Startable {
     }
     
     public static void usage() {
-        System.out.println("error in command line paramiters");
-        System.out.println("    usage: [server_info_filename]");
+        System.out.println("the daemon does not have command line parameters");
         System.exit(1);
     }
     
     public static void main(String[] args) {
-        if (args.length != 1) {
+        if (args.length != 0) {
             Daemon.usage();
         }
-
-        String target = "desktop";
         
-        Daemon daemon = new Daemon(args[0], target);
+        String fileName = "server_list.ini";
+        String target = "desktop";
+        Daemon daemon = new Daemon(fileName, target);
         
         if (daemon.start()) {
             try {

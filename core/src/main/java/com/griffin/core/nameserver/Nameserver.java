@@ -61,6 +61,7 @@ public class Nameserver implements Runnable, Startable {
             this.serverSocket = new ServerSocket(info.getPort());
 
             this.println(info.toFormatedString());
+            this.println("");
             
             this.serverThread = new Thread(this);
             this.serverThread.start();
@@ -151,7 +152,7 @@ public class Nameserver implements Runnable, Startable {
         }
         
         public void println(String s) {
-            System.out.println("[" + prevComm.getRemoteAddr() + "] " + s);
+            System.out.println("[" + this.prevComm.getRemoteAddr() + " - " + this.prevComm.getDateTime() + "] " + s);
         }
         
         public void println(Exception e) {
@@ -239,17 +240,17 @@ public class Nameserver implements Runnable, Startable {
     }
 
     public static void usage() {
-        System.out.println("error in command line paramiters");
-        System.out.println("    usage: [server_list_filename]");
+        System.out.println("the nameserver does not have command line parameters");
         System.exit(1);
     }
     
     public static void main(String[] args) {
-        if (args.length != 1) {
+        if (args.length != 0) {
             Nameserver.usage();
         }
-        
-        Nameserver nameserver = new Nameserver(args[0]);
+
+        String fileName = "server_list.ini";
+        Nameserver nameserver = new Nameserver(fileName);
         
         if (nameserver.start()) {
             try {

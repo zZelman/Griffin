@@ -2,6 +2,8 @@ package com.griffin.core;
 
 import java.net.*;
 import java.io.*;
+import java.util.*;
+import java.text.*;
 
 import com.griffin.core.*;
 
@@ -28,7 +30,7 @@ public class Communication {
         this.out = new ObjectOutputStream(this.socket.getOutputStream());
         this.in = new ObjectInputStream(this.socket.getInputStream());
     }
-
+    
     public boolean isHeadless() {
         return (this.in == null || this.out == null);
     }
@@ -70,7 +72,7 @@ public class Communication {
             return null;
         }
         
-        return this.socket.getRemoteSocketAddress().toString();
+        return this.socket.getRemoteSocketAddress().toString().replace("/", "");
     }
     
     public String getLocalAddr() {
@@ -78,6 +80,12 @@ public class Communication {
             return null;
         }
         
-        return this.socket.getLocalAddress().toString() + ":" + this.socket.getLocalPort();
+        return (this.socket.getLocalAddress().toString() + ":" + this.socket.getLocalPort()).replace("/", "");
+    }
+    
+    public String getDateTime() {
+        DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
+        Date date = new Date();
+        return dateFormat.format(date).toString();
     }
 }

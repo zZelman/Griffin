@@ -65,8 +65,4 @@ public class ServerInfoParser {
     public boolean isLocalhost(String target) {
         return target.equals(LOCALHOST);
     }
-
-    public boolean targetExists(String target) throws BackingStoreException {
-        return this.iniPrefs.nodeExists(target);
-    }
 }

@@ -86,7 +86,9 @@ public class RecurringJob implements Startable {
         public void run() {
             while (!Thread.currentThread().isInterrupted()) {
                 // this is where recurring takes care of its own printing
-                serverCallBack.commandRecieved(addr, addr, command);
+                serverCallBack.commandRecieved(this.prevComm.getDateTime(),
+                                               addr, addr,
+                                               command);
                 
                 // execute the command, and do nothing with it because there is no where to put it
                 Output ret = griffin.doCommand(command, this.prevComm);

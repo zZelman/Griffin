@@ -9,6 +9,7 @@ Griffin is a distributed named task execution framework. Simply put, if you asso
          - The =[nameserver]= entry's =hostname= needs to be accessible from everywhere
          - Do not edit the =hostname= for =[localhost]=
          - You may change anything within the other blocks
+         - Right now the IP inside of =server_list.ini= *must* be the same as the one on the device, it is not found out dynamically. I recommend using static IP addresses if you plan extensive use.
     3. Install the apk onto your android device with =adb install app.apk=
 
 * Usage
@@ -52,3 +53,8 @@ Griffin is a distributed named task execution framework. Simply put, if you asso
     - Remove bad smells with refactoring
     - Remove the need for a nameserver
     - Better android UI
+    - Remove the need for static IP addresses
+    - Deal with roaming
+
+* Contact
+Feel free to open an issue on this repository or send me a pull request.

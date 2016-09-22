@@ -18,8 +18,7 @@ Griffin is a distributed named task execution framework. Simply put, if you asso
          - Open another terminal and run =java -jar daemon.jar=
          - Open the app on your phone and press the button labeled =Start=
     3. Using the clients
-         - Open another terminal and run =java -jar cli.jar [target] [command...]=
-     help on each server)
+         - Open another terminal and run =java -jar cli.jar [target] [command...]= (there is a  =help= on each server)
          - In the app there is a command field enter =[target] [command...]=
 
 *Client argument explanation*
@@ -38,3 +37,7 @@ Griffin is a distributed named task execution framework. Simply put, if you asso
     - =localhost help=
     - =desktop stop server=
     - =localhost stop server=
+
+* TODO
+    - [ ] Change the networking model from using Java's Serializable interface to buffer oriented
+    - [ ] Add more tasks

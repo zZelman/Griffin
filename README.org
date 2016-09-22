@@ -12,18 +12,26 @@ Griffin is a distributed named task execution framework. Simply put, if you asso
     3. Install the apk onto your android device with =adb install app.apk=
 
 * Usage
-    1. Open a terminal and run =java -jar nameserver.jar=
-         - This starts the light weight DNS for all servers, you should see the servers ping the nameserver once in a while
-    2. Open another terminal and run =java -jar daemon.jar=
-    3. Open the app on your phone and press the button labeled =Start=
-         - This starts a server on your phone
-    4. Open another terminal and run =java -jar cli.jar [target] [command...]=
-         - *target* is the name of the heading in =server_list.ini= ie =desktop= from =[desktop]=
-         - *command* is the name of the block of execution you want to run on the target (there is a help on each server)
-    5. In the app there is a command field enter =[target] [command...]=
+Start the nameserver
+    - Open a terminal and run =java -jar nameserver.jar=
+
+Start the servers
+    - Open another terminal and run =java -jar daemon.jar=
+    - Open the app on your phone and press the button labeled =Start=
+        - This starts a server on your phone
+
+Using the clients
+    - Open another terminal and run =java -jar cli.jar [target] [command...]=
+ help on each server)
+    - In the app there is a command field enter =[target] [command...]=
+
+Client argument explanation
+    - *target* is the name of the heading in =server_list.ini= ie =desktop= from =[desktop]=
+    - *command* is the name of the block of execution you want to run on the target (there is a
 
 * Examples
     - =desktop help=
     - =desktop shell ls=
     - =desktop shell pwd=
     - =android help=
+    - =localhost help=

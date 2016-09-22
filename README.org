@@ -1,0 +1,5 @@
+#+TITLE: Griffin
+#+AUTHOR: Kyle Avrett
+
+* Overview
+thing

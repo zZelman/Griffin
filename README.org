@@ -22,14 +22,19 @@ Griffin is a distributed named task execution framework. Simply put, if you asso
          - In the app there is a command field enter =[target] [command...]=
 
 *Client argument explanation*
-    - *target* is the name of the heading in =server_list.ini= ie =desktop= from =[desktop]=
+    - *target* is the name of the heading in =server_list.ini= ie: =desktop= from =[desktop]=
     - *command* is the name of the block of execution you want to run on the target (there is a
 
 * How to stop a server
     - There is a task named =stop server= on each server. However, this must be the *only* string sent to the server.
     - You can press a button labeled =Stop= on the android app
 
-* Examples
+* Task types
+    - *Simple* what you see is what you get
+    - *Paramaterized* there are one or more slots for data in the command
+    - *Open ended* the rest of the string is used as input for this command
+
+* Example commands
     - =desktop help=
     - =desktop shell ls=
     - =desktop shell pwd=
@@ -37,7 +42,13 @@ Griffin is a distributed named task execution framework. Simply put, if you asso
     - =localhost help=
     - =desktop stop server=
     - =localhost stop server=
+    - =desktop add recurring beeping 5 shell beep=
+    - =desktop list recurring=
+    - =desktop remove recurring beeping=
 
-* TODO
-    - [ ] Change the networking model from using Java's Serializable interface to buffer oriented
-    - [ ] Add more tasks
+* Todo
+    - Change the networking model from using Java's Serializable interface to buffer oriented
+    - Add more tasks
+    - Remove bad smells with refactoring
+    - Remove the need for a nameserver
+    - Better android UI
